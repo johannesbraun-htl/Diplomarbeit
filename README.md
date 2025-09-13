@@ -66,3 +66,14 @@ Dieses Projekt analysiert Vorträge und Präsentationen anhand von **Sprache** u
    ```bash
    git clone <repo-url>
    cd diplomarbeit-ki-analyse
+
+2. Virtuelle Umgebung erstellen & Abhängigkeiten installieren  
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # Linux/Mac
+   venv\Scripts\activate     # Windows
+   pip install -r requirements.txt
+
+3. Anwendung starten  
+   ```bash
+   python main.py
