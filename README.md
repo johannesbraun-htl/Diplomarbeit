@@ -38,10 +38,12 @@ Es analysiert Vorträge und Präsentationen anhand von **Sprache** und **Körper
 
 ---
 
-## 🛠️ Technologien
-- Programmiersprache: *[Platzhalter]*  
-- Frameworks / Libraries: *[Platzhalter]*  
-- Tools für Projektmanagement: *[Platzhalter]*  
+## Technologien
+- **Programmiersprachen:** *Python, [weitere falls benötigt]*  
+- **Frameworks / Libraries:** *[z. B. für Sprache, Bildverarbeitung, GUI]*  
+- **Projektmanagement:** *GitHub Projects (Kanban),GitHub Repository, [weitere Tools falls nötig]*  
+- **Diagramme & Dokumentation:** *[z. B. UML, ERM, Sequenzdiagramme]*  
+ 
 
 ---
 
