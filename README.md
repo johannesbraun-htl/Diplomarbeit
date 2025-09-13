@@ -61,7 +61,7 @@ Dieses Projekt analysiert Vorträge und Präsentationen anhand von **Sprache** u
 
 ---
 
-## Installation & Nutzung
+## Installation & Nutzung (sobald satuts ferig)
 1. Repository klonen  
    ```bash
    git clone <repo-url>
@@ -77,3 +77,16 @@ Dieses Projekt analysiert Vorträge und Präsentationen anhand von **Sprache** u
 3. Anwendung starten  
    ```bash
    python main.py
+
+---
+
+## Tests
+- Durchführung mehrerer Beispiel-Präsentationen
+- Vergleich: Systemanalyse vs. Beobachtung durch Personen
+- Optimierung anhand der Ergebnisse
+
+--- 
+
+## Lizenz
+Dieses Projekt ist Teil einer schulischen Diplomarbeit und dient ausschließlich Ausbildungszwecken.
+Eine kommerzielle Nutzung ist nicht vorgesehen.
