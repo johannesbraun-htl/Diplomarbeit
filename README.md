@@ -13,6 +13,11 @@ Dieses Projekt analysiert Vorträge und Präsentationen anhand von **Sprache** u
 
 ---
 
+## Wichtige Sachen in den nächsten Wochen 
+- Grundlegende Struktur des Projektes machen 
+
+---
+
 ## Ziele
 - **Sprache**
   - Erkennung von Füllwörtern  
