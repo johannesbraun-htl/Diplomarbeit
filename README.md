@@ -1,6 +1,8 @@
 # 🎓 Diplomarbeit 2025/26
 # 🤖 PresentAI – KI-gestützte Analyse von Präsentationen
 
+![PresentAI Logo](./docs/logo.png)
+
 ![Status](https://img.shields.io/badge/status-in%20progress-yellow) 
 ![Made%20with-Python](https://img.shields.io/badge/Made%20with-Python-green) 
 ![License](https://img.shields.io/badge/license-Educational-lightgrey)
