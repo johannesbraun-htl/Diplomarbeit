@@ -37,6 +37,15 @@ main {
   gap: 20px;
 }
 
+/* Preview: sanfter Fade-in */
+.preview {
+  animation: fadeIn .25s ease-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 /* Chart-Höhen */
 .chart-sm { height: 160px; }
 .chart-md { height: 220px; }
@@ -55,11 +64,7 @@ main {
   overflow: hidden;
   border: 1px solid #e5e7eb;
 }
-
-.meter > span {
-  display: block;
-  height: 100%;
-}
+.meter > span { display: block; height: 100%; }
 
 .pill {
   font-size: 12px;

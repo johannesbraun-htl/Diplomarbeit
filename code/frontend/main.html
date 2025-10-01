@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>PresentAI – Analyse</title>
 
-  <!-- Tailwind -->
+  <!-- Tailwind für Layout -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Chart.js + Icons -->
@@ -29,12 +29,16 @@
   <main>
     <!-- LINKE SPALTE -->
     <section class="left">
-      <!-- Nur Upload -->
+      <!-- Upload + Video-Preview -->
       <div class="card p-4">
         <div class="flex items-center justify-between mb-2">
-          <h3 class="title flex items-center gap-2"><i data-lucide="upload" class="w-5 h-5"></i> Video-Upload</h3>
+          <h3 class="title flex items-center gap-2">
+            <i data-lucide="upload" class="w-5 h-5"></i> Video-Upload
+          </h3>
           <small class="muted">MP4 / MOV / WebM</small>
         </div>
+
+        <!-- Dropzone -->
         <label id="dropzone" class="flex-1 border-2 border-dashed rounded-xl grid place-items-center cursor-pointer hover:bg-gray-50 p-6">
           <div class="text-center">
             <i data-lucide="video" class="mx-auto w-6 h-6 mb-2"></i>
@@ -42,6 +46,33 @@
           </div>
           <input id="fileInput" type="file" accept="video/*" class="hidden" />
         </label>
+
+        <!-- Preview -->
+        <div id="previewWrap" class="preview hidden mt-4">
+          <div class="flex items-start gap-3">
+            <div class="w-48 aspect-video bg-black rounded overflow-hidden border">
+              <video id="previewVideo" class="w-full h-full object-cover" playsinline muted controls></video>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm font-medium" id="fileName">–</p>
+              <p class="text-xs text-gray-500">
+                <span id="fileSize">–</span> • Dauer: <span id="fileDuration">–</span>
+              </p>
+              <div class="mt-2 flex gap-2">
+                <button id="playBtn" class="px-3 py-1.5 rounded border text-sm flex items-center gap-1">
+                  <i data-lucide="play" class="w-4 h-4"></i> Abspielen
+                </button>
+                <button id="pauseBtn" class="px-3 py-1.5 rounded border text-sm flex items-center gap-1">
+                  <i data-lucide="pause" class="w-4 h-4"></i> Pause
+                </button>
+                <button id="resetBtn" class="px-3 py-1.5 rounded border text-sm flex items-center gap-1">
+                  <i data-lucide="x" class="w-4 h-4"></i> Entfernen
+                </button>
+              </div>
+              <p class="text-xs text-gray-400 mt-2">Tipp: Mit Rechtsklick → „Bild in Bild“ oder Playback-Geschwindigkeit im Player anpassen.</p>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -100,10 +131,87 @@
 
   <!-- Scripts -->
   <script>
+    // Icons + Jahr
     lucide.createIcons();
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Dummy-Daten
+    // ====== Video-Preview-Logik ======
+    const fileInput = document.getElementById('fileInput');
+    const dropzone  = document.getElementById('dropzone');
+    const previewWrap = document.getElementById('previewWrap');
+    const videoEl = document.getElementById('previewVideo');
+    const fileNameEl = document.getElementById('fileName');
+    const fileSizeEl = document.getElementById('fileSize');
+    const fileDurationEl = document.getElementById('fileDuration');
+    const playBtn = document.getElementById('playBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const resetBtn = document.getElementById('resetBtn');
+
+    let objectUrl = null;
+
+    function humanSize(bytes){
+      const u=['B','KB','MB','GB']; let i=0, n=bytes;
+      while(n>=1024 && i<u.length-1){ n/=1024; i++; }
+      return `${n.toFixed(n<10?1:0)} ${u[i]}`;
+    }
+
+    function showPreview(file){
+      if(!file) return;
+      // Nur Video-Typen annehmen
+      if(!file.type.startsWith('video/')){
+        alert('Bitte eine Videodatei auswählen.');
+        return;
+      }
+      // URL vorbereiten
+      if(objectUrl){ URL.revokeObjectURL(objectUrl); objectUrl=null; }
+      objectUrl = URL.createObjectURL(file);
+      videoEl.src = objectUrl;
+      videoEl.currentTime = 0;
+      videoEl.muted = true; // Autoplay-Freigabe in vielen Browsern
+      videoEl.play().catch(()=>{/* Autoplay ggf. blockiert – ist ok */});
+
+      // Metadaten
+      fileNameEl.textContent = file.name;
+      fileSizeEl.textContent = humanSize(file.size);
+      fileDurationEl.textContent = '…';
+      videoEl.onloadedmetadata = () => {
+        const d = videoEl.duration;
+        if(Number.isFinite(d)){
+          const mm = Math.floor(d/60).toString().padStart(2,'0');
+          const ss = Math.floor(d%60).toString().padStart(2,'0');
+          fileDurationEl.textContent = `${mm}:${ss}`;
+        }
+      };
+
+      previewWrap.classList.remove('hidden');
+    }
+
+    function clearPreview(){
+      if(objectUrl){ URL.revokeObjectURL(objectUrl); objectUrl=null; }
+      videoEl.pause();
+      videoEl.removeAttribute('src');
+      videoEl.load();
+      previewWrap.classList.add('hidden');
+      fileInput.value = '';
+    }
+
+    dropzone.addEventListener('click', ()=> fileInput.click());
+    fileInput.addEventListener('change', e => showPreview(e.target.files[0]));
+
+    dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('bg-gray-50'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('bg-gray-50'));
+    dropzone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropzone.classList.remove('bg-gray-50');
+      const f = e.dataTransfer?.files?.[0];
+      showPreview(f);
+    });
+
+    playBtn.addEventListener('click', ()=> videoEl.play());
+    pauseBtn.addEventListener('click', ()=> videoEl.pause());
+    resetBtn.addEventListener('click', clearPreview);
+
+    // ====== Dummy-Daten & Charts (wie zuvor) ======
     const N=20;
     const tempo=Array.from({length:N},(_,i)=>140+Math.round(Math.sin(i/2)*20));
     const filler=Array.from({length:N},(_,i)=>Math.max(0,4+Math.round(Math.cos(i/3)*3)));
@@ -140,7 +248,7 @@
       options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'},hLine:{value:5}},scales:{x:{title:{display:true,text:'Zeit (Minuten)'}},y:{title:{display:true,text:'%'} ,beginAtZero:true}}},
       plugins:[HLine]});
 
-    // KPIs
+    // KPI-Meter
     document.getElementById('eyeBar').style.width=eyeContactPct+'%';
     document.getElementById('eyeVal').textContent=eyeContactPct+'%';
     document.getElementById('gestBar').style.width=Math.min(100,(gesturesPerMin/20)*100)+'%';
