@@ -1,13 +1,163 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PresentAI</title>
-    <link rel="stylesheet" href="style/styles.css">
-    <link rel="icon" type="image/png" href="../../docs/logo.png">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PresentAI – Analyse</title>
+
+  <!-- Tailwind (für Layout & Utility-Klassen) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Chart.js + Icons -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Eigenes CSS -->
+  <link rel="stylesheet" href="styles/styles.css">
 </head>
 <body>
-    <h1>PresentAI</h1>
+  <!-- HEADER -->
+  <header class="h-14 border-b border-gray-200 flex items-center justify-between px-6">
+    <div class="flex items-center gap-2">
+      <i data-lucide="bar-chart-2" class="w-5 h-5 text-gray-700"></i>
+      <span class="title">PresentAI</span>
+      <span class="ml-2 text-xs px-2 py-0.5 rounded-full bg-gray-100 border">Prototype</span>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+    <!-- LINKE SPALTE -->
+    <section class="left">
+      <!-- Kamera -->
+      <div class="card p-4">
+        <div class="flex justify-between items-center mb-2">
+          <h2 class="title flex items-center gap-2"><i data-lucide="camera" class="w-5 h-5"></i> Live-Kamera</h2>
+          <div class="flex gap-2">
+            <button id="startBtn" class="px-3 py-1.5 rounded bg-black text-white text-sm flex items-center gap-1"><i data-lucide="play" class="w-4 h-4"></i>Start</button>
+            <button id="stopBtn" class="px-3 py-1.5 rounded border hidden text-sm flex items-center gap-1"><i data-lucide="pause" class="w-4 h-4"></i>Stopp</button>
+          </div>
+        </div>
+        <div class="aspect-video bg-gray-100 rounded border grid place-items-center">
+          <video id="video" class="w-full h-full object-cover" muted playsinline></video>
+          <p id="videoOverlay" class="text-gray-500 text-sm">Klick auf Start, um die Kamera zu aktivieren.</p>
+        </div>
+      </div>
+
+      <!-- Upload -->
+      <div class="card p-4">
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="title flex items-center gap-2"><i data-lucide="upload" class="w-5 h-5"></i> Video-Upload</h3>
+          <small class="muted">MP4 / MOV / WebM</small>
+        </div>
+        <label id="dropzone" class="flex-1 border-2 border-dashed rounded-xl grid place-items-center cursor-pointer hover:bg-gray-50 p-6">
+          <div class="text-center">
+            <i data-lucide="video" class="mx-auto w-6 h-6 mb-2"></i>
+            <span class="text-sm">Datei hier ablegen oder <span class="underline">auswählen</span></span>
+          </div>
+          <input id="fileInput" type="file" accept="video/*" class="hidden" />
+        </label>
+      </div>
+    </section>
+
+    <!-- RECHTE SPALTE -->
+    <aside class="right">
+      <!-- KPIs -->
+      <div class="card p-4">
+        <h3 class="title mb-2">Status & Metriken</h3>
+        <div class="grid grid-cols-3 gap-3 text-center">
+          <div class="border rounded p-2"><p class="text-xs text-gray-500">Tempo</p><p class="text-lg font-semibold" id="tempoNow">—</p></div>
+          <div class="border rounded p-2"><p class="text-xs text-gray-500">Füllwörter</p><p class="text-lg font-semibold" id="fillerNow">—</p></div>
+          <div class="border rounded p-2"><p class="text-xs text-gray-500">Pausen</p><p class="text-lg font-semibold" id="pauseNow">—</p></div>
+        </div>
+        <div class="grid grid-cols-2 gap-2 mt-2">
+          <div class="border rounded p-2 chart chart-sm"><canvas id="paceChart"></canvas></div>
+          <div class="border rounded p-2 chart chart-sm"><canvas id="fillerTrend"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Analyse -->
+      <div class="card p-4">
+        <h3 class="title mb-2">Analyse</h3>
+        <div class="grid grid-cols-2 gap-2">
+          <!-- Tempo vs Ziel -->
+          <div class="border rounded p-2 chart chart-md"><canvas id="tempoVsTarget"></canvas></div>
+          <!-- Füllwörter -->
+          <div class="border rounded p-2 chart chart-md"><canvas id="fillerBars"></canvas></div>
+          <!-- Blickkontakt & Gestik -->
+          <div class="border rounded p-3 flex flex-col justify-center">
+            <div class="mb-3">
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-sm font-medium">Blickkontakt</span>
+                <span id="eyeBadge" class="pill border-emerald-200 text-emerald-700 bg-emerald-50">OK</span>
+              </div>
+              <div class="meter"><span id="eyeBar" style="width:0%; background:#10b981"></span></div>
+              <div class="text-xs text-gray-500 mt-1"><span id="eyeVal">0%</span> (Ziel ≥ 60%)</div>
+            </div>
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-sm font-medium">Gestik / Minute</span>
+                <span id="gestBadge" class="pill border-blue-200 text-blue-700 bg-blue-50">Stabil</span>
+              </div>
+              <div class="meter"><span id="gestBar" style="width:0%; background:#3b82f6"></span></div>
+              <div class="text-xs text-gray-500 mt-1"><span id="gestVal">0</span> (Ziel 10–16)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="h-9 border-t border-gray-200 text-xs text-gray-500 flex items-center justify-center">
+    © <span id="year"></span> PresentAI • Diplomarbeit
+  </footer>
+
+  <!-- Scripts für Dummy-Daten und Charts -->
+  <script>
+    lucide.createIcons();
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    const N=20;
+    const tempo=Array.from({length:N},(_,i)=>140+Math.round(Math.sin(i/2)*20));
+    const filler=Array.from({length:N},(_,i)=>Math.max(0,4+Math.round(Math.cos(i/3)*3)));
+    const eyeContactPct=73, gesturesPerMin=14;
+
+    document.getElementById('tempoNow').textContent=tempo.at(-1)+' wpm';
+    document.getElementById('fillerNow').textContent=filler.at(-1)+' %';
+    document.getElementById('pauseNow').textContent=(Math.random()*2).toFixed(1)+' s';
+
+    function lineChart(el,data,label,ylabel){
+      new Chart(document.getElementById(el),{
+        type:'line',
+        data:{labels:data.map((_,i)=>i+1),datasets:[{label,data,borderWidth:2,tension:.3,pointRadius:0}]},
+        options:{responsive:true,maintainAspectRatio:false,
+          plugins:{legend:{display:true,position:'top'}},
+          scales:{x:{title:{display:true,text:'Zeit'}},y:{title:{display:true,text:ylabel}}}}
+      });
+    }
+    lineChart('paceChart', tempo, 'Tempo', 'WPM');
+    lineChart('fillerTrend', filler, 'Füllwörter', '%');
+
+    const RangeBand={id:'rangeBand',beforeDraw(c,a,o){const {ctx,chartArea:{left,right},scales:{y}}=c;if(!o)return;const yMin=y.getPixelForValue(o.min),yMax=y.getPixelForValue(o.max);ctx.save();ctx.fillStyle='rgba(16,185,129,0.12)';ctx.fillRect(left,yMax,right-left,yMin-yMax);ctx.restore();}};
+    const HLine={id:'hLine',afterDraw(c,a,o){if(!o?.value)return;const {ctx,chartArea:{left,right},scales:{y}}=c;const yPx=y.getPixelForValue(o.value);ctx.save();ctx.strokeStyle='rgba(239,68,68,.9)';ctx.setLineDash([6,4]);ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(left,yPx);ctx.lineTo(right,yPx);ctx.stroke();ctx.restore();}};
+
+    new Chart(document.getElementById('tempoVsTarget'),{
+      type:'line',
+      data:{labels:tempo.map((_,i)=>i+1),datasets:[{label:'Tempo (WPM)',data:tempo,borderWidth:2,tension:.3,pointRadius:0}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'},rangeBand:{min:120,max:160}},scales:{x:{title:{display:true,text:'Zeit'}},y:{title:{display:true,text:'WPM'}}}},
+      plugins:[RangeBand]});
+
+    new Chart(document.getElementById('fillerBars'),{
+      type:'bar',
+      data:{labels:filler.map((_,i)=>i+1),datasets:[{label:'Füllwörter (%)',data:filler}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'},hLine:{value:5}},scales:{x:{title:{display:true,text:'Zeit (Minuten)'}},y:{title:{display:true,text:'%'} ,beginAtZero:true}}},
+      plugins:[HLine]});
+
+    document.getElementById('eyeBar').style.width=eyeContactPct+'%';
+    document.getElementById('eyeVal').textContent=eyeContactPct+'%';
+    document.getElementById('gestBar').style.width=Math.min(100,(gesturesPerMin/20)*100)+'%';
+    document.getElementById('gestVal').textContent=gesturesPerMin;
+  </script>
 </body>
 </html>
