@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>PresentAI – Analyse</title>
 
-  <!-- Tailwind (für Layout & Utility-Klassen) -->
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Chart.js + Icons -->
@@ -29,7 +29,7 @@
   <main>
     <!-- LINKE SPALTE -->
     <section class="left">
-      <!-- Upload -->
+      <!-- Nur Upload -->
       <div class="card p-4">
         <div class="flex items-center justify-between mb-2">
           <h3 class="title flex items-center gap-2"><i data-lucide="upload" class="w-5 h-5"></i> Video-Upload</h3>
@@ -98,11 +98,12 @@
     © <span id="year"></span> PresentAI • Diplomarbeit
   </footer>
 
-  <!-- Scripts für Dummy-Daten und Charts -->
+  <!-- Scripts -->
   <script>
     lucide.createIcons();
     document.getElementById('year').textContent = new Date().getFullYear();
 
+    // Dummy-Daten
     const N=20;
     const tempo=Array.from({length:N},(_,i)=>140+Math.round(Math.sin(i/2)*20));
     const filler=Array.from({length:N},(_,i)=>Math.max(0,4+Math.round(Math.cos(i/3)*3)));
@@ -139,6 +140,7 @@
       options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'},hLine:{value:5}},scales:{x:{title:{display:true,text:'Zeit (Minuten)'}},y:{title:{display:true,text:'%'} ,beginAtZero:true}}},
       plugins:[HLine]});
 
+    // KPIs
     document.getElementById('eyeBar').style.width=eyeContactPct+'%';
     document.getElementById('eyeVal').textContent=eyeContactPct+'%';
     document.getElementById('gestBar').style.width=Math.min(100,(gesturesPerMin/20)*100)+'%';
