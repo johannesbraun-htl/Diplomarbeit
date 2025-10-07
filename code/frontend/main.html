@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>PresentAI – Analyse</title>
 
-  <!-- Tailwind (Layout) -->
+  <!-- Tailwind (für Layout-Utilities) -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Chart.js + Icons -->
@@ -17,16 +17,14 @@
 </head>
 <body>
   <!-- HEADER -->
-  <header class="h-14 border-b border-gray-200 flex items-center justify-between px-6">
+  <header class="app-header">
     <div class="flex items-center gap-2">
       <i data-lucide="bar-chart-2" class="w-5 h-5 text-gray-700"></i>
       <span class="title">PresentAI</span>
-      <span class="ml-2 text-xs px-2 py-0.5 rounded-full bg-gray-100 border">Prototype</span>
+      <span class="ml-2 chip">Prototype</span>
     </div>
-    <div class="text-xs text-gray-500 hidden sm:block">
-      Hotkeys: <span class="font-mono">E</span>=Publikum, <span class="font-mono">T</span>=Tafel,
-      <span class="font-mono">U</span>=Blick Publikum, <span class="font-mono">B</span>=Boden,
-      <span class="font-mono">D</span>=Decke, <span class="font-mono">1..4</span>=Gestik (1 nervös, 2 angespannt, 3 steif, 4 locker)
+    <div class="hint hidden sm:block">
+      Hotkeys: <kbd>E</kbd>=Publikum, <kbd>T</kbd>=Tafel, <kbd>U</kbd>=Blick Publikum, <kbd>B</kbd>=Boden, <kbd>D</kbd>=Decke, <kbd>1..4</kbd>=Gestik (1 nervös, 2 angespannt, 3 steif, 4 locker)
     </div>
   </header>
 
@@ -36,10 +34,8 @@
     <section class="left">
       <!-- Upload + Preview -->
       <div class="card p-4">
-        <div class="flex items-center justify-between mb-2">
-          <h3 class="title flex items-center gap-2">
-            <i data-lucide="upload" class="w-5 h-5"></i> Video-Upload
-          </h3>
+        <div class="card-title">
+          <h3 class="title"><i data-lucide="upload" class="w-5 h-5"></i> Video-Upload</h3>
           <small class="muted">MP4 / MOV / WebM</small>
         </div>
 
@@ -97,12 +93,12 @@
 
       <!-- Timeline-Tracks (Ausrichtung / Blick / Gestik) -->
       <div class="card p-4">
-        <div class="flex items-center justify-between mb-2">
-          <h3 class="title flex items-center gap-2"><i data-lucide="timeline" class="w-5 h-5"></i> Annotation-Tracks</h3>
+        <div class="card-title">
+          <h3 class="title"><i data-lucide="timeline" class="w-5 h-5"></i> Annotation-Tracks</h3>
           <small class="muted">Mit Hotkeys markieren</small>
         </div>
 
-        <div id="tracks" class="space-y-3">
+        <div id="tracks" class="space-y-4">
           <!-- Orientierung -->
           <div>
             <div class="flex items-center gap-2 mb-1">
@@ -139,11 +135,11 @@
 
     <!-- RECHTE SPALTE -->
     <aside class="right">
-      <!-- WPM (30s Segmente) -->
+      <!-- WPM -->
       <div class="card p-4">
-        <h3 class="title mb-2">Geschwindigkeit der Sprache (WPM, 30-Sekunden-Segmente)</h3>
+        <h3 class="title mb-2">Geschwindigkeit der Sprache (WPM, 30-Sek.-Segmente)</h3>
         <p class="text-xs text-gray-500 mb-2" id="wpmInfo">Lade Untertitel, um die Geschwindigkeit zu berechnen.</p>
-        <div class="chart chart-md border rounded p-2">
+        <div class="chart chart-lg border rounded p-2">
           <canvas id="wpmChart"></canvas>
         </div>
         <div class="text-xs text-gray-500 mt-2" id="wpmLegend"></div>
@@ -151,21 +147,43 @@
 
       <!-- Füllwörter -->
       <div class="card p-4">
-        <h3 class="title mb-2">Füllwörter</h3>
-        <div class="flex items-center justify-between">
-          <p class="text-sm">Gesamt: <strong id="fillerTotal">0</strong></p>
-          <button id="copyFillersBtn" class="btn btn-ghost"><i data-lucide="clipboard" class="w-4 h-4"></i>Zeiten kopieren</button>
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="title">Füllwörter</h3>
+          <div class="text-sm">Gesamt: <strong id="fillerTotal">0</strong></div>
         </div>
-        <div class="chart chart-sm border rounded p-2 mt-2">
-          <canvas id="fillerBars"></canvas>
+        <div class="grid md:grid-cols-2 gap-2">
+          <div class="chart chart-md border rounded p-2">
+            <canvas id="fillerBars"></canvas>
+          </div>
+          <div class="chart chart-md border rounded p-2">
+            <canvas id="fillerScatter"></canvas>
+          </div>
+        </div>
+        <div class="mt-3 flex items-center gap-2 flex-wrap">
+          <button id="copyFillersBtn" class="btn btn-ghost"><i data-lucide="clipboard" class="w-4 h-4"></i>Zeiten kopieren</button>
+          <button id="exportCsvBtn" class="btn btn-ghost"><i data-lucide="file-spreadsheet" class="w-4 h-4"></i>CSV (WPM & Füllwörter)</button>
         </div>
         <div id="fillerListWrap" class="filler-list mt-3"></div>
+      </div>
+
+      <!-- Verhalten: Donuts + Radar -->
+      <div class="card p-4">
+        <h3 class="title mb-2">Verhaltens-Übersicht</h3>
+        <div class="grid md:grid-cols-3 gap-2">
+          <div class="chart chart-sm border rounded p-2"><canvas id="donutOrientation"></canvas></div>
+          <div class="chart chart-sm border rounded p-2"><canvas id="donutGaze"></canvas></div>
+          <div class="chart chart-sm border rounded p-2"><canvas id="donutGesture"></canvas></div>
+        </div>
+        <div class="mt-2 chart chart-md border rounded p-2">
+          <canvas id="radarPresence"></canvas>
+        </div>
+        <p class="text-xs text-gray-500 mt-2" id="presenceHint">Werte werden aus deinen Markierungen und Untertiteln berechnet.</p>
       </div>
     </aside>
   </main>
 
   <!-- FOOTER -->
-  <footer class="h-9 border-t border-gray-200 text-xs text-gray-500 flex items-center justify-center">
+  <footer class="app-footer">
     © <span id="year"></span> PresentAI • Diplomarbeit
   </footer>
 
@@ -213,7 +231,8 @@
       fileDurationEl.textContent = '…';
       videoEl.onloadedmetadata = () => {
         fileDurationEl.textContent = formatTime(videoEl.duration);
-        redrawTracks(); // timeline width based on duration
+        redrawTracks();
+        recomputePresence();
       };
       previewWrap.classList.remove('hidden');
     }
@@ -222,11 +241,10 @@
       videoEl.pause(); videoEl.removeAttribute('src'); videoEl.load();
       previewWrap.classList.add('hidden');
       fileInput.value = '';
-      // reset analyses
-      cues = []; words = []; fillers = [];
-      wpmBins = []; renderWpm(); renderFillers();
-      orientationTrack.length = 0; gazeTrack.length = 0; gestureTrack.length = 0;
-      redrawTracks();
+      cues=[]; words=[]; fillers=[]; wpmBins=[];
+      renderWpm(); renderFillers();
+      orientationTrack.length=0; gazeTrack.length=0; gestureTrack.length=0;
+      redrawTracks(); redrawDonuts(); renderRadar([]);
     }
     dropzone.addEventListener('click', ()=> fileInput.click());
     fileInput.addEventListener('change', e => showPreview(e.target.files[0]));
@@ -238,13 +256,12 @@
     pauseBtn.addEventListener('click', ()=> videoEl.pause());
     resetBtn.addEventListener('click', clearPreview);
 
-    // ---------- Untertitel-Parsen (VTT/SRT) ----------
+    // ---------- Untertitel-Parsen ----------
     const subsInput = document.getElementById('subsInput');
     const parseSubsBtn = document.getElementById('parseSubsBtn');
-    let cues = [];   // {start,end,text}
-    let words = [];  // {t,text,clean}
+    let cues=[];   // {start,end,text}
+    let words=[];  // {t,text,clean}
     function parseTimeToSec(t){
-      // supports "HH:MM:SS.mmm" or "MM:SS.mmm" or SRT "HH:MM:SS,mmm"
       t = t.trim().replace(',', '.');
       const parts = t.split(':');
       const last = parts.pop();
@@ -253,292 +270,350 @@
       const hh = parts.length ? parseInt(parts.pop(),10) : 0;
       return (hh*3600) + (mm*60) + sec;
     }
-    async function readFileText(file){
-      return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsText(file); });
-    }
     function parseVTT(txt){
       const lines = txt.split(/\r?\n/);
-      const result = [];
+      const out=[];
       for(let i=0;i<lines.length;i++){
-        const line = lines[i].trim();
+        const line=lines[i].trim();
         if(line.includes('-->')){
-          const [a,b] = line.split('-->').map(s=>s.trim());
+          const [a,b]=line.split('-->').map(s=>s.trim());
           let text=''; let j=i+1;
           while(j<lines.length && lines[j].trim()!==''){ text += (text?' ':'') + lines[j].trim(); j++; }
-          result.push({start:parseTimeToSec(a), end:parseTimeToSec(b), text});
+          out.push({start:parseTimeToSec(a), end:parseTimeToSec(b), text});
           i=j;
         }
       }
-      return result;
+      return out;
     }
     function parseSRT(txt){
-      const blocks = txt.split(/\r?\n\r?\n/);
-      const result=[];
+      const blocks=txt.split(/\r?\n\r?\n/);
+      const out=[];
       for(const b of blocks){
-        const lines = b.split(/\r?\n/).filter(Boolean);
+        const lines=b.split(/\r?\n/).filter(Boolean);
         if(lines.length>=2 && lines[1].includes('-->')){
-          const timing = lines[1];
-          const [a,b] = timing.split('-->').map(s=>s.trim());
+          const [a,b2]=lines[1].split('-->').map(s=>s.trim());
           const text = lines.slice(2).join(' ');
-          result.push({start:parseTimeToSec(a), end:parseTimeToSec(b), text});
+          out.push({start:parseTimeToSec(a), end:parseTimeToSec(b2), text});
         }
       }
-      return result;
+      return out;
     }
     function textToWords(cues){
       const items=[];
       for(const c of cues){
-        const tokens = c.text
-          .replace(/[\[\]\(\)\{\}\.,;:!?"“”‚’'`]/g,' ')
-          .split(/\s+/).filter(Boolean);
-        const dur = Math.max(0.001, c.end - c.start);
+        const tokens=c.text.replace(/[\[\]\(\)\{\}\.,;:!?"“”‚’'`]/g,' ')
+                           .split(/\s+/).filter(Boolean);
+        const dur=Math.max(0.001,c.end-c.start);
         tokens.forEach((tok,idx)=>{
-          const t = c.start + (dur * (idx+0.5) / tokens.length);
-          items.push({ t, text: tok, clean: tok.toLowerCase() });
+          const t=c.start + (dur*(idx+0.5)/tokens.length);
+          items.push({t, text:tok, clean:tok.toLowerCase()});
         });
       }
       return items;
     }
     parseSubsBtn.addEventListener('click', async ()=>{
-      const f = subsInput.files?.[0];
+      const f=subsInput.files?.[0];
       if(!f){ alert('Bitte Untertiteldatei (.vtt oder .srt) wählen.'); return; }
-      const txt = await readFileText(f);
+      const txt=await f.text();
       cues = f.name.toLowerCase().endsWith('.vtt') ? parseVTT(txt) : parseSRT(txt);
       words = textToWords(cues);
-      computeWpm(); detectFillers(); renderWpm(); renderFillers();
+      computeWpm(); detectFillers(); renderWpm(); renderFillers(); recomputePresence();
     });
 
-    // ---------- WPM je 30s Segment ----------
-    const wpmInfo = document.getElementById('wpmInfo');
-    const wpmLegend = document.getElementById('wpmLegend');
-    let wpmChart = null;
-    let wpmBins = []; // [{start,end,seconds,words,wpm}]
+    // ---------- WPM je 30s ----------
+    const wpmInfo=document.getElementById('wpmInfo');
+    const wpmLegend=document.getElementById('wpmLegend');
+    let wpmBins=[]; // [{start,end,seconds,words,wpm}]
+    let wpmChart=null;
     function computeWpm(){
       if(!videoEl.duration || !words.length){ wpmBins=[]; return; }
-      const dur = videoEl.duration;
-      wpmBins = [];
-      let start = 0;
-      while(start < dur - 1e-6){
-        const end = Math.min(dur, start + 30);
-        const inBin = words.filter(w => w.t >= start && w.t < end).length;
-        const seconds = end - start;
-        const wpm = Math.round((inBin / seconds) * 60);
-        wpmBins.push({ start, end, seconds, words: inBin, wpm });
-        start = end;
+      const dur=videoEl.duration; wpmBins=[];
+      let start=0;
+      while(start<dur-1e-6){
+        const end=Math.min(dur,start+30);
+        const inBin=words.filter(w=>w.t>=start && w.t<end).length;
+        const seconds=end-start;
+        const wpm=Math.round((inBin/seconds)*60);
+        wpmBins.push({start,end,seconds,words:inBin,wpm});
+        start=end;
       }
-      wpmInfo.textContent = `Video in ${wpmBins.length} Teil(e) segmentiert: ${Math.floor(dur/30)}×30s + ${Math.round((dur%30))}s`;
-      wpmLegend.textContent = wpmBins.map((b,i)=>`S${i+1}: ${formatTime(b.start)}–${formatTime(b.end)} → ${b.wpm} WPM (${b.words} Wörter / ${Math.round(b.seconds)}s)`).join(' | ');
+      wpmInfo.textContent=`Video in ${wpmBins.length} Teil(e): ${Math.floor(dur/30)}×30s + ${Math.round(dur%30)}s`;
+      wpmLegend.textContent=wpmBins.map((b,i)=>`S${i+1}: ${formatTime(b.start)}–${formatTime(b.end)} → ${b.wpm} WPM (${b.words} Wörter / ${Math.round(b.seconds)}s)`).join(' | ');
+    }
+    // Plugin: Zielband (120–160 WPM)
+    const RangeBand={ id:'rangeBand', beforeDraw(chart,args,opt){
+      if(!opt) return;
+      const {ctx, chartArea:{left,right,top,bottom}, scales:{y}}=chart;
+      const yMin=y.getPixelForValue(opt.min), yMax=y.getPixelForValue(opt.max);
+      ctx.save(); ctx.fillStyle='rgba(16,185,129,0.12)'; ctx.fillRect(left, yMax, right-left, yMin-yMax); ctx.restore();
+    }};
+    function movingAvg(arr, k=3){
+      const out=[]; for(let i=0;i<arr.length;i++){
+        const a=Math.max(0,i-k+1), b=i+1;
+        const slice=arr.slice(a,b); out.push(slice.reduce((s,v)=>s+v,0)/slice.length);
+      } return out;
     }
     function renderWpm(){
-      const ctx = document.getElementById('wpmChart');
+      const ctx=document.getElementById('wpmChart');
       if(wpmChart) wpmChart.destroy();
-      if(!wpmBins.length){
-        wpmChart = new Chart(ctx, { type:'bar', data:{labels:[],datasets:[]}, options:{responsive:true,maintainAspectRatio:false} });
-        return;
-      }
-      const labels = wpmBins.map((b,i)=>`S${i+1}`);
-      const data = wpmBins.map(b=>b.wpm);
-      wpmChart = new Chart(ctx, {
+      if(!wpmBins.length){ wpmChart=new Chart(ctx,{type:'bar',data:{labels:[],datasets:[]},options:{responsive:true,maintainAspectRatio:false}}); return; }
+      const labels=wpmBins.map((_,i)=>`S${i+1}`);
+      const data=wpmBins.map(b=>b.wpm);
+      const avg=movingAvg(data,3);
+      wpmChart=new Chart(ctx,{
         type:'bar',
-        data:{ labels, datasets:[{ label:'WPM', data }]},
+        data:{ labels,
+          datasets:[
+            { type:'bar', label:'WPM', data, borderWidth:0 },
+            { type:'line', label:'Ø (glatt)', data:avg, borderWidth:2, pointRadius:0, tension:.25 }
+          ]
+        },
         options:{
           responsive:true, maintainAspectRatio:false,
-          plugins:{ legend:{display:false}},
+          plugins:{ legend:{position:'top'}, rangeBand:{min:120,max:160} },
           scales:{ x:{ title:{display:true,text:'30s-Segmente'} }, y:{ title:{display:true,text:'Wörter/Minute'}, beginAtZero:true } }
-        }
+        },
+        plugins:[RangeBand]
       });
     }
 
     // ---------- Füllwörter ----------
-    const fillerBarsCtx = document.getElementById('fillerBars');
-    let fillerChart = null;
-    let fillers = []; // [{t,word}]
+    const fillerBarsCtx=document.getElementById('fillerBars');
+    const fillerScatterCtx=document.getElementById('fillerScatter');
+    let fillerChart=null, fillerScatter=null;
+    let fillers=[]; // [{t,word}]
     function getFillerSet(){
-      const raw = document.getElementById('fillerList').value || '';
+      const raw=document.getElementById('fillerList').value||'';
       return new Set(raw.split(',').map(s=>s.trim().toLowerCase()).filter(Boolean));
     }
     function detectFillers(){
-      const set = getFillerSet();
-      fillers = words.filter(w => set.has(w.clean)).map(w => ({ t: w.t, word: w.text }));
+      const set=getFillerSet();
+      fillers=words.filter(w=>set.has(w.clean)).map(w=>({t:w.t,word:w.text}));
     }
     function renderFillers(){
-      document.getElementById('fillerTotal').textContent = fillers.length;
-      const dur = videoEl.duration || 0;
-      const bins = Math.max(1, Math.ceil(dur/60));
-      const labels = Array.from({length:bins},(_,i)=>`${i+1}`);
-      const counts = new Array(bins).fill(0);
-      for(const f of fillers){
-        const idx = Math.min(bins-1, Math.floor(f.t/60));
-        counts[idx] += 1;
-      }
+      document.getElementById('fillerTotal').textContent=fillers.length;
+      const dur=videoEl.duration||0;
+      // Bars pro Minute
+      const bins=Math.max(1,Math.ceil(dur/60));
+      const labels=Array.from({length:bins},(_,i)=>`${i+1}`);
+      const counts=new Array(bins).fill(0);
+      for(const f of fillers){ const idx=Math.min(bins-1,Math.floor(f.t/60)); counts[idx]++; }
       if(fillerChart) fillerChart.destroy();
-      fillerChart = new Chart(fillerBarsCtx, {
-        type:'bar',
-        data:{ labels, datasets:[{ label:'Füllwörter/Minute', data: counts }]},
-        options:{
-          responsive:true, maintainAspectRatio:false,
-          plugins:{ legend:{display:true, position:'top'}},
-          scales:{ x:{ title:{display:true,text:'Minute'} }, y:{ title:{display:true,text:'Anzahl'}, beginAtZero:true, ticks:{precision:0} } }
+      fillerChart=new Chart(fillerBarsCtx,{ type:'bar',
+        data:{ labels, datasets:[{label:'Füllwörter/Minute', data:counts}]},
+        options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:true,position:'top'}},
+          scales:{ x:{title:{display:true,text:'Minute'}}, y:{title:{display:true,text:'Anzahl'},beginAtZero:true,ticks:{precision:0}}}}
+      });
+      // Scatter Zeitpunkte
+      if(fillerScatter) fillerScatter.destroy();
+      const scatterData = fillers.map(f=>({x:f.t/60, y:1, label:`${formatTime(f.t)} – ${f.word}`}));
+      fillerScatter=new Chart(fillerScatterCtx,{ type:'scatter',
+        data:{ datasets:[{ label:'Zeitpunkte', data:scatterData }]},
+        options:{ responsive:true, maintainAspectRatio:false,
+          plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:(ctx)=>ctx.raw.label }}},
+          scales:{ x:{ title:{display:true,text:'Zeit (Minuten)'}, beginAtZero:true }, y:{ display:false, min:0, max:2 } }
         }
       });
-      const wrap = document.getElementById('fillerListWrap');
+      // Liste (anklickbar)
+      const wrap=document.getElementById('fillerListWrap');
       wrap.innerHTML = fillers.length
         ? `<ul class="list-disc pl-5 text-sm">${fillers.map(f=>`<li><button class="link ts" data-t="${f.t}">${formatTime(f.t)}</button> – ${f.word}</li>`).join('')}</ul>`
         : '<p class="text-sm text-gray-500">Keine Füllwörter erkannt.</p>';
       wrap.querySelectorAll('.ts').forEach(btn=>{
-        btn.addEventListener('click', ()=>{
-          videoEl.currentTime = parseFloat(btn.dataset.t || '0');
-          videoEl.play();
-        });
+        btn.addEventListener('click', ()=>{ videoEl.currentTime=parseFloat(btn.dataset.t||'0'); videoEl.play(); });
       });
     }
-    document.getElementById('copyFillersBtn').addEventListener('click', ()=>{
-      const text = fillers.map(f=>`${formatTime(f.t)}\t${f.word}`).join('\n');
-      navigator.clipboard.writeText(text || '').then(()=> alert('Füllwörter-Zeiten in die Zwischenablage kopiert.'));
+    document.getElementById('copyFillersBtn')?.addEventListener('click', ()=>{
+      const text=fillers.map(f=>`${formatTime(f.t)}\t${f.word}`).join('\n');
+      navigator.clipboard.writeText(text||'').then(()=>alert('Füllwörter-Zeiten kopiert.'));
     });
-    document.getElementById('exportCsvBtn').addEventListener('click', ()=>{
-      const wpmCsv = 'Segment,Start,End,Seconds,Words,WPM\n' + wpmBins.map((b,i)=>`S${i+1},${formatTime(b.start)},${formatTime(b.end)},${b.seconds.toFixed(1)},${b.words},${b.wpm}`).join('\n');
-      const fillerCsv = 'Time,Word\n' + fillers.map(f=>`${formatTime(f.t)},${f.word}`).join('\n');
-      const blob = new Blob([`# WPM\n${wpmCsv}\n\n# Fillers\n${fillerCsv}`], {type:'text/csv;charset=utf-8'});
-      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download='analysis.csv'; a.click();
-      setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
+    document.getElementById('exportCsvBtn')?.addEventListener('click', ()=>{
+      const wpmCsv='Segment,Start,End,Seconds,Words,WPM\n'+wpmBins.map((b,i)=>`S${i+1},${formatTime(b.start)},${formatTime(b.end)},${b.seconds.toFixed(1)},${b.words},${b.wpm}`).join('\n');
+      const fillerCsv='Time,Word\n'+fillers.map(f=>`${formatTime(f.t)},${f.word}`).join('\n');
+      const blob=new Blob([`# WPM\n${wpmCsv}\n\n# Fillers\n${fillerCsv}`],{type:'text/csv;charset=utf-8'});
+      const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='analysis.csv'; a.click();
+      setTimeout(()=>URL.revokeObjectURL(a.href),2000);
     });
 
-    // ---------- Tracks: Ausrichtung / Blick / Gestik ----------
-    const trackEls = {
-      orientation: document.getElementById('track-orientation'),
-      gaze: document.getElementById('track-gaze'),
-      gesture: document.getElementById('track-gesture'),
-    };
-    const listEls = {
-      orientation: document.getElementById('list-orientation'),
-      gaze: document.getElementById('list-gaze'),
-      gesture: document.getElementById('list-gesture'),
-    };
-
-    const orientationTrack = []; // {start,end,label}
-    const gazeTrack = [];        // {start,end,label}
-    const gestureTrack = [];     // {start,end,label}
-
-    function pushInterval(track, label){
-      const now = videoEl.currentTime || 0;
-      const last = track[track.length-1];
-      if(last && !Number.isFinite(last.end)){
-        if(last.label === label){ return; }
-        last.end = now;
-      }
-      track.push({ start: now, end: Infinity, label });
-      redrawTracks();
+    // ---------- Tracks + Donuts ----------
+    const trackEls={ orientation:document.getElementById('track-orientation'), gaze:document.getElementById('track-gaze'), gesture:document.getElementById('track-gesture') };
+    const listEls={ orientation:document.getElementById('list-orientation'), gaze:document.getElementById('list-gaze'), gesture:document.getElementById('list-gesture') };
+    const orientationTrack=[], gazeTrack=[], gestureTrack=[];
+    function labelColor(type,label){
+      const map={
+        orientation:{Publikum:'#10b981',Tafel:'#f59e0b'},
+        gaze:{Publikum:'#0ea5e9',Boden:'#94a3b8',Decke:'#a78bfa'},
+        gesture:{nervös:'#ef4444',angespannt:'#fb923c',steif:'#64748b',locker:'#22c55e'}
+      }; return map[type]?.[label]||'#111827';
     }
-    function endOpenIntervals(track){
-      const now = videoEl.currentTime || 0;
-      track.forEach(seg => { if(!Number.isFinite(seg.end)) seg.end = now; });
+    function pushInterval(track,label){
+      const now=videoEl.currentTime||0;
+      const last=track[track.length-1];
+      if(last && !Number.isFinite(last.end)){ if(last.label===label) return; last.end=now; }
+      track.push({start:now,end:Infinity,label});
+      redrawTracks(); redrawDonuts(); recomputePresence();
     }
-    function labelColor(type, label){
-      const map = {
-        orientation: { Publikum:'#10b981', Tafel:'#f59e0b' },
-        gaze:        { Publikum:'#0ea5e9', Boden:'#94a3b8', Decke:'#a78bfa' },
-        gesture:     { nervös:'#ef4444', angespannt:'#fb923c', steif:'#64748b', locker:'#22c55e' }
-      };
-      return map[type]?.[label] || '#111827';
-    }
-    function redrawTrackBar(el, track){
-      const dur = videoEl.duration || 0;
-      el.innerHTML = '';
-      if(!dur) return;
+    function endOpenIntervals(track){ const now=videoEl.currentTime||0; track.forEach(seg=>{ if(!Number.isFinite(seg.end)) seg.end=now; }); }
+    function redrawTrackBar(el,track){
+      const dur=videoEl.duration||0; el.innerHTML=''; if(!dur) return;
       track.forEach(seg=>{
-        const start = Math.max(0, seg.start);
-        const end = Number.isFinite(seg.end) ? seg.end : (videoEl.currentTime || 0);
-        const left = (start/dur)*100, right = (end/dur)*100;
-        const span = document.createElement('div');
-        span.className='segment';
-        span.style.left = left + '%';
-        span.style.width = Math.max(0.5, right-left) + '%';
-        span.style.background = labelColor(el.id.replace('track-',''), seg.label);
-        span.title = `${seg.label}: ${formatTime(start)}–${formatTime(end)}`;
-        el.appendChild(span);
+        const s=Math.max(0,seg.start), e=Number.isFinite(seg.end)?seg.end:(videoEl.currentTime||0);
+        const left=(s/dur)*100, width=Math.max(0.5,(e/dur)*100-left);
+        const span=document.createElement('div'); span.className='segment'; span.style.left=left+'%'; span.style.width=width+'%';
+        const type=el.id.replace('track-',''); span.style.background=labelColor(type,seg.label);
+        span.title=`${seg.label}: ${formatTime(s)}–${formatTime(e)}`; el.appendChild(span);
       });
     }
-    function renderList(listEl, track){
-      if(!track.length){ listEl.innerHTML = '<span class="text-gray-500">keine Markierungen</span>'; return; }
-      listEl.innerHTML = track.map(seg=>{
-        const s = formatTime(seg.start), e = Number.isFinite(seg.end) ? formatTime(seg.end) : '…';
-        return `<span class="inline-block mr-2 mb-1 px-2 py-0.5 rounded border text-[11px]" style="border-color:${labelColor('',seg.label)}">${seg.label}: ${s}–${e}</span>`;
+    function renderList(listEl,track){
+      if(!track.length){ listEl.innerHTML='<span class="text-gray-500">keine Markierungen</span>'; return; }
+      listEl.innerHTML=track.map(seg=>{
+        const s=formatTime(seg.start), e=Number.isFinite(seg.end)?formatTime(seg.end):'…';
+        return `<span class="tag" style="border-color:${labelColor('',seg.label)}">${seg.label}: ${s}–${e}</span>`;
       }).join('');
     }
     function redrawTracks(){
-      redrawTrackBar(trackEls.orientation, orientationTrack);
-      redrawTrackBar(trackEls.gaze, gazeTrack);
-      redrawTrackBar(trackEls.gesture, gestureTrack);
-      renderList(listEls.orientation, orientationTrack);
-      renderList(listEls.gaze, gazeTrack);
-      renderList(listEls.gesture, gestureTrack);
+      redrawTrackBar(trackEls.orientation,orientationTrack);
+      redrawTrackBar(trackEls.gaze,gazeTrack);
+      redrawTrackBar(trackEls.gesture,gestureTrack);
+      renderList(listEls.orientation,orientationTrack);
+      renderList(listEls.gaze,gazeTrack);
+      renderList(listEls.gesture,gestureTrack);
     }
-    window.addEventListener('resize', redrawTracks);
-    videoEl.addEventListener('timeupdate', ()=> redrawTracks());
+    window.addEventListener('resize', ()=>{ redrawTracks(); });
 
-    // Hotkeys
-    document.addEventListener('keydown', (e)=>{
-      if(!previewWrap || previewWrap.classList.contains('hidden')) return;
+    videoEl.addEventListener('timeupdate', ()=>{ redrawTracks(); });
+
+    document.addEventListener('keydown',(e)=>{
+      if(previewWrap.classList.contains('hidden')) return;
       if(['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
-      const k = e.key.toLowerCase();
-      if(k==='e') pushInterval(orientationTrack, 'Publikum');
-      else if(k==='t') pushInterval(orientationTrack, 'Tafel');
-      else if(k==='u') pushInterval(gazeTrack, 'Publikum');
-      else if(k==='b') pushInterval(gazeTrack, 'Boden');
-      else if(k==='d') pushInterval(gazeTrack, 'Decke');
-      else if(k==='1') pushInterval(gestureTrack, 'nervös');
-      else if(k==='2') pushInterval(gestureTrack, 'angespannt');
-      else if(k==='3') pushInterval(gestureTrack, 'steif');
-      else if(k==='4') pushInterval(gestureTrack, 'locker');
+      const k=e.key.toLowerCase();
+      if(k==='e') pushInterval(orientationTrack,'Publikum');
+      else if(k==='t') pushInterval(orientationTrack,'Tafel');
+      else if(k==='u') pushInterval(gazeTrack,'Publikum');
+      else if(k==='b') pushInterval(gazeTrack,'Boden');
+      else if(k==='d') pushInterval(gazeTrack,'Decke');
+      else if(k==='1') pushInterval(gestureTrack,'nervös');
+      else if(k==='2') pushInterval(gestureTrack,'angespannt');
+      else if(k==='3') pushInterval(gestureTrack,'steif');
+      else if(k==='4') pushInterval(gestureTrack,'locker');
       else return;
       e.preventDefault();
     });
-
-    // Clear-Buttons
     document.querySelectorAll('[data-clear]').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        const key = btn.dataset.clear;
+      btn.addEventListener('click',()=>{
+        const key=btn.dataset.clear;
         if(key==='orientation') orientationTrack.length=0;
         if(key==='gaze') gazeTrack.length=0;
         if(key==='gesture') gestureTrack.length=0;
-        redrawTracks();
+        redrawTracks(); redrawDonuts(); recomputePresence();
       });
     });
+    videoEl.addEventListener('pause', ()=>{ endOpenIntervals(orientationTrack); endOpenIntervals(gazeTrack); endOpenIntervals(gestureTrack); redrawTracks(); redrawDonuts(); recomputePresence(); });
 
-    // Beim Stoppen offene Intervalle schließen
-    videoEl.addEventListener('pause', ()=>{
-      endOpenIntervals(orientationTrack);
-      endOpenIntervals(gazeTrack);
-      endOpenIntervals(gestureTrack);
-      redrawTracks();
-    });
+    // Donut-Charts
+    let donutOrientation=null, donutGaze=null, donutGesture=null;
+    function sumDurationsByLabel(track){
+      const dur=videoEl.duration||0, now=videoEl.currentTime||0;
+      const map=new Map();
+      for(const seg of track){
+        const s=Math.max(0,seg.start), e=Number.isFinite(seg.end)?seg.end:now;
+        const d=Math.max(0,e-s);
+        map.set(seg.label,(map.get(seg.label)||0)+d);
+      }
+      // Wenn gar nichts markiert: leeres Ergebnis
+      return map;
+    }
+    function donut(el,labels,values,colors,instRef){
+      if(instRef?.current) instRef.current.destroy();
+      const ctx=document.getElementById(el);
+      const inst=new Chart(ctx,{ type:'doughnut',
+        data:{ labels, datasets:[{ data:values, backgroundColor:colors }]},
+        options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{position:'bottom'} } }
+      });
+      instRef.current=inst;
+    }
+    function redrawDonuts(){
+      // Orientation
+      const o=sumDurationsByLabel(orientationTrack);
+      const oLab=[...o.keys()], oVal=[...o.values()];
+      donut('donutOrientation', oLab.length?oLab:['—'], oVal.length?oVal:[1], oLab.map(l=>labelColor('orientation',l))||['#e5e7eb'], {current:donutOrientation} );
+      donutOrientation={current:Chart.getChart('donutOrientation')};
+
+      // Gaze
+      const g=sumDurationsByLabel(gazeTrack);
+      const gLab=[...g.keys()], gVal=[...g.values()];
+      donut('donutGaze', gLab.length?gLab:['—'], gVal.length?gVal:[1], gLab.map(l=>labelColor('gaze',l))||['#e5e7eb'], {current:donutGaze} );
+      donutGaze={current:Chart.getChart('donutGaze')};
+
+      // Gesture
+      const ge=sumDurationsByLabel(gestureTrack);
+      const geLab=[...ge.keys()], geVal=[...ge.values()];
+      donut('donutGesture', geLab.length?geLab:['—'], geVal.length?geVal:[1], geLab.map(l=>labelColor('gesture',l))||['#e5e7eb'], {current:donutGesture} );
+      donutGesture={current:Chart.getChart('donutGesture')};
+    }
+
+    // ---------- Präsenz-Radar ----------
+    let radarInst=null;
+    function renderRadar(scores){
+      const ctx=document.getElementById('radarPresence');
+      if(radarInst) radarInst.destroy();
+      radarInst=new Chart(ctx,{ type:'radar',
+        data:{ labels:['WPM im Ziel','Füllwörter-Rate','Blick Publikum','Ausrichtung Publikum','Gestik Lockerheit'],
+          datasets:[{ label:'Score (0–100)', data:scores.length?scores:[0,0,0,0,0], borderWidth:2, fill:true, pointRadius:2 }]},
+        options:{ responsive:true, maintainAspectRatio:false,
+          scales:{ r:{ suggestedMin:0, suggestedMax:100, ticks:{ stepSize:20 } } },
+          plugins:{ legend:{ position:'top' } }
+        }
+      });
+    }
+    function recomputePresence(){
+      const dur=videoEl.duration||0; if(dur<=0){ renderRadar([]); return; }
+      // 1) WPM im Ziel (120–160)
+      let wpmHit=0;
+      if(wpmBins.length){ wpmHit = (wpmBins.filter(b=>b.wpm>=120 && b.wpm<=160).length / wpmBins.length) * 100; }
+      // 2) Füllwörter-Rate (je Minute) – wenig ist gut
+      const fillerPerMin = fillers.length / Math.max(1, dur/60);
+      const fillerScore = Math.max(0, 100 - Math.min(100, (fillerPerMin/6)*100)); // 0 bei ~6+/min, linear
+      // 3) Blick Publikum Anteil
+      const gazeDur=sumDurationsByLabel(gazeTrack);
+      const gazePub=(gazeDur.get('Publikum')||0), gazeTotal=[...gazeDur.values()].reduce((a,b)=>a+b,0)||1;
+      const gazeScore=(gazePub/gazeTotal)*100;
+      // 4) Ausrichtung Publikum
+      const oriDur=sumDurationsByLabel(orientationTrack);
+      const oriPub=(oriDur.get('Publikum')||0), oriTotal=[...oriDur.values()].reduce((a,b)=>a+b,0)||1;
+      const oriScore=(oriPub/oriTotal)*100;
+      // 5) Gestik Lockerheit
+      const gesDur=sumDurationsByLabel(gestureTrack);
+      const gLock=(gesDur.get('locker')||0);
+      const gNeg=(gesDur.get('nervös')||0)+(gesDur.get('angespannt')||0);
+      const gTot=[...gesDur.values()].reduce((a,b)=>a+b,0)||1;
+      const gestureScore = Math.max(0, Math.min(100, (gLock/gTot)*100 - (gNeg/gTot)*40));
+
+      renderRadar([ Math.round(wpmHit), Math.round(fillerScore), Math.round(gazeScore), Math.round(oriScore), Math.round(gestureScore) ]);
+    }
 
     // ---------- Export / Import ----------
     document.getElementById('exportBtn').addEventListener('click', ()=>{
-      const data = {
-        meta: { file: fileNameEl.textContent, duration: videoEl.duration||0, createdAt: new Date().toISOString() },
-        fillers, wpmBins, orientationTrack, gazeTrack, gestureTrack,
-        fillerList: Array.from(getFillerSet())
-      };
-      const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
-      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download='presentai-analysis.json'; a.click();
-      setTimeout(()=>URL.revokeObjectURL(a.href), 1500);
+      const data={ meta:{ file:fileNameEl.textContent, duration:videoEl.duration||0, createdAt:new Date().toISOString() },
+        fillers, wpmBins, orientationTrack, gazeTrack, gestureTrack, fillerList:Array.from(getFillerSet()) };
+      const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+      const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='presentai-analysis.json'; a.click();
+      setTimeout(()=>URL.revokeObjectURL(a.href),1500);
     });
     document.getElementById('importJson').addEventListener('change', async (e)=>{
-      const f = e.target.files?.[0]; if(!f) return;
-      const txt = await f.text();
-      const data = JSON.parse(txt);
-      fillers = data.fillers||[];
-      wpmBins = data.wpmBins||[];
+      const f=e.target.files?.[0]; if(!f) return;
+      const data=JSON.parse(await f.text());
+      fillers=data.fillers||[]; wpmBins=data.wpmBins||[];
       orientationTrack.length=0; orientationTrack.push(...(data.orientationTrack||[]));
       gazeTrack.length=0; gazeTrack.push(...(data.gazeTrack||[]));
       gestureTrack.length=0; gestureTrack.push(...(data.gestureTrack||[]));
-      document.getElementById('fillerList').value = (data.fillerList||[]).join(', ');
-      renderWpm(); renderFillers(); redrawTracks();
-      alert('Analyse-Daten importiert (ohne Video/Untertitel).');
-      e.target.value='';
+      document.getElementById('fillerList').value=(data.fillerList||[]).join(', ');
+      renderWpm(); renderFillers(); redrawTracks(); redrawDonuts(); recomputePresence();
+      alert('Analyse-Daten importiert (ohne Video/Untertitel).'); e.target.value='';
     });
+
+    // Initiale Renderings / safe defaults
+    renderWpm(); renderFillers(); redrawDonuts(); renderRadar([]);
   </script>
 </body>
 </html>
