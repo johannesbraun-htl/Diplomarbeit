@@ -1,311 +1,276 @@
 <!doctype html>
 <html lang="de">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>PresentAI – Demo Dashboard</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>PresentAI – Demo Dashboard</title>
 
-  <!-- Tailwind (nur für Layout-Utilities) -->
-  <script src="https://cdn.tailwindcss.com"></script>
+<!-- Tailwind für Layout-Utilities -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Chart.js + Icons -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- Chart.js + Icons -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
+<style>
+:root{
+  --bg:#f6f7fb; --panel:#fff; --border:#e6e8ef; --text:#0f172a;
+  --muted:#667085; --brand:#6d28d9; --good:#22c55e; --warn:#f59e0b; --bad:#ef4444;
+}
+*{box-sizing:border-box} html,body{height:100%}
+body{
+  font-family: ui-sans-serif,system-ui,Inter,Roboto,Arial;
+  color:var(--text);
+  background:
+    radial-gradient(1100px 600px at 8% -20%, #ede9fe55 0%, transparent 60%),
+    radial-gradient(900px 500px at 110% -10%, #dbeafe55 0%, transparent 55%),
+    var(--bg);
+  letter-spacing:.1px;
+}
+.app-header{height:64px; position:sticky; top:0; z-index:20; background:linear-gradient(180deg,#fff,rgba(255,255,255,.8));
+  border-bottom:1px solid var(--border); backdrop-filter:blur(8px);
+  display:flex; align-items:center; justify-content:space-between; padding:0 16px}
+.app-title{font-weight:800; letter-spacing:.3px}
+.chip{font-size:12px; padding:.15rem .55rem; border-radius:999px; background:#f3f4f6; border:1px solid var(--border)}
+.btn{display:inline-flex;align-items:center;gap:.45rem;border-radius:12px;font-weight:700}
+.btn-primary{padding:.55rem .9rem;background:var(--brand);color:#fff} .btn-primary:hover{filter:brightness(.95)}
+main{max-width:1200px;margin:18px auto;padding:0 16px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.hero{grid-column:1/3;display:grid;grid-template-columns:7fr 5fr;gap:18px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:16px;
+  box-shadow:0 10px 30px rgba(2,6,23,.06),0 2px 10px rgba(2,6,23,.04)}
+.title{font-weight:800; letter-spacing:.2px}
+.kpi{background:linear-gradient(180deg,#fafafa,#fff);border:1px solid var(--border);border-radius:14px;padding:10px}
+.kpi-label{color:var(--muted);font-size:12px} .kpi-value{font-weight:900;font-size:22px}
+.kpi-sub{color:#9aa4b2;font-size:11px}
+.meter{width:100%;height:10px;background:#eef2f7;border:1px solid var(--border);border-radius:999px;overflow:hidden;margin-top:6px}
+.meter>span{display:block;height:100%;background:linear-gradient(90deg,#06b6d4,#22c55e)}
+.insights{display:flex;flex-wrap:wrap;gap:8px}
+.insight{display:inline-flex;align-items:center;gap:.4rem;background:#f8fafc;border:1px solid var(--border);
+  padding:.35rem .6rem;border-radius:999px;font-size:13px}
+.chart{width:100%;height:100%} .chart-sm{height:160px} .chart-md{height:220px} .chart-lg{height:300px}
+.chart canvas{width:100%!important;height:100%!important}
 
-  <!-- Eigenes CSS -->
-  <link rel="stylesheet" href="styles/styles.css">
+.fake-video{background:#0b1220; border-radius:18px; border:1px solid #0b1220; aspect-ratio:16/9; overflow:hidden; position:relative; box-shadow:0 8px 24px rgba(2,6,23,.35)}
+.fake-video-inner{position:relative; width:100%; height:100%; background:linear-gradient(45deg,#0b1220 30%,#0e1a32 100%)}
+.badge{position:absolute; top:12px; left:12px; font-size:12px; background:#111827aa; color:#e5e7eb; padding:.25rem .5rem; border-radius:999px; display:flex; gap:.4rem; align-items:center; border:1px solid #1f2937}
+.badge .dot{width:8px;height:8px;border-radius:999px;background:var(--good); box-shadow:0 0 0 6px rgba(16,185,129,.12)}
+.tc{position:absolute; right:12px; bottom:10px; font-size:12px; color:#cbd5e1; background:#11182780; padding:.15rem .4rem; border-radius:6px}
+.scan{position:absolute; inset:0; display:grid; grid-template-rows:1fr 1fr 1fr; gap:18px; padding:22px}
+.scan>div{border-radius:10px; background:linear-gradient(90deg,rgba(255,255,255,.06),rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.06)}
+
+.caption{display:grid; gap:6px; margin-top:8px}
+.line{font-size:13px; color:#475569; background:#fff; border:1px solid var(--border); padding:.45rem .6rem; border-radius:10px; box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.shimmer{position:relative; overflow:hidden}
+.shimmer::after{content:""; position:absolute; inset:0; transform:translateX(-100%); background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent); animation:shimmer 1.6s infinite}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+
+.app-footer{grid-column:1/3;height:40px;display:flex;align-items:center;justify-content:center;border-top:1px solid var(--border);color:#6b7280;background:#fff8;backdrop-filter:blur(6px);margin-top:8px}
+
+@media (max-width:1100px){ .hero{grid-template-columns:1fr} main{grid-template-columns:1fr} }
+</style>
 </head>
 <body>
-  <!-- Topbar -->
-  <header class="app-header">
-    <div class="flex items-center gap-2">
-      <i data-lucide="sparkles" class="w-5 h-5 text-violet-700"></i>
-      <span class="app-title">PresentAI</span>
-      <span class="chip">AI Demo</span>
-    </div>
-    <div class="flex items-center gap-2">
-      <button id="rerunBtn" class="btn btn-primary"><i data-lucide="wand-2" class="w-4 h-4"></i> Neu bewerten</button>
-    </div>
-  </header>
+<header class="app-header">
+  <div class="flex items-center gap-2">
+    <i data-lucide="sparkles" class="w-5 h-5 text-violet-700"></i>
+    <span class="app-title">PresentAI</span>
+    <span class="chip">AI Demo</span>
+  </div>
+  <button id="rerun" class="btn btn-primary"><i data-lucide="wand-2" class="w-4 h-4"></i> Neu bewerten</button>
+</header>
 
-  <!-- Hero: Fake-Video + Summary -->
+<main>
+  <!-- HERO -->
   <section class="hero">
-    <div class="hero-left">
+    <div>
       <div class="fake-video">
         <div class="fake-video-inner">
-          <div class="badge-live"><span class="dot"></span> Demo</div>
-          <div class="video-scan">
-            <div></div><div></div><div></div>
-          </div>
-          <div class="timecode">03:12</div>
+          <div class="badge"><span class="dot"></span> Demo</div>
+          <div class="scan"><div></div><div></div><div></div></div>
+          <div class="tc">03:12</div>
         </div>
       </div>
-      <div class="hero-captions">
-        <div class="caption-line shimmer">„… und das ist besonders wichtig, weil …“</div>
-        <div class="caption-line">„äh, grundsätzlich kann man sagen …“</div>
-        <div class="caption-line">„… wir sehen hier die drei Hauptpunkte …“</div>
+      <div class="caption">
+        <div class="line shimmer">„… und das ist besonders wichtig, weil …“</div>
+        <div class="line">„äh, grundsätzlich kann man sagen …“</div>
+        <div class="line">„… wir sehen hier die drei Hauptpunkte …“</div>
       </div>
     </div>
 
-    <div class="hero-right">
-      <div class="card p-4">
-        <div class="flex items-center justify-between">
-          <h3 class="title flex items-center gap-2"><i data-lucide="bar-chart-2" class="w-5 h-5"></i> Analyse-Übersicht</h3>
-          <span id="summaryTime" class="muted text-sm">3:12</span>
-        </div>
+    <div class="card p-4">
+      <div class="flex items-center justify-between">
+        <h3 class="title flex items-center gap-2"><i data-lucide="bar-chart-2" class="w-5 h-5"></i> Analyse-Übersicht</h3>
+        <span class="text-sm text-gray-500" id="sumTime">3:12</span>
+      </div>
 
-        <div class="grid grid-cols-3 gap-3 mt-2">
-          <div class="kpi">
-            <p class="kpi-label">Gesamt-Score</p>
-            <p id="kpiScore" class="kpi-value">—</p>
-            <div class="meter"><span id="scoreBar" style="width:0%"></span></div>
-          </div>
-          <div class="kpi">
-            <p class="kpi-label">Durchschn. WPM</p>
-            <p id="kpiWpm" class="kpi-value">—</p>
-            <p class="kpi-sub">Ziel: 120–160</p>
-          </div>
-          <div class="kpi">
-            <p class="kpi-label">Füllwörter</p>
-            <p id="kpiFillers" class="kpi-value">—</p>
-            <p class="kpi-sub">insg. gezählt</p>
-          </div>
+      <div class="grid grid-cols-3 gap-3 mt-3">
+        <div class="kpi">
+          <p class="kpi-label">Gesamt-Score</p>
+          <p id="kpiScore" class="kpi-value">—</p>
+          <div class="meter"><span id="scoreBar" style="width:0%"></span></div>
         </div>
-
-        <div class="insights mt-3" id="insightsWrap">
-          <!-- dynamisch -->
+        <div class="kpi">
+          <p class="kpi-label">Durchschnitt WPM</p>
+          <p id="kpiWpm" class="kpi-value">—</p>
+          <p class="kpi-sub">Ziel 120–160</p>
+        </div>
+        <div class="kpi">
+          <p class="kpi-label">Füllwörter</p>
+          <p id="kpiFill" class="kpi-value">—</p>
+          <p class="kpi-sub">insgesamt</p>
         </div>
       </div>
+
+      <div class="insights mt-3" id="insights"></div>
     </div>
   </section>
 
-  <!-- Charts Grid -->
-  <main class="charts-grid">
-    <!-- WPM 30s Segmente -->
-    <div class="card p-4">
-      <h3 class="title mb-2">Geschwindigkeit (WPM) – 30-Sekunden-Segmente</h3>
-      <div class="chart chart-lg"><canvas id="wpmChart"></canvas></div>
-      <p class="muted text-xs mt-2">Grünes Band markiert Zielbereich (120–160 WPM). Linie = gleitender Durchschnitt.</p>
-    </div>
+  <!-- CHARTS -->
+  <section class="card p-4">
+    <h3 class="title mb-2">Geschwindigkeit (WPM) – 30-Sekunden-Segmente</h3>
+    <div class="chart chart-lg"><canvas id="wpmChart"></canvas></div>
+    <p class="text-xs text-gray-500 mt-2">Grünes Band = Ziel (120–160 WPM) · Linie = gleitender Durchschnitt</p>
+  </section>
 
-    <!-- Füllwörter: je Minute + Zeitpunkte -->
-    <div class="card p-4">
-      <h3 class="title mb-2">Füllwörter</h3>
-      <div class="grid md:grid-cols-2 gap-3">
-        <div class="chart chart-md"><canvas id="fillerBars"></canvas></div>
-        <div class="chart chart-md"><canvas id="fillerScatter"></canvas></div>
-      </div>
-      <div class="mt-3 filler-chips" id="fillerChips"><!-- dynamisch --></div>
+  <section class="card p-4">
+    <h3 class="title mb-2">Füllwörter</h3>
+    <div class="grid md:grid-cols-2 gap-3">
+      <div class="chart chart-md"><canvas id="fillerBars"></canvas></div>
+      <div class="chart chart-md"><canvas id="fillerScatter"></canvas></div>
     </div>
+    <div class="mt-3 flex flex-wrap gap-2" id="chips"></div>
+  </section>
 
-    <!-- Verhalten Donuts -->
-    <div class="card p-4">
-      <h3 class="title mb-2">Ausrichtung • Blickrichtung • Gestik</h3>
-      <div class="grid md:grid-cols-3 gap-3">
-        <div class="chart chart-sm"><canvas id="donutOrientation"></canvas></div>
-        <div class="chart chart-sm"><canvas id="donutGaze"></canvas></div>
-        <div class="chart chart-sm"><canvas id="donutGesture"></canvas></div>
-      </div>
+  <section class="card p-4">
+    <h3 class="title mb-2">Ausrichtung • Blickrichtung • Gestik</h3>
+    <div class="grid md:grid-cols-3 gap-3">
+      <div class="chart chart-sm"><canvas id="donutO"></canvas></div>
+      <div class="chart chart-sm"><canvas id="donutG"></canvas></div>
+      <div class="chart chart-sm"><canvas id="donutGe"></canvas></div>
     </div>
+  </section>
 
-    <!-- Präsenz Radar -->
-    <div class="card p-4">
-      <h3 class="title mb-2">Präsenz-Radar</h3>
-      <div class="chart chart-lg"><canvas id="radarPresence"></canvas></div>
-    </div>
-  </main>
+  <section class="card p-4">
+    <h3 class="title mb-2">Präsenz-Radar</h3>
+    <div class="chart chart-lg"><canvas id="radar"></canvas></div>
+  </section>
 
-  <!-- Footer -->
   <footer class="app-footer">© <span id="year"></span> PresentAI • Demo</footer>
+</main>
 
-  <script>
-    lucide.createIcons();
-    document.getElementById('year').textContent = new Date().getFullYear();
+<script>
+lucide.createIcons();
+document.getElementById('year').textContent = new Date().getFullYear();
 
-    // ---- Helper ----
-    const rnd = (min, max) => Math.round(min + Math.random() * (max - min));
-    const pick = (arr) => arr[Math.floor(Math.random()*arr.length)];
-    const fmt = (s) => {
-      const mm = Math.floor(s/60).toString().padStart(2,'0');
-      const ss = Math.floor(s%60).toString().padStart(2,'0');
-      return `${mm}:${ss}`;
-    };
+const rnd=(min,max)=>Math.round(min+Math.random()*(max-min));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const fmt=s=>{const m=String(Math.floor(s/60)).padStart(2,'0');const ss=String(Math.floor(s%60)).padStart(2,'0');return `${m}:${ss}`};
 
-    // ---- Dummy Datengenerator (3:12 = 192s) ----
-    function generateDummy() {
-      const duration = 192; // 3:12
-      const segs = [];
-      let start = 0;
-      while (start < duration) {
-        const end = Math.min(duration, start + 30);
-        const seconds = end - start;
-        const words = rnd(60, 220) * seconds / 60; // variiert
-        const wpm = Math.round((words / seconds) * 60);
-        segs.push({ start, end, seconds, words: Math.round(words), wpm });
-        start = end;
-      }
+// Dummy-Generator (3:12 = 192 s)
+function makeData(){
+  const duration=192;
+  // Segmente
+  const segs=[]; let start=0;
+  while(start<duration){ const end=Math.min(duration,start+30); const sec=end-start;
+    const words=rnd(70,230)*sec/60; const wpm=Math.round((words/sec)*60);
+    segs.push({start,end,sec,words:Math.round(words),wpm}); start=end; }
+  // Füllwörter
+  const fillers=[], lex=['äh','ähm','sozusagen','quasi','halt','irgendwie','hm'];
+  const total=rnd(9,18); for(let i=0;i<total;i++) fillers.push({t:Math.random()*duration, word:pick(lex)});
+  // Donuts (Dauern)
+  const parts=n=>{let a=Math.random(),b=Math.random(),c=Math.random();let s=a+b+c;return [a/s*n,b/s*n,c/s*n]};
+  const ori=parts(duration), gaze=parts(duration), ge3=parts(duration);
+  const gesture=[ge3[0]*.6, ge3[0]*.4, ge3[1], ge3[2]]; // nervös, angespannt, steif, locker
 
-      // Füllwörter: ca. 0–6 / Minute → zufällig verteilen
-      const fillers = [];
-      const fillerLex = ['äh', 'ähm', 'sozusagen', 'quasi', 'halt', 'irgendwie', 'hm'];
-      const totalFillers = rnd(8, 18);
-      for (let i=0;i<totalFillers;i++) {
-        fillers.push({ t: Math.random()*duration, word: pick(fillerLex) });
-      }
+  // Radar-Scores
+  const hit=(segs.filter(s=>s.wpm>=120 && s.wpm<=160).length/segs.length)*100;
+  const fpm= total/(duration/60); const fillScore=Math.max(0,100-Math.min(100,(fpm/6)*100));
+  const gazeScore=(gaze[0]/(gaze[0]+gaze[1]+gaze[2]))*100;
+  const oriScore=(ori[0]/(ori[0]+ori[1]+ori[2]))*100;
+  const gestScore=Math.max(0, Math.min(100, (gesture[3]/gesture.reduce((a,b)=>a+b,0))*100 - ((gesture[0]+gesture[1])/gesture.reduce((a,b)=>a+b,0))*30 ));
+  const overall=Math.round(0.28*hit + 0.24*fillScore + 0.18*gazeScore + 0.18*oriScore + 0.12*gestScore);
 
-      // Verhalten (Sekundenanteile)
-      const parts = (n) => {
-        let a = Math.random(), b = Math.random(), c = Math.random();
-        const sum = a+b+c;
-        return [a/sum*n, b/sum*n, c/sum*n];
-      };
-      const oriDur = parts(duration);      // Publikum/Tafel/— (wir mappen nur 2)
-      const gazeDur = parts(duration);     // Publikum/Boden/Decke
-      const gesDur = parts(duration);      // nervös/steif/locker (wir mappen 4 → splitten)
-      const gesture4 = [gesDur[0]*0.6, gesDur[0]*0.4, gesDur[1], gesDur[2]]; // nervös, angespannt, steif, locker
+  return {duration,segs,fillers,
+    orientation:{labels:['Publikum','Tafel','Seitlich'],values:ori},
+    gaze:{labels:['Publikum','Boden','Decke'],values:gaze},
+    gesture:{labels:['nervös','angespannt','steif','locker'],values:gesture},
+    radar:[Math.round(hit),Math.round(fillScore),Math.round(gazeScore),Math.round(oriScore),Math.round(gestScore)],
+    overall};
+}
 
-      // Radar-Score Komponenten (0–100)
-      const hitRate = (segs.filter(s => s.wpm>=120 && s.wpm<=160).length / segs.length) * 100;
-      const fillersPerMin = totalFillers / (duration/60);
-      const fillerScore = Math.max(0, 100 - Math.min(100, (fillersPerMin/6)*100));
-      const gazeScore = (gazeDur[0] / (gazeDur[0]+gazeDur[1]+gazeDur[2])) * 100; // Publikum
-      const oriScore = (oriDur[0] / (oriDur[0]+oriDur[1]+oriDur[2])) * 100; // Publikum
-      const gestureScore = (gesture4[3] / (gesture4.reduce((a,b)=>a+b,0))) * 100 - ((gesture4[0]+gesture4[1]) / (gesture4.reduce((a,b)=>a+b,0))) * 30;
+// Charts
+let wpmChart,fillerBars,fillerScatter,donutO,donutG,donutGe,radar;
+const RangeBand={id:'rangeBand',beforeDraw(c,a,o){if(!o)return;const {ctx,chartArea:{left,right},scales:{y}}=c;
+  const y1=y.getPixelForValue(o.min),y2=y.getPixelForValue(o.max);ctx.save();ctx.fillStyle='rgba(16,185,129,.12)';ctx.fillRect(left,y2,right-left,y1-y2);ctx.restore();}};
+const moving=(arr,k=3)=>arr.map((_,i)=>arr.slice(Math.max(0,i-k+1),i+1).reduce((s,v)=>s+v,0)/Math.min(i+1,k));
 
-      // Gesamt
-      const overall = Math.round(0.28*hitRate + 0.24*fillerScore + 0.18*gazeScore + 0.18*oriScore + 0.12*Math.max(0,Math.min(100,gestureScore)));
+function render(data){
+  // KPIs
+  document.getElementById('kpiScore').textContent=data.overall+' / 100';
+  document.getElementById('scoreBar').style.width=data.overall+'%';
+  const avgWpm=Math.round(data.segs.reduce((s,x)=>s+x.wpm,0)/data.segs.length);
+  document.getElementById('kpiWpm').textContent=avgWpm+' wpm';
+  document.getElementById('kpiFill').textContent=data.fillers.length;
 
-      return {
-        duration, segs, fillers,
-        orientation: { labels:['Publikum','Tafel','Seitlich'], values:[oriDur[0], oriDur[1], oriDur[2]] },
-        gaze: { labels:['Publikum','Boden','Decke'], values:[gazeDur[0], gazeDur[1], gazeDur[2]] },
-        gesture:{ labels:['nervös','angespannt','steif','locker'], values: gesture4 },
-        radar: [Math.round(hitRate), Math.round(fillerScore), Math.round(gazeScore), Math.round(oriScore), Math.round(Math.max(0,Math.min(100,gestureScore)))],
-        overall
-      };
-    }
+  // Insights
+  const ins=[]; ins.push(avgWpm<120?'Tempo etwas steigern (≥120).':avgWpm>160?'Tempo leicht reduzieren (≤160).':'Tempo im Ziel – weiter so.');
+  ins.push(data.fillers.length>12?'Viele Füllwörter – bewusste Pausen setzen.':'Füllwörter im Rahmen.');
+  ins.push(data.radar[2]<55?'Mehr Blick ins Publikum.':'Guter Publikumsfokus.');
+  ins.push(data.gesture.values[3]<data.gesture.values.reduce((a,b)=>a+b,0)*.25?'Gestik lockern (offene Hände).':'Gestik natürlich & ruhig.');
+  document.getElementById('insights').innerHTML=ins.map(t=>`<span class="insight"><i data-lucide="check-circle-2" class="w-4 h-4"></i>${t}</span>`).join('');
+  lucide.createIcons();
 
-    // ---- Charts ----
-    let wpmChart, fillerBars, fillerScatter, donutO, donutG, donutGe, radar;
+  // WPM
+  const labels=data.segs.map((_,i)=>`S${i+1}`), w=data.segs.map(s=>s.wpm), avg=moving(w,3);
+  if(wpmChart) wpmChart.destroy();
+  wpmChart=new Chart(document.getElementById('wpmChart'),{
+    type:'bar',
+    data:{labels,datasets:[{type:'bar',label:'WPM',data:w},
+                           {type:'line',label:'Ø (glatt)',data:avg,pointRadius:0,tension:.25,borderWidth:2}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'},rangeBand:{min:120,max:160}},
+             scales:{x:{title:{display:true,text:'30s-Segmente'}},y:{title:{display:true,text:'Wörter/Minute'},beginAtZero:true}}},
+    plugins:[RangeBand]});
 
-    const RangeBand = { id:'rangeBand', beforeDraw(chart, args, opt){
-      if(!opt) return;
-      const {ctx, chartArea:{left,right}, scales:{y}} = chart;
-      const yMin = y.getPixelForValue(opt.min), yMax = y.getPixelForValue(opt.max);
-      ctx.save(); ctx.fillStyle = 'rgba(16,185,129,0.12)';
-      ctx.fillRect(left, yMax, right-left, yMin-yMax); ctx.restore();
-    }};
+  // Füllwörter/Minute
+  const mins=Math.ceil(data.duration/60), lab=Array.from({length:mins},(_,i)=>`${i+1}`), cnt=new Array(mins).fill(0);
+  data.fillers.forEach(f=>{cnt[Math.min(mins-1,Math.floor(f.t/60))]++});
+  if(fillerBars) fillerBars.destroy();
+  fillerBars=new Chart(document.getElementById('fillerBars'),{
+    type:'bar', data:{labels:lab,datasets:[{label:'Füllwörter/Minute',data:cnt}]},
+    options:{responsive:true,maintainAspectRatio:false,scales:{x:{title:{display:true,text:'Minute'}},y:{title:{display:true,text:'Anzahl'},beginAtZero:true,ticks:{precision:0}}}}});
 
-    function movingAvg(a,k=3){const r=[];for(let i=0;i<a.length;i++){const s=Math.max(0,i-k+1);const slice=a.slice(s,i+1);r.push(slice.reduce((x,y)=>x+y,0)/slice.length)}return r;}
+  // Scatter Zeitpunkte
+  if(fillerScatter) fillerScatter.destroy();
+  const pts=data.fillers.map(f=>({x:f.t/60,y:1,label:`${fmt(f.t)} – ${f.word}`}));
+  fillerScatter=new Chart(document.getElementById('fillerScatter'),{
+    type:'scatter', data:{datasets:[{label:'Zeitpunkte',data:pts}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:(c)=>c.raw.label}}},
+             scales:{x:{title:{display:true,text:'Zeit (Minuten)'}},y:{display:false,min:0,max:2}}}});
 
-    function renderAll(data){
-      // KPIs
-      document.getElementById('kpiScore').textContent = data.overall + ' / 100';
-      document.getElementById('scoreBar').style.width = data.overall + '%';
-      const avgWpm = Math.round(data.segs.reduce((s,x)=>s+x.wpm,0)/data.segs.length);
-      document.getElementById('kpiWpm').textContent = avgWpm + ' wpm';
-      document.getElementById('kpiFillers').textContent = data.fillers.length;
+  // Chips (letzte 10)
+  const chips=[...data.fillers].sort((a,b)=>a.t-b.t).slice(-10)
+    .map(f=>`<span class="chip">${fmt(f.t)} · ${f.word}</span>`).join('');
+  document.getElementById('chips').innerHTML=chips;
 
-      // Insights
-      const insights = [];
-      insights.push(avgWpm<120 ? 'Tempo etwas steigern (≥120 WPM).' :
-                   avgWpm>160 ? 'Tempo leicht reduzieren (≤160 WPM).' :
-                   'Tempo im Ziel – weiter so.');
-      insights.push(data.fillers.length>12 ? 'Viele Füllwörter – bewusst Pausen setzen.' : 'Füllwörter im Rahmen.');
-      const pubGaze = data.radar[2];
-      insights.push(pubGaze<55 ? 'Mehr Blick ins Publikum für Bindung.' : 'Guter Publikumsfokus.');
-      const locker = data.gesture.values[3];
-      insights.push(locker < (data.gesture.values.reduce((a,b)=>a+b,0))*0.25 ? 'Gestik lockern: offene Hände, ruhige Schultern.' : 'Gestik natürlich & ruhig.');
-      document.getElementById('insightsWrap').innerHTML =
-        insights.map(t=>`<span class="insight-pill"><i data-lucide="check-circle-2" class="w-4 h-4"></i>${t}</span>`).join('');
-      lucide.createIcons(); // re-render icons in insights
+  // Donuts
+  const donut=(id,labels,values,colors)=>{const inst=Chart.getChart(id); if(inst) inst.destroy();
+    new Chart(document.getElementById(id),{type:'doughnut',data:{labels,datasets:[{data:values,backgroundColor:colors}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}}});}
+  donut('donutO',data.orientation.labels,data.orientation.values,['#10b981','#f59e0b','#9ca3af']);
+  donut('donutG',data.gaze.labels,data.gaze.values,['#0ea5e9','#94a3b8','#a78bfa']);
+  donut('donutGe',data.gesture.labels,data.gesture.values,['#ef4444','#fb923c','#64748b','#22c55e']);
 
-      // WPM
-      const labels = data.segs.map((_,i)=>`S${i+1}`);
-      const series = data.segs.map(s=>s.wpm);
-      const avg = movingAvg(series,3);
-      if(wpmChart) wpmChart.destroy();
-      wpmChart = new Chart(document.getElementById('wpmChart'), {
-        type:'bar',
-        data:{ labels, datasets:[
-          { type:'bar', label:'WPM', data:series },
-          { type:'line', label:'Ø (glatt)', data:avg, pointRadius:0, tension:.25, borderWidth:2 }
-        ]},
-        options:{
-          responsive:true, maintainAspectRatio:false,
-          plugins:{ legend:{position:'top'}, rangeBand:{min:120,max:160} },
-          scales:{ x:{ title:{display:true,text:'30s-Segmente'} }, y:{ title:{display:true,text:'Wörter/Minute'}, beginAtZero:true } }
-        },
-        plugins:[RangeBand]
-      });
+  // Radar
+  if(radar) radar.destroy();
+  radar=new Chart(document.getElementById('radar'),{
+    type:'radar',
+    data:{labels:['WPM im Ziel','Füllwörter-Rate','Blick Publikum','Ausrichtung Publikum','Gestik Lockerheit'],
+          datasets:[{label:'Score (0–100)',data:data.radar,borderWidth:2,fill:true,pointRadius:2}]} ,
+    options:{responsive:true,maintainAspectRatio:false,scales:{r:{suggestedMin:0,suggestedMax:100,ticks:{stepSize:20}}},plugins:{legend:{position:'top'}}}});
+}
 
-      // Füllwörter pro Minute
-      const mins = Math.ceil(data.duration/60);
-      const minLabels = Array.from({length:mins},(_,i)=>`${i+1}`);
-      const counts = new Array(mins).fill(0);
-      data.fillers.forEach(f=>{ counts[Math.min(mins-1, Math.floor(f.t/60))]++; });
-      if(fillerBars) fillerBars.destroy();
-      fillerBars = new Chart(document.getElementById('fillerBars'), {
-        type:'bar',
-        data:{ labels:minLabels, datasets:[{ label:'Füllwörter/Minute', data:counts }]},
-        options:{ responsive:true, maintainAspectRatio:false,
-          scales:{ x:{ title:{display:true,text:'Minute'} }, y:{ title:{display:true,text:'Anzahl'}, beginAtZero:true, ticks:{precision:0}}}}
-      });
-
-      // Füllwörter Zeitpunkte (Scatter)
-      if(fillerScatter) fillerScatter.destroy();
-      const points = data.fillers.map(f=>({x:f.t/60, y:1, label:`${fmt(f.t)} – ${f.word}`}));
-      fillerScatter = new Chart(document.getElementById('fillerScatter'), {
-        type:'scatter',
-        data:{ datasets:[{ label:'Zeitpunkte', data:points }]},
-        options:{ responsive:true, maintainAspectRatio:false,
-          plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:(ctx)=>ctx.raw.label } } },
-          scales:{ x:{ title:{display:true,text:'Zeit (Minuten)'} }, y:{ display:false, min:0, max:2 } }
-        }
-      });
-
-      // Chips-Liste (letzte 10)
-      const recent = [...data.fillers].sort((a,b)=>a.t-b.t).slice(-10);
-      document.getElementById('fillerChips').innerHTML =
-        recent.map(f=>`<span class="chip chip-soft">${fmt(f.t)} · ${f.word}</span>`).join('');
-
-      // Donuts
-      function donut(canvasId, labels, values, colors){
-        const inst = Chart.getChart(canvasId); if(inst) inst.destroy();
-        new Chart(document.getElementById(canvasId), {
-          type:'doughnut',
-          data:{ labels, datasets:[{ data:values, backgroundColor:colors }]},
-          options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{position:'bottom'} } }
-        });
-      }
-      donut('donutOrientation', data.orientation.labels, data.orientation.values, ['#10b981','#f59e0b','#9ca3af']);
-      donut('donutGaze', data.gaze.labels, data.gaze.values, ['#0ea5e9','#94a3b8','#a78bfa']);
-      donut('donutGesture', data.gesture.labels, data.gesture.values, ['#ef4444','#fb923c','#64748b','#22c55e']);
-
-      // Radar
-      if(radar) radar.destroy();
-      radar = new Chart(document.getElementById('radarPresence'), {
-        type:'radar',
-        data:{ labels:['WPM im Ziel','Füllwörter-Rate','Blick Publikum','Ausrichtung Publikum','Gestik Lockerheit'],
-          datasets:[{ label:'Score (0–100)', data:data.radar, borderWidth:2, fill:true, pointRadius:2 }]},
-        options:{ responsive:true, maintainAspectRatio:false,
-          scales:{ r:{ suggestedMin:0, suggestedMax:100, ticks:{ stepSize:20 } } },
-          plugins:{ legend:{ position:'top' } }
-        }
-      });
-    }
-
-    // Erstbefüllung
-    let state = generateDummy();
-    renderAll(state);
-
-    // „Neu bewerten“ → neue Dummy-Daten
-    document.getElementById('rerunBtn').addEventListener('click', ()=>{
-      state = generateDummy();
-      // kleine animierte Verzögerung für den „AI“-Vibe
-      document.body.classList.add('busy');
-      setTimeout(()=>{ renderAll(state); document.body.classList.remove('busy'); }, 450);
-    });
-  </script>
+// Start + Neu bewerten
+let STATE=makeData(); render(STATE);
+document.getElementById('rerun').addEventListener('click',()=>{ STATE=makeData(); render(STATE); });
+</script>
 </body>
 </html>
