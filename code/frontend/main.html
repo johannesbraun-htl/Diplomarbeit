@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>PresentAI – Analyse</title>
 
-  <!-- Tailwind für Layout -->
+  <!-- Tailwind (Layout) -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Chart.js + Icons -->
@@ -23,13 +23,18 @@
       <span class="title">PresentAI</span>
       <span class="ml-2 text-xs px-2 py-0.5 rounded-full bg-gray-100 border">Prototype</span>
     </div>
+    <div class="text-xs text-gray-500 hidden sm:block">
+      Hotkeys: <span class="font-mono">E</span>=Publikum, <span class="font-mono">T</span>=Tafel,
+      <span class="font-mono">U</span>=Blick Publikum, <span class="font-mono">B</span>=Boden,
+      <span class="font-mono">D</span>=Decke, <span class="font-mono">1..4</span>=Gestik (1 nervös, 2 angespannt, 3 steif, 4 locker)
+    </div>
   </header>
 
   <!-- MAIN -->
   <main>
     <!-- LINKE SPALTE -->
     <section class="left">
-      <!-- Upload + Video-Preview -->
+      <!-- Upload + Preview -->
       <div class="card p-4">
         <div class="flex items-center justify-between mb-2">
           <h3 class="title flex items-center gap-2">
@@ -39,7 +44,7 @@
         </div>
 
         <!-- Dropzone -->
-        <label id="dropzone" class="flex-1 border-2 border-dashed rounded-xl grid place-items-center cursor-pointer hover:bg-gray-50 p-6">
+        <label id="dropzone" class="dropzone">
           <div class="text-center">
             <i data-lucide="video" class="mx-auto w-6 h-6 mb-2"></i>
             <span class="text-sm">Datei hier ablegen oder <span class="underline">auswählen</span></span>
@@ -50,27 +55,83 @@
         <!-- Preview -->
         <div id="previewWrap" class="preview hidden mt-4">
           <div class="flex items-start gap-3">
-            <div class="w-48 aspect-video bg-black rounded overflow-hidden border">
+            <div class="w-56 aspect-video bg-black rounded overflow-hidden border">
               <video id="previewVideo" class="w-full h-full object-cover" playsinline muted controls></video>
             </div>
-            <div class="flex-1">
-              <p class="text-sm font-medium" id="fileName">–</p>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium truncate" id="fileName">–</p>
               <p class="text-xs text-gray-500">
                 <span id="fileSize">–</span> • Dauer: <span id="fileDuration">–</span>
               </p>
-              <div class="mt-2 flex gap-2">
-                <button id="playBtn" class="px-3 py-1.5 rounded border text-sm flex items-center gap-1">
-                  <i data-lucide="play" class="w-4 h-4"></i> Abspielen
-                </button>
-                <button id="pauseBtn" class="px-3 py-1.5 rounded border text-sm flex items-center gap-1">
-                  <i data-lucide="pause" class="w-4 h-4"></i> Pause
-                </button>
-                <button id="resetBtn" class="px-3 py-1.5 rounded border text-sm flex items-center gap-1">
-                  <i data-lucide="x" class="w-4 h-4"></i> Entfernen
-                </button>
+
+              <!-- Untertitel -->
+              <div class="mt-3 flex items-center gap-2 flex-wrap">
+                <label class="text-sm font-medium">Untertitel:</label>
+                <input id="subsInput" type="file" accept=".vtt,.srt" class="text-sm" />
+                <button id="parseSubsBtn" class="btn btn-ghost"><i data-lucide="scan-text" class="w-4 h-4"></i>Analysieren</button>
+                <span class="text-xs text-gray-500">(.vtt / .srt)</span>
               </div>
-              <p class="text-xs text-gray-400 mt-2">Tipp: Mit Rechtsklick → „Bild in Bild“ oder Playback-Geschwindigkeit im Player anpassen.</p>
+
+              <!-- Füllwörter-Liste -->
+              <div class="mt-2">
+                <label class="text-xs text-gray-600">Füllwörter (Komma-getrennt):</label>
+                <input id="fillerList" class="input" value="äh, ähm, hm, sozusagen, quasi, irgendwie, halt" />
+              </div>
+
+              <!-- Controls -->
+              <div class="mt-3 flex gap-2 flex-wrap">
+                <button id="playBtn" class="btn btn-ghost"><i data-lucide="play" class="w-4 h-4"></i>Abspielen</button>
+                <button id="pauseBtn" class="btn btn-ghost"><i data-lucide="pause" class="w-4 h-4"></i>Pause</button>
+                <button id="resetBtn" class="btn btn-ghost"><i data-lucide="x" class="w-4 h-4"></i>Entfernen</button>
+                <button id="exportBtn" class="btn btn-primary"><i data-lucide="download" class="w-4 h-4"></i>Export JSON</button>
+                <label class="btn btn-ghost cursor-pointer">
+                  <i data-lucide="upload-cloud" class="w-4 h-4"></i>Import JSON
+                  <input id="importJson" type="file" accept="application/json" class="hidden" />
+                </label>
+                <button id="exportCsvBtn" class="btn btn-ghost"><i data-lucide="file-spreadsheet" class="w-4 h-4"></i>CSV (WPM & Füllwörter)</button>
+              </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timeline-Tracks (Ausrichtung / Blick / Gestik) -->
+      <div class="card p-4">
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="title flex items-center gap-2"><i data-lucide="timeline" class="w-5 h-5"></i> Annotation-Tracks</h3>
+          <small class="muted">Mit Hotkeys markieren</small>
+        </div>
+
+        <div id="tracks" class="space-y-3">
+          <!-- Orientierung -->
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="track-dot audience"></span><span class="text-sm font-medium">Ausrichtung</span>
+              <span class="text-xs text-gray-500">(E = Publikum, T = Tafel)</span>
+              <button class="btn-xs" data-clear="orientation">Zurücksetzen</button>
+            </div>
+            <div class="trackbar" id="track-orientation"></div>
+            <div class="text-xs mt-1" id="list-orientation"></div>
+          </div>
+          <!-- Blick -->
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="track-dot gaze"></span><span class="text-sm font-medium">Blickrichtung</span>
+              <span class="text-xs text-gray-500">(U = Publikum, B = Boden, D = Decke)</span>
+              <button class="btn-xs" data-clear="gaze">Zurücksetzen</button>
+            </div>
+            <div class="trackbar" id="track-gaze"></div>
+            <div class="text-xs mt-1" id="list-gaze"></div>
+          </div>
+          <!-- Gestik -->
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="track-dot gesture"></span><span class="text-sm font-medium">Gestik</span>
+              <span class="text-xs text-gray-500">(1 nervös, 2 angespannt, 3 steif, 4 locker)</span>
+              <button class="btn-xs" data-clear="gesture">Zurücksetzen</button>
+            </div>
+            <div class="trackbar" id="track-gesture"></div>
+            <div class="text-xs mt-1" id="list-gesture"></div>
           </div>
         </div>
       </div>
@@ -78,48 +139,27 @@
 
     <!-- RECHTE SPALTE -->
     <aside class="right">
-      <!-- KPIs -->
+      <!-- WPM (30s Segmente) -->
       <div class="card p-4">
-        <h3 class="title mb-2">Status & Metriken</h3>
-        <div class="grid grid-cols-3 gap-3 text-center">
-          <div class="border rounded p-2"><p class="text-xs text-gray-500">Tempo</p><p class="text-lg font-semibold" id="tempoNow">—</p></div>
-          <div class="border rounded p-2"><p class="text-xs text-gray-500">Füllwörter</p><p class="text-lg font-semibold" id="fillerNow">—</p></div>
-          <div class="border rounded p-2"><p class="text-xs text-gray-500">Pausen</p><p class="text-lg font-semibold" id="pauseNow">—</p></div>
+        <h3 class="title mb-2">Geschwindigkeit der Sprache (WPM, 30-Sekunden-Segmente)</h3>
+        <p class="text-xs text-gray-500 mb-2" id="wpmInfo">Lade Untertitel, um die Geschwindigkeit zu berechnen.</p>
+        <div class="chart chart-md border rounded p-2">
+          <canvas id="wpmChart"></canvas>
         </div>
-        <div class="grid grid-cols-2 gap-2 mt-2">
-          <div class="border rounded p-2 chart chart-sm"><canvas id="paceChart"></canvas></div>
-          <div class="border rounded p-2 chart chart-sm"><canvas id="fillerTrend"></canvas></div>
-        </div>
+        <div class="text-xs text-gray-500 mt-2" id="wpmLegend"></div>
       </div>
 
-      <!-- Analyse -->
+      <!-- Füllwörter -->
       <div class="card p-4">
-        <h3 class="title mb-2">Analyse</h3>
-        <div class="grid grid-cols-2 gap-2">
-          <!-- Tempo vs Ziel -->
-          <div class="border rounded p-2 chart chart-md"><canvas id="tempoVsTarget"></canvas></div>
-          <!-- Füllwörter -->
-          <div class="border rounded p-2 chart chart-md"><canvas id="fillerBars"></canvas></div>
-          <!-- Blickkontakt & Gestik -->
-          <div class="border rounded p-3 flex flex-col justify-center">
-            <div class="mb-3">
-              <div class="flex items-center justify-between mb-1">
-                <span class="text-sm font-medium">Blickkontakt</span>
-                <span id="eyeBadge" class="pill border-emerald-200 text-emerald-700 bg-emerald-50">OK</span>
-              </div>
-              <div class="meter"><span id="eyeBar" style="width:0%; background:#10b981"></span></div>
-              <div class="text-xs text-gray-500 mt-1"><span id="eyeVal">0%</span> (Ziel ≥ 60%)</div>
-            </div>
-            <div>
-              <div class="flex items-center justify-between mb-1">
-                <span class="text-sm font-medium">Gestik / Minute</span>
-                <span id="gestBadge" class="pill border-blue-200 text-blue-700 bg-blue-50">Stabil</span>
-              </div>
-              <div class="meter"><span id="gestBar" style="width:0%; background:#3b82f6"></span></div>
-              <div class="text-xs text-gray-500 mt-1"><span id="gestVal">0</span> (Ziel 10–16)</div>
-            </div>
-          </div>
+        <h3 class="title mb-2">Füllwörter</h3>
+        <div class="flex items-center justify-between">
+          <p class="text-sm">Gesamt: <strong id="fillerTotal">0</strong></p>
+          <button id="copyFillersBtn" class="btn btn-ghost"><i data-lucide="clipboard" class="w-4 h-4"></i>Zeiten kopieren</button>
         </div>
+        <div class="chart chart-sm border rounded p-2 mt-2">
+          <canvas id="fillerBars"></canvas>
+        </div>
+        <div id="fillerListWrap" class="filler-list mt-3"></div>
       </div>
     </aside>
   </main>
@@ -131,11 +171,11 @@
 
   <!-- Scripts -->
   <script>
-    // Icons + Jahr
+    // Icons & Jahr
     lucide.createIcons();
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // ====== Video-Preview-Logik ======
+    // ---------- Upload + Preview ----------
     const fileInput = document.getElementById('fileInput');
     const dropzone  = document.getElementById('dropzone');
     const previewWrap = document.getElementById('previewWrap');
@@ -146,7 +186,6 @@
     const playBtn = document.getElementById('playBtn');
     const pauseBtn = document.getElementById('pauseBtn');
     const resetBtn = document.getElementById('resetBtn');
-
     let objectUrl = null;
 
     function humanSize(bytes){
@@ -154,105 +193,352 @@
       while(n>=1024 && i<u.length-1){ n/=1024; i++; }
       return `${n.toFixed(n<10?1:0)} ${u[i]}`;
     }
-
+    function formatTime(s){
+      s = Math.max(0, s||0);
+      const mm = Math.floor(s/60).toString().padStart(2,'0');
+      const ss = Math.floor(s%60).toString().padStart(2,'0');
+      return `${mm}:${ss}`;
+    }
     function showPreview(file){
       if(!file) return;
-      // Nur Video-Typen annehmen
-      if(!file.type.startsWith('video/')){
-        alert('Bitte eine Videodatei auswählen.');
-        return;
-      }
-      // URL vorbereiten
+      if(!file.type.startsWith('video/')){ alert('Bitte eine Videodatei auswählen.'); return; }
       if(objectUrl){ URL.revokeObjectURL(objectUrl); objectUrl=null; }
       objectUrl = URL.createObjectURL(file);
       videoEl.src = objectUrl;
       videoEl.currentTime = 0;
-      videoEl.muted = true; // Autoplay-Freigabe in vielen Browsern
-      videoEl.play().catch(()=>{/* Autoplay ggf. blockiert – ist ok */});
-
-      // Metadaten
+      videoEl.muted = true;
+      videoEl.play().catch(()=>{});
       fileNameEl.textContent = file.name;
       fileSizeEl.textContent = humanSize(file.size);
       fileDurationEl.textContent = '…';
       videoEl.onloadedmetadata = () => {
-        const d = videoEl.duration;
-        if(Number.isFinite(d)){
-          const mm = Math.floor(d/60).toString().padStart(2,'0');
-          const ss = Math.floor(d%60).toString().padStart(2,'0');
-          fileDurationEl.textContent = `${mm}:${ss}`;
-        }
+        fileDurationEl.textContent = formatTime(videoEl.duration);
+        redrawTracks(); // timeline width based on duration
       };
-
       previewWrap.classList.remove('hidden');
     }
-
     function clearPreview(){
       if(objectUrl){ URL.revokeObjectURL(objectUrl); objectUrl=null; }
-      videoEl.pause();
-      videoEl.removeAttribute('src');
-      videoEl.load();
+      videoEl.pause(); videoEl.removeAttribute('src'); videoEl.load();
       previewWrap.classList.add('hidden');
       fileInput.value = '';
+      // reset analyses
+      cues = []; words = []; fillers = [];
+      wpmBins = []; renderWpm(); renderFillers();
+      orientationTrack.length = 0; gazeTrack.length = 0; gestureTrack.length = 0;
+      redrawTracks();
     }
-
     dropzone.addEventListener('click', ()=> fileInput.click());
     fileInput.addEventListener('change', e => showPreview(e.target.files[0]));
-
-    dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('bg-gray-50'); });
-    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('bg-gray-50'));
-    dropzone.addEventListener('drop', e => {
-      e.preventDefault();
-      dropzone.classList.remove('bg-gray-50');
-      const f = e.dataTransfer?.files?.[0];
-      showPreview(f);
-    });
+    dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('bg-gray-50') });
+    dropzone.addEventListener('dragleave', ()=> dropzone.classList.remove('bg-gray-50'));
+    dropzone.addEventListener('drop', e => { e.preventDefault(); dropzone.classList.remove('bg-gray-50'); const f=e.dataTransfer?.files?.[0]; showPreview(f); });
 
     playBtn.addEventListener('click', ()=> videoEl.play());
     pauseBtn.addEventListener('click', ()=> videoEl.pause());
     resetBtn.addEventListener('click', clearPreview);
 
-    // ====== Dummy-Daten & Charts (wie zuvor) ======
-    const N=20;
-    const tempo=Array.from({length:N},(_,i)=>140+Math.round(Math.sin(i/2)*20));
-    const filler=Array.from({length:N},(_,i)=>Math.max(0,4+Math.round(Math.cos(i/3)*3)));
-    const eyeContactPct=73, gesturesPerMin=14;
+    // ---------- Untertitel-Parsen (VTT/SRT) ----------
+    const subsInput = document.getElementById('subsInput');
+    const parseSubsBtn = document.getElementById('parseSubsBtn');
+    let cues = [];   // {start,end,text}
+    let words = [];  // {t,text,clean}
+    function parseTimeToSec(t){
+      // supports "HH:MM:SS.mmm" or "MM:SS.mmm" or SRT "HH:MM:SS,mmm"
+      t = t.trim().replace(',', '.');
+      const parts = t.split(':');
+      const last = parts.pop();
+      const sec = parseFloat(last);
+      const mm = parts.length ? parseInt(parts.pop(),10) : 0;
+      const hh = parts.length ? parseInt(parts.pop(),10) : 0;
+      return (hh*3600) + (mm*60) + sec;
+    }
+    async function readFileText(file){
+      return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsText(file); });
+    }
+    function parseVTT(txt){
+      const lines = txt.split(/\r?\n/);
+      const result = [];
+      for(let i=0;i<lines.length;i++){
+        const line = lines[i].trim();
+        if(line.includes('-->')){
+          const [a,b] = line.split('-->').map(s=>s.trim());
+          let text=''; let j=i+1;
+          while(j<lines.length && lines[j].trim()!==''){ text += (text?' ':'') + lines[j].trim(); j++; }
+          result.push({start:parseTimeToSec(a), end:parseTimeToSec(b), text});
+          i=j;
+        }
+      }
+      return result;
+    }
+    function parseSRT(txt){
+      const blocks = txt.split(/\r?\n\r?\n/);
+      const result=[];
+      for(const b of blocks){
+        const lines = b.split(/\r?\n/).filter(Boolean);
+        if(lines.length>=2 && lines[1].includes('-->')){
+          const timing = lines[1];
+          const [a,b] = timing.split('-->').map(s=>s.trim());
+          const text = lines.slice(2).join(' ');
+          result.push({start:parseTimeToSec(a), end:parseTimeToSec(b), text});
+        }
+      }
+      return result;
+    }
+    function textToWords(cues){
+      const items=[];
+      for(const c of cues){
+        const tokens = c.text
+          .replace(/[\[\]\(\)\{\}\.,;:!?"“”‚’'`]/g,' ')
+          .split(/\s+/).filter(Boolean);
+        const dur = Math.max(0.001, c.end - c.start);
+        tokens.forEach((tok,idx)=>{
+          const t = c.start + (dur * (idx+0.5) / tokens.length);
+          items.push({ t, text: tok, clean: tok.toLowerCase() });
+        });
+      }
+      return items;
+    }
+    parseSubsBtn.addEventListener('click', async ()=>{
+      const f = subsInput.files?.[0];
+      if(!f){ alert('Bitte Untertiteldatei (.vtt oder .srt) wählen.'); return; }
+      const txt = await readFileText(f);
+      cues = f.name.toLowerCase().endsWith('.vtt') ? parseVTT(txt) : parseSRT(txt);
+      words = textToWords(cues);
+      computeWpm(); detectFillers(); renderWpm(); renderFillers();
+    });
 
-    document.getElementById('tempoNow').textContent=tempo.at(-1)+' wpm';
-    document.getElementById('fillerNow').textContent=filler.at(-1)+' %';
-    document.getElementById('pauseNow').textContent=(Math.random()*2).toFixed(1)+' s';
-
-    function lineChart(el,data,label,ylabel){
-      new Chart(document.getElementById(el),{
-        type:'line',
-        data:{labels:data.map((_,i)=>i+1),datasets:[{label,data,borderWidth:2,tension:.3,pointRadius:0}]},
-        options:{responsive:true,maintainAspectRatio:false,
-          plugins:{legend:{display:true,position:'top'}},
-          scales:{x:{title:{display:true,text:'Zeit'}},y:{title:{display:true,text:ylabel}}}}
+    // ---------- WPM je 30s Segment ----------
+    const wpmInfo = document.getElementById('wpmInfo');
+    const wpmLegend = document.getElementById('wpmLegend');
+    let wpmChart = null;
+    let wpmBins = []; // [{start,end,seconds,words,wpm}]
+    function computeWpm(){
+      if(!videoEl.duration || !words.length){ wpmBins=[]; return; }
+      const dur = videoEl.duration;
+      wpmBins = [];
+      let start = 0;
+      while(start < dur - 1e-6){
+        const end = Math.min(dur, start + 30);
+        const inBin = words.filter(w => w.t >= start && w.t < end).length;
+        const seconds = end - start;
+        const wpm = Math.round((inBin / seconds) * 60);
+        wpmBins.push({ start, end, seconds, words: inBin, wpm });
+        start = end;
+      }
+      wpmInfo.textContent = `Video in ${wpmBins.length} Teil(e) segmentiert: ${Math.floor(dur/30)}×30s + ${Math.round((dur%30))}s`;
+      wpmLegend.textContent = wpmBins.map((b,i)=>`S${i+1}: ${formatTime(b.start)}–${formatTime(b.end)} → ${b.wpm} WPM (${b.words} Wörter / ${Math.round(b.seconds)}s)`).join(' | ');
+    }
+    function renderWpm(){
+      const ctx = document.getElementById('wpmChart');
+      if(wpmChart) wpmChart.destroy();
+      if(!wpmBins.length){
+        wpmChart = new Chart(ctx, { type:'bar', data:{labels:[],datasets:[]}, options:{responsive:true,maintainAspectRatio:false} });
+        return;
+      }
+      const labels = wpmBins.map((b,i)=>`S${i+1}`);
+      const data = wpmBins.map(b=>b.wpm);
+      wpmChart = new Chart(ctx, {
+        type:'bar',
+        data:{ labels, datasets:[{ label:'WPM', data }]},
+        options:{
+          responsive:true, maintainAspectRatio:false,
+          plugins:{ legend:{display:false}},
+          scales:{ x:{ title:{display:true,text:'30s-Segmente'} }, y:{ title:{display:true,text:'Wörter/Minute'}, beginAtZero:true } }
+        }
       });
     }
-    lineChart('paceChart', tempo, 'Tempo', 'WPM');
-    lineChart('fillerTrend', filler, 'Füllwörter', '%');
 
-    const RangeBand={id:'rangeBand',beforeDraw(c,a,o){const {ctx,chartArea:{left,right},scales:{y}}=c;if(!o)return;const yMin=y.getPixelForValue(o.min),yMax=y.getPixelForValue(o.max);ctx.save();ctx.fillStyle='rgba(16,185,129,0.12)';ctx.fillRect(left,yMax,right-left,yMin-yMax);ctx.restore();}};
-    const HLine={id:'hLine',afterDraw(c,a,o){if(!o?.value)return;const {ctx,chartArea:{left,right},scales:{y}}=c;const yPx=y.getPixelForValue(o.value);ctx.save();ctx.strokeStyle='rgba(239,68,68,.9)';ctx.setLineDash([6,4]);ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(left,yPx);ctx.lineTo(right,yPx);ctx.stroke();ctx.restore();}};
+    // ---------- Füllwörter ----------
+    const fillerBarsCtx = document.getElementById('fillerBars');
+    let fillerChart = null;
+    let fillers = []; // [{t,word}]
+    function getFillerSet(){
+      const raw = document.getElementById('fillerList').value || '';
+      return new Set(raw.split(',').map(s=>s.trim().toLowerCase()).filter(Boolean));
+    }
+    function detectFillers(){
+      const set = getFillerSet();
+      fillers = words.filter(w => set.has(w.clean)).map(w => ({ t: w.t, word: w.text }));
+    }
+    function renderFillers(){
+      document.getElementById('fillerTotal').textContent = fillers.length;
+      const dur = videoEl.duration || 0;
+      const bins = Math.max(1, Math.ceil(dur/60));
+      const labels = Array.from({length:bins},(_,i)=>`${i+1}`);
+      const counts = new Array(bins).fill(0);
+      for(const f of fillers){
+        const idx = Math.min(bins-1, Math.floor(f.t/60));
+        counts[idx] += 1;
+      }
+      if(fillerChart) fillerChart.destroy();
+      fillerChart = new Chart(fillerBarsCtx, {
+        type:'bar',
+        data:{ labels, datasets:[{ label:'Füllwörter/Minute', data: counts }]},
+        options:{
+          responsive:true, maintainAspectRatio:false,
+          plugins:{ legend:{display:true, position:'top'}},
+          scales:{ x:{ title:{display:true,text:'Minute'} }, y:{ title:{display:true,text:'Anzahl'}, beginAtZero:true, ticks:{precision:0} } }
+        }
+      });
+      const wrap = document.getElementById('fillerListWrap');
+      wrap.innerHTML = fillers.length
+        ? `<ul class="list-disc pl-5 text-sm">${fillers.map(f=>`<li><button class="link ts" data-t="${f.t}">${formatTime(f.t)}</button> – ${f.word}</li>`).join('')}</ul>`
+        : '<p class="text-sm text-gray-500">Keine Füllwörter erkannt.</p>';
+      wrap.querySelectorAll('.ts').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          videoEl.currentTime = parseFloat(btn.dataset.t || '0');
+          videoEl.play();
+        });
+      });
+    }
+    document.getElementById('copyFillersBtn').addEventListener('click', ()=>{
+      const text = fillers.map(f=>`${formatTime(f.t)}\t${f.word}`).join('\n');
+      navigator.clipboard.writeText(text || '').then(()=> alert('Füllwörter-Zeiten in die Zwischenablage kopiert.'));
+    });
+    document.getElementById('exportCsvBtn').addEventListener('click', ()=>{
+      const wpmCsv = 'Segment,Start,End,Seconds,Words,WPM\n' + wpmBins.map((b,i)=>`S${i+1},${formatTime(b.start)},${formatTime(b.end)},${b.seconds.toFixed(1)},${b.words},${b.wpm}`).join('\n');
+      const fillerCsv = 'Time,Word\n' + fillers.map(f=>`${formatTime(f.t)},${f.word}`).join('\n');
+      const blob = new Blob([`# WPM\n${wpmCsv}\n\n# Fillers\n${fillerCsv}`], {type:'text/csv;charset=utf-8'});
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download='analysis.csv'; a.click();
+      setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
+    });
 
-    new Chart(document.getElementById('tempoVsTarget'),{
-      type:'line',
-      data:{labels:tempo.map((_,i)=>i+1),datasets:[{label:'Tempo (WPM)',data:tempo,borderWidth:2,tension:.3,pointRadius:0}]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'},rangeBand:{min:120,max:160}},scales:{x:{title:{display:true,text:'Zeit'}},y:{title:{display:true,text:'WPM'}}}},
-      plugins:[RangeBand]});
+    // ---------- Tracks: Ausrichtung / Blick / Gestik ----------
+    const trackEls = {
+      orientation: document.getElementById('track-orientation'),
+      gaze: document.getElementById('track-gaze'),
+      gesture: document.getElementById('track-gesture'),
+    };
+    const listEls = {
+      orientation: document.getElementById('list-orientation'),
+      gaze: document.getElementById('list-gaze'),
+      gesture: document.getElementById('list-gesture'),
+    };
 
-    new Chart(document.getElementById('fillerBars'),{
-      type:'bar',
-      data:{labels:filler.map((_,i)=>i+1),datasets:[{label:'Füllwörter (%)',data:filler}]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'},hLine:{value:5}},scales:{x:{title:{display:true,text:'Zeit (Minuten)'}},y:{title:{display:true,text:'%'} ,beginAtZero:true}}},
-      plugins:[HLine]});
+    const orientationTrack = []; // {start,end,label}
+    const gazeTrack = [];        // {start,end,label}
+    const gestureTrack = [];     // {start,end,label}
 
-    // KPI-Meter
-    document.getElementById('eyeBar').style.width=eyeContactPct+'%';
-    document.getElementById('eyeVal').textContent=eyeContactPct+'%';
-    document.getElementById('gestBar').style.width=Math.min(100,(gesturesPerMin/20)*100)+'%';
-    document.getElementById('gestVal').textContent=gesturesPerMin;
+    function pushInterval(track, label){
+      const now = videoEl.currentTime || 0;
+      const last = track[track.length-1];
+      if(last && !Number.isFinite(last.end)){
+        if(last.label === label){ return; }
+        last.end = now;
+      }
+      track.push({ start: now, end: Infinity, label });
+      redrawTracks();
+    }
+    function endOpenIntervals(track){
+      const now = videoEl.currentTime || 0;
+      track.forEach(seg => { if(!Number.isFinite(seg.end)) seg.end = now; });
+    }
+    function labelColor(type, label){
+      const map = {
+        orientation: { Publikum:'#10b981', Tafel:'#f59e0b' },
+        gaze:        { Publikum:'#0ea5e9', Boden:'#94a3b8', Decke:'#a78bfa' },
+        gesture:     { nervös:'#ef4444', angespannt:'#fb923c', steif:'#64748b', locker:'#22c55e' }
+      };
+      return map[type]?.[label] || '#111827';
+    }
+    function redrawTrackBar(el, track){
+      const dur = videoEl.duration || 0;
+      el.innerHTML = '';
+      if(!dur) return;
+      track.forEach(seg=>{
+        const start = Math.max(0, seg.start);
+        const end = Number.isFinite(seg.end) ? seg.end : (videoEl.currentTime || 0);
+        const left = (start/dur)*100, right = (end/dur)*100;
+        const span = document.createElement('div');
+        span.className='segment';
+        span.style.left = left + '%';
+        span.style.width = Math.max(0.5, right-left) + '%';
+        span.style.background = labelColor(el.id.replace('track-',''), seg.label);
+        span.title = `${seg.label}: ${formatTime(start)}–${formatTime(end)}`;
+        el.appendChild(span);
+      });
+    }
+    function renderList(listEl, track){
+      if(!track.length){ listEl.innerHTML = '<span class="text-gray-500">keine Markierungen</span>'; return; }
+      listEl.innerHTML = track.map(seg=>{
+        const s = formatTime(seg.start), e = Number.isFinite(seg.end) ? formatTime(seg.end) : '…';
+        return `<span class="inline-block mr-2 mb-1 px-2 py-0.5 rounded border text-[11px]" style="border-color:${labelColor('',seg.label)}">${seg.label}: ${s}–${e}</span>`;
+      }).join('');
+    }
+    function redrawTracks(){
+      redrawTrackBar(trackEls.orientation, orientationTrack);
+      redrawTrackBar(trackEls.gaze, gazeTrack);
+      redrawTrackBar(trackEls.gesture, gestureTrack);
+      renderList(listEls.orientation, orientationTrack);
+      renderList(listEls.gaze, gazeTrack);
+      renderList(listEls.gesture, gestureTrack);
+    }
+    window.addEventListener('resize', redrawTracks);
+    videoEl.addEventListener('timeupdate', ()=> redrawTracks());
+
+    // Hotkeys
+    document.addEventListener('keydown', (e)=>{
+      if(!previewWrap || previewWrap.classList.contains('hidden')) return;
+      if(['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+      const k = e.key.toLowerCase();
+      if(k==='e') pushInterval(orientationTrack, 'Publikum');
+      else if(k==='t') pushInterval(orientationTrack, 'Tafel');
+      else if(k==='u') pushInterval(gazeTrack, 'Publikum');
+      else if(k==='b') pushInterval(gazeTrack, 'Boden');
+      else if(k==='d') pushInterval(gazeTrack, 'Decke');
+      else if(k==='1') pushInterval(gestureTrack, 'nervös');
+      else if(k==='2') pushInterval(gestureTrack, 'angespannt');
+      else if(k==='3') pushInterval(gestureTrack, 'steif');
+      else if(k==='4') pushInterval(gestureTrack, 'locker');
+      else return;
+      e.preventDefault();
+    });
+
+    // Clear-Buttons
+    document.querySelectorAll('[data-clear]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const key = btn.dataset.clear;
+        if(key==='orientation') orientationTrack.length=0;
+        if(key==='gaze') gazeTrack.length=0;
+        if(key==='gesture') gestureTrack.length=0;
+        redrawTracks();
+      });
+    });
+
+    // Beim Stoppen offene Intervalle schließen
+    videoEl.addEventListener('pause', ()=>{
+      endOpenIntervals(orientationTrack);
+      endOpenIntervals(gazeTrack);
+      endOpenIntervals(gestureTrack);
+      redrawTracks();
+    });
+
+    // ---------- Export / Import ----------
+    document.getElementById('exportBtn').addEventListener('click', ()=>{
+      const data = {
+        meta: { file: fileNameEl.textContent, duration: videoEl.duration||0, createdAt: new Date().toISOString() },
+        fillers, wpmBins, orientationTrack, gazeTrack, gestureTrack,
+        fillerList: Array.from(getFillerSet())
+      };
+      const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download='presentai-analysis.json'; a.click();
+      setTimeout(()=>URL.revokeObjectURL(a.href), 1500);
+    });
+    document.getElementById('importJson').addEventListener('change', async (e)=>{
+      const f = e.target.files?.[0]; if(!f) return;
+      const txt = await f.text();
+      const data = JSON.parse(txt);
+      fillers = data.fillers||[];
+      wpmBins = data.wpmBins||[];
+      orientationTrack.length=0; orientationTrack.push(...(data.orientationTrack||[]));
+      gazeTrack.length=0; gazeTrack.push(...(data.gazeTrack||[]));
+      gestureTrack.length=0; gestureTrack.push(...(data.gestureTrack||[]));
+      document.getElementById('fillerList').value = (data.fillerList||[]).join(', ');
+      renderWpm(); renderFillers(); redrawTracks();
+      alert('Analyse-Daten importiert (ohne Video/Untertitel).');
+      e.target.value='';
+    });
   </script>
 </body>
 </html>
