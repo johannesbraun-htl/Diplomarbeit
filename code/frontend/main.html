@@ -5,9 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>PresentAI – Demo Dashboard</title>
 
-<!-- Tailwind für Layout-Utilities -->
 <script src="https://cdn.tailwindcss.com"></script>
-<!-- Chart.js + Icons -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -26,13 +24,14 @@ body{
     var(--bg);
   letter-spacing:.1px;
 }
-.app-header{height:64px; position:sticky; top:0; z-index:20; background:linear-gradient(180deg,#fff,rgba(255,255,255,.8));
+.app-header{height:64px; position:sticky; top:0; z-index:20; background:linear-gradient(180deg,#fff,rgba(255,255,255,.85));
   border-bottom:1px solid var(--border); backdrop-filter:blur(8px);
   display:flex; align-items:center; justify-content:space-between; padding:0 16px}
 .app-title{font-weight:800; letter-spacing:.3px}
 .chip{font-size:12px; padding:.15rem .55rem; border-radius:999px; background:#f3f4f6; border:1px solid var(--border)}
 .btn{display:inline-flex;align-items:center;gap:.45rem;border-radius:12px;font-weight:700}
 .btn-primary{padding:.55rem .9rem;background:var(--brand);color:#fff} .btn-primary:hover{filter:brightness(.95)}
+
 main{max-width:1200px;margin:18px auto;padding:0 16px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .hero{grid-column:1/3;display:grid;grid-template-columns:7fr 5fr;gap:18px}
 .card{background:var(--panel);border:1px solid var(--border);border-radius:16px;
@@ -57,13 +56,10 @@ main{max-width:1200px;margin:18px auto;padding:0 16px;display:grid;grid-template
 .scan{position:absolute; inset:0; display:grid; grid-template-rows:1fr 1fr 1fr; gap:18px; padding:22px}
 .scan>div{border-radius:10px; background:linear-gradient(90deg,rgba(255,255,255,.06),rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.06)}
 
-.caption{display:grid; gap:6px; margin-top:8px}
-.line{font-size:13px; color:#475569; background:#fff; border:1px solid var(--border); padding:.45rem .6rem; border-radius:10px; box-shadow:0 1px 2px rgba(0,0,0,.04)}
-.shimmer{position:relative; overflow:hidden}
-.shimmer::after{content:""; position:absolute; inset:0; transform:translateX(-100%); background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent); animation:shimmer 1.6s infinite}
-@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
-
 .app-footer{grid-column:1/3;height:40px;display:flex;align-items:center;justify-content:center;border-top:1px solid var(--border);color:#6b7280;background:#fff8;backdrop-filter:blur(6px);margin-top:8px}
+.statbar{height:12px;border:1px solid var(--border);background:#eef2f7;border-radius:999px;overflow:hidden}
+.statbar>span{display:block;height:100%}
+.badge-soft{font-size:12px;padding:.15rem .5rem;border-radius:999px;border:1px solid var(--border);background:#f8fafc}
 
 @media (max-width:1100px){ .hero{grid-template-columns:1fr} main{grid-template-columns:1fr} }
 </style>
@@ -89,11 +85,7 @@ main{max-width:1200px;margin:18px auto;padding:0 16px;display:grid;grid-template
           <div class="tc">03:12</div>
         </div>
       </div>
-      <div class="caption">
-        <div class="line shimmer">„… und das ist besonders wichtig, weil …“</div>
-        <div class="line">„äh, grundsätzlich kann man sagen …“</div>
-        <div class="line">„… wir sehen hier die drei Hauptpunkte …“</div>
-      </div>
+      <!-- Captions entfernt -->
     </div>
 
     <div class="card p-4">
@@ -128,7 +120,7 @@ main{max-width:1200px;margin:18px auto;padding:0 16px;display:grid;grid-template
   <section class="card p-4">
     <h3 class="title mb-2">Geschwindigkeit (WPM) – 30-Sekunden-Segmente</h3>
     <div class="chart chart-lg"><canvas id="wpmChart"></canvas></div>
-    <p class="text-xs text-gray-500 mt-2">Grünes Band = Ziel (120–160 WPM) · Linie = gleitender Durchschnitt</p>
+    <p class="text-xs text-gray-500 mt-2">Grünes Band = Ziel (120–160 WPM)</p>
   </section>
 
   <section class="card p-4">
@@ -140,18 +132,55 @@ main{max-width:1200px;margin:18px auto;padding:0 16px;display:grid;grid-template
     <div class="mt-3 flex flex-wrap gap-2" id="chips"></div>
   </section>
 
+  <!-- NEU: Prozent-Fokus + KI-Gestik -->
   <section class="card p-4">
-    <h3 class="title mb-2">Ausrichtung • Blickrichtung • Gestik</h3>
-    <div class="grid md:grid-cols-3 gap-3">
-      <div class="chart chart-sm"><canvas id="donutO"></canvas></div>
-      <div class="chart chart-sm"><canvas id="donutG"></canvas></div>
-      <div class="chart chart-sm"><canvas id="donutGe"></canvas></div>
+    <h3 class="title mb-2">Publikumsfokus & Ausrichtung (Anteil der Dauer)</h3>
+    <div class="grid gap-4">
+      <div>
+        <div class="flex items-center justify-between text-sm mb-1">
+          <span class="font-medium">Blick → Publikum</span>
+          <span id="gazePubPct" class="badge-soft">—%</span>
+        </div>
+        <div class="statbar"><span id="gazeBar" style="width:0%; background:#0ea5e9"></span></div>
+        <p class="text-xs text-gray-500 mt-1">Rest: Boden/Decke</p>
+      </div>
+      <div>
+        <div class="flex items-center justify-between text-sm mb-1">
+          <span class="font-medium">Ausrichtung → Publikum</span>
+          <span id="oriPubPct" class="badge-soft">—%</span>
+        </div>
+        <div class="statbar"><span id="oriBar" style="width:0%; background:#10b981"></span></div>
+        <p class="text-xs text-gray-500 mt-1">Rest: Tafel/Seitlich</p>
+      </div>
     </div>
   </section>
 
   <section class="card p-4">
-    <h3 class="title mb-2">Präsenz-Radar</h3>
-    <div class="chart chart-lg"><canvas id="radar"></canvas></div>
+    <h3 class="title mb-2">Gestik – KI-Bewertung</h3>
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="space-y-3">
+        <div>
+          <div class="flex items-center justify-between text-sm mb-1"><span>Locker</span><span id="gLock" class="badge-soft">—%</span></div>
+          <div class="statbar"><span id="bLock" style="width:0%; background:#22c55e"></span></div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between text-sm mb-1"><span>Steif</span><span id="gStiff" class="badge-soft">—%</span></div>
+          <div class="statbar"><span id="bStiff" style="width:0%; background:#64748b"></span></div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between text-sm mb-1"><span>Angespannt</span><span id="gTense" class="badge-soft">—%</span></div>
+          <div class="statbar"><span id="bTense" style="width:0%; background:#fb923c"></span></div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between text-sm mb-1"><span>Nervös</span><span id="gNerv" class="badge-soft">—%</span></div>
+          <div class="statbar"><span id="bNerv" style="width:0%; background:#ef4444"></span></div>
+        </div>
+      </div>
+      <div class="flex flex-col justify-center items-start">
+        <div id="gestureVerdict" class="text-xl font-extrabold mb-1">—</div>
+        <p id="gestureHint" class="text-sm text-gray-600">—</p>
+      </div>
+    </div>
   </section>
 
   <footer class="app-footer">© <span id="year"></span> PresentAI • Demo</footer>
@@ -165,70 +194,68 @@ const rnd=(min,max)=>Math.round(min+Math.random()*(max-min));
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const fmt=s=>{const m=String(Math.floor(s/60)).padStart(2,'0');const ss=String(Math.floor(s%60)).padStart(2,'0');return `${m}:${ss}`};
 
-// Dummy-Generator (3:12 = 192 s)
+// Dummy-Daten
 function makeData(){
-  const duration=192;
-  // Segmente
-  const segs=[]; let start=0;
-  while(start<duration){ const end=Math.min(duration,start+30); const sec=end-start;
+  const duration=192; // 3:12
+  // WPM 30s
+  const segs=[]; let t=0;
+  while(t<duration){ const end=Math.min(duration,t+30); const sec=end-t;
     const words=rnd(70,230)*sec/60; const wpm=Math.round((words/sec)*60);
-    segs.push({start,end,sec,words:Math.round(words),wpm}); start=end; }
+    segs.push({start:t,end,sec,words:Math.round(words),wpm}); t=end; }
   // Füllwörter
   const fillers=[], lex=['äh','ähm','sozusagen','quasi','halt','irgendwie','hm'];
   const total=rnd(9,18); for(let i=0;i<total;i++) fillers.push({t:Math.random()*duration, word:pick(lex)});
-  // Donuts (Dauern)
+  // Fokus/Ausrichtung/Gestik
   const parts=n=>{let a=Math.random(),b=Math.random(),c=Math.random();let s=a+b+c;return [a/s*n,b/s*n,c/s*n]};
-  const ori=parts(duration), gaze=parts(duration), ge3=parts(duration);
+  const gaze=parts(duration); // Publikum/Boden/Decke
+  const ori=parts(duration);  // Publikum/Tafel/Seitlich
+  const ge3=parts(duration);  // nervös/steif/locker → auf 4 mappen
   const gesture=[ge3[0]*.6, ge3[0]*.4, ge3[1], ge3[2]]; // nervös, angespannt, steif, locker
 
-  // Radar-Scores
+  // Scores
   const hit=(segs.filter(s=>s.wpm>=120 && s.wpm<=160).length/segs.length)*100;
   const fpm= total/(duration/60); const fillScore=Math.max(0,100-Math.min(100,(fpm/6)*100));
   const gazeScore=(gaze[0]/(gaze[0]+gaze[1]+gaze[2]))*100;
   const oriScore=(ori[0]/(ori[0]+ori[1]+ori[2]))*100;
   const gestScore=Math.max(0, Math.min(100, (gesture[3]/gesture.reduce((a,b)=>a+b,0))*100 - ((gesture[0]+gesture[1])/gesture.reduce((a,b)=>a+b,0))*30 ));
-  const overall=Math.round(0.28*hit + 0.24*fillScore + 0.18*gazeScore + 0.18*oriScore + 0.12*gestScore);
+  const overall=Math.round(0.28*hit + 0.24*fillScore + 0.24*((gazeScore+oriScore)/2) + 0.24*gestScore);
 
-  return {duration,segs,fillers,
-    orientation:{labels:['Publikum','Tafel','Seitlich'],values:ori},
-    gaze:{labels:['Publikum','Boden','Decke'],values:gaze},
-    gesture:{labels:['nervös','angespannt','steif','locker'],values:gesture},
-    radar:[Math.round(hit),Math.round(fillScore),Math.round(gazeScore),Math.round(oriScore),Math.round(gestScore)],
-    overall};
+  return {duration,segs,fillers,gaze,ori,gesture, overall,
+    pubGazePct:Math.round(gazeScore), pubOriPct:Math.round(oriScore)};
 }
 
 // Charts
-let wpmChart,fillerBars,fillerScatter,donutO,donutG,donutGe,radar;
+let wpmChart,fillerBars,fillerScatter;
 const RangeBand={id:'rangeBand',beforeDraw(c,a,o){if(!o)return;const {ctx,chartArea:{left,right},scales:{y}}=c;
   const y1=y.getPixelForValue(o.min),y2=y.getPixelForValue(o.max);ctx.save();ctx.fillStyle='rgba(16,185,129,.12)';ctx.fillRect(left,y2,right-left,y1-y2);ctx.restore();}};
-const moving=(arr,k=3)=>arr.map((_,i)=>arr.slice(Math.max(0,i-k+1),i+1).reduce((s,v)=>s+v,0)/Math.min(i+1,k));
 
 function render(data){
   // KPIs
-  document.getElementById('kpiScore').textContent=data.overall+' / 100';
-  document.getElementById('scoreBar').style.width=data.overall+'%';
   const avgWpm=Math.round(data.segs.reduce((s,x)=>s+x.wpm,0)/data.segs.length);
   document.getElementById('kpiWpm').textContent=avgWpm+' wpm';
   document.getElementById('kpiFill').textContent=data.fillers.length;
+  document.getElementById('kpiScore').textContent=data.overall+' / 100';
+  document.getElementById('scoreBar').style.width=data.overall+'%';
 
   // Insights
-  const ins=[]; ins.push(avgWpm<120?'Tempo etwas steigern (≥120).':avgWpm>160?'Tempo leicht reduzieren (≤160).':'Tempo im Ziel – weiter so.');
+  const ins=[];
+  ins.push(avgWpm<120?'Tempo etwas steigern (≥120).':avgWpm>160?'Tempo leicht reduzieren (≤160).':'Tempo im Ziel – weiter so.');
   ins.push(data.fillers.length>12?'Viele Füllwörter – bewusste Pausen setzen.':'Füllwörter im Rahmen.');
-  ins.push(data.radar[2]<55?'Mehr Blick ins Publikum.':'Guter Publikumsfokus.');
-  ins.push(data.gesture.values[3]<data.gesture.values.reduce((a,b)=>a+b,0)*.25?'Gestik lockern (offene Hände).':'Gestik natürlich & ruhig.');
+  ins.push(data.pubGazePct<55?'Mehr Blick ins Publikum.':'Guter Publikumsfokus.');
+  ins.push(data.gesture[3] < data.gesture.reduce((a,b)=>a+b,0)*.25 ? 'Gestik lockern (offene Hände).' : 'Gestik natürlich & ruhig.');
   document.getElementById('insights').innerHTML=ins.map(t=>`<span class="insight"><i data-lucide="check-circle-2" class="w-4 h-4"></i>${t}</span>`).join('');
   lucide.createIcons();
 
-  // WPM
-  const labels=data.segs.map((_,i)=>`S${i+1}`), w=data.segs.map(s=>s.wpm), avg=moving(w,3);
+  // WPM: nur Balken
+  const labels=data.segs.map((_,i)=>`S${i+1}`), w=data.segs.map(s=>s.wpm);
   if(wpmChart) wpmChart.destroy();
   wpmChart=new Chart(document.getElementById('wpmChart'),{
     type:'bar',
-    data:{labels,datasets:[{type:'bar',label:'WPM',data:w},
-                           {type:'line',label:'Ø (glatt)',data:avg,pointRadius:0,tension:.25,borderWidth:2}]},
+    data:{labels,datasets:[{label:'WPM',data:w}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'},rangeBand:{min:120,max:160}},
-             scales:{x:{title:{display:true,text:'30s-Segmente'}},y:{title:{display:true,text:'Wörter/Minute'},beginAtZero:true}}},
-    plugins:[RangeBand]});
+      scales:{x:{title:{display:true,text:'30s-Segmente'}},y:{title:{display:true,text:'Wörter/Minute'},beginAtZero:true}}},
+    plugins:[RangeBand]
+  });
 
   // Füllwörter/Minute
   const mins=Math.ceil(data.duration/60), lab=Array.from({length:mins},(_,i)=>`${i+1}`), cnt=new Array(mins).fill(0);
@@ -238,34 +265,41 @@ function render(data){
     type:'bar', data:{labels:lab,datasets:[{label:'Füllwörter/Minute',data:cnt}]},
     options:{responsive:true,maintainAspectRatio:false,scales:{x:{title:{display:true,text:'Minute'}},y:{title:{display:true,text:'Anzahl'},beginAtZero:true,ticks:{precision:0}}}}});
 
-  // Scatter Zeitpunkte
+  // Scatter – größere Punkte
   if(fillerScatter) fillerScatter.destroy();
-  const pts=data.fillers.map(f=>({x:f.t/60,y:1,label:`${fmt(f.t)} – ${f.word}`}));
+  const pts=data.fillers.map(f=>({x:f.t/60,y:1,label:`${fmt(f.t)} – ${f.word}`})); // y=1 als Linie
   fillerScatter=new Chart(document.getElementById('fillerScatter'),{
-    type:'scatter', data:{datasets:[{label:'Zeitpunkte',data:pts}]},
+    type:'scatter',
+    data:{datasets:[{label:'Zeitpunkte',data:pts, pointRadius:5, pointHoverRadius:7}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:(c)=>c.raw.label}}},
-             scales:{x:{title:{display:true,text:'Zeit (Minuten)'}},y:{display:false,min:0,max:2}}}});
+      scales:{x:{title:{display:true,text:'Zeit (Minuten)'}},y:{display:false,min:0,max:2}}}});
 
   // Chips (letzte 10)
   const chips=[...data.fillers].sort((a,b)=>a.t-b.t).slice(-10)
     .map(f=>`<span class="chip">${fmt(f.t)} · ${f.word}</span>`).join('');
   document.getElementById('chips').innerHTML=chips;
 
-  // Donuts
-  const donut=(id,labels,values,colors)=>{const inst=Chart.getChart(id); if(inst) inst.destroy();
-    new Chart(document.getElementById(id),{type:'doughnut',data:{labels,datasets:[{data:values,backgroundColor:colors}]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}}});}
-  donut('donutO',data.orientation.labels,data.orientation.values,['#10b981','#f59e0b','#9ca3af']);
-  donut('donutG',data.gaze.labels,data.gaze.values,['#0ea5e9','#94a3b8','#a78bfa']);
-  donut('donutGe',data.gesture.labels,data.gesture.values,['#ef4444','#fb923c','#64748b','#22c55e']);
+  // Fokus & Ausrichtung – Prozentbalken
+  document.getElementById('gazePubPct').textContent=data.pubGazePct+'%';
+  document.getElementById('gazeBar').style.width=data.pubGazePct+'%';
+  document.getElementById('oriPubPct').textContent=data.pubOriPct+'%';
+  document.getElementById('oriBar').style.width=data.pubOriPct+'%';
 
-  // Radar
-  if(radar) radar.destroy();
-  radar=new Chart(document.getElementById('radar'),{
-    type:'radar',
-    data:{labels:['WPM im Ziel','Füllwörter-Rate','Blick Publikum','Ausrichtung Publikum','Gestik Lockerheit'],
-          datasets:[{label:'Score (0–100)',data:data.radar,borderWidth:2,fill:true,pointRadius:2}]} ,
-    options:{responsive:true,maintainAspectRatio:false,scales:{r:{suggestedMin:0,suggestedMax:100,ticks:{stepSize:20}}},plugins:{legend:{position:'top'}}}});
+  // Gestik – KI Bewertung
+  const totalG = data.gesture.reduce((a,b)=>a+b,0) || 1;
+  const pct = data.gesture.map(v=>Math.round(v/totalG*100)); // [nervös, angespannt, steif, locker]
+  const set = (id,bar,val,color)=>{ document.getElementById(id).textContent=val+'%'; const b=document.getElementById(bar); b.style.width=val+'%'; b.style.background=color; };
+  set('gLock','bLock',pct[3],'#22c55e');
+  set('gStiff','bStiff',pct[2],'#64748b');
+  set('gTense','bTense',pct[1],'#fb923c');
+  set('gNerv','bNerv',pct[0],'#ef4444');
+
+  let verdict = 'Natürlich & ruhig';
+  let hint = 'Weiter so: offene, ruhige Gestik beibehalten.';
+  if(pct[0]+pct[1] > 40) { verdict='Unruhig / angespannt'; hint='Mehr Standruhe, Hände auf Bauchhöhe, langsame Gesten.'; }
+  else if(pct[2] > 45) { verdict='Eher steif'; hint='Mehr Raum nutzen, punktuell unterstreichen (keine Dauerbewegung).'; }
+  document.getElementById('gestureVerdict').textContent = verdict;
+  document.getElementById('gestureHint').textContent = hint;
 }
 
 // Start + Neu bewerten
