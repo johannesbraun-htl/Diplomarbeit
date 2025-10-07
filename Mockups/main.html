@@ -14,13 +14,16 @@
 <style>
 :root{
   --bg:#f6f7fb; --panel:#fff; --border:#e6e8ef; --text:#0f172a;
-  --muted:#667085; --brand:#6d28d9; --good:#22c55e; --warn:#f59e0b;
+  --muted:#667085; --brand:#6d28d9; --good:#22c55e;
 }
+*{box-sizing:border-box}
 body{
   font-family: ui-sans-serif,system-ui,Inter,Roboto,Arial;
   color:var(--text);
-  background: radial-gradient(1100px 600px at 8% -20%, #ede9fe55 0%, transparent 60%),
-              radial-gradient(900px 500px at 110% -10%, #dbeafe55 0%, transparent 55%), var(--bg);
+  background:
+    radial-gradient(1100px 600px at 8% -20%, #ede9fe55 0%, transparent 60%),
+    radial-gradient(900px 500px at 110% -10%, #dbeafe55 0%, transparent 55%),
+    var(--bg);
   margin:0;
 }
 .app-header{
@@ -29,22 +32,25 @@ body{
   display:flex; align-items:center; justify-content:space-between;
   padding:0 16px; position:sticky; top:0; z-index:10;
 }
-.app-title{font-weight:800;}
+.app-title{font-weight:800; letter-spacing:.2px;}
 .chip{font-size:12px;padding:.15rem .55rem;border-radius:999px;background:#f3f4f6;border:1px solid var(--border)}
 .btn{display:inline-flex;align-items:center;gap:.45rem;border-radius:12px;font-weight:700}
 .btn-primary{padding:.55rem .9rem;background:var(--brand);color:#fff} .btn-primary:hover{filter:brightness(.95)}
 
 main{max-width:1200px;margin:18px auto;padding:0 16px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.hero{grid-column:1/3;display:grid;grid-template-columns:7fr 5fr;gap:18px}
-.card{background:var(--panel);border:1px solid var(--border);border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,.05)}
+.hero{grid-column:1/3;display:grid;grid-template-columns:7fr 5fr;gap:18px;align-items:stretch}
+.hero > .card{height:100%} /* sorgt dafür, dass Video & Status exakt gleich hoch sind */
+
+.card{background:var(--panel);border:1px solid var(--border);border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,.05);display:flex;flex-direction:column}
 .title{font-weight:700;}
-.kpi{background:#fff;border:1px solid var(--border);border-radius:14px;padding:10px;text-align:center}
+.kpi{background:#fff;border:1px solid var(--border);border-radius:14px;padding:12px;text-align:center}
 .kpi-label{color:var(--muted);font-size:12px}
 .kpi-value{font-weight:900;font-size:22px}
 .meter{width:100%;height:10px;background:#eef2f7;border:1px solid var(--border);border-radius:999px;overflow:hidden;margin-top:6px}
 .meter>span{display:block;height:100%;background:linear-gradient(90deg,#06b6d4,#22c55e)}
 .chart{height:200px} .chart-lg{height:280px}
 .chart canvas{width:100%!important;height:100%!important}
+
 .statbar{height:12px;border:1px solid var(--border);background:#eef2f7;border-radius:999px;overflow:hidden}
 .statbar>span{display:block;height:100%}
 .badge-soft{font-size:12px;padding:.15rem .5rem;border-radius:999px;border:1px solid var(--border);background:#f8fafc}
@@ -81,7 +87,11 @@ main{max-width:1200px;margin:18px auto;padding:0 16px;display:grid;grid-template
   grid-column:1/3;height:40px;display:flex;align-items:center;justify-content:center;
   border-top:1px solid var(--border);color:#6b7280;background:#fff8;backdrop-filter:blur(6px);margin-top:8px;
 }
-@media (max-width:1000px){ .hero{grid-template-columns:1fr} main{grid-template-columns:1fr} }
+
+@media (max-width:1000px){
+  .hero{grid-template-columns:1fr}
+  main{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
@@ -95,30 +105,41 @@ main{max-width:1200px;margin:18px auto;padding:0 16px;display:grid;grid-template
 </header>
 
 <main>
-  <!-- Übersicht -->
+  <!-- Zeile 1: Video + Status (gleich hoch) -->
   <section class="hero">
     <div class="card p-4">
-      <h3 class="title mb-2">Video-Vorschau</h3>
+      <h3 class="title mb-3">Video-Vorschau</h3>
       <div class="bg-black aspect-video rounded-lg flex items-center justify-center text-gray-400 text-sm">Demo Video</div>
     </div>
 
     <div class="card p-4">
-      <h3 class="title mb-2 flex items-center gap-2"><i data-lucide="bar-chart-2" class="w-5 h-5"></i> Status</h3>
+      <h3 class="title mb-3 flex items-center gap-2"><i data-lucide="bar-chart-2" class="w-5 h-5"></i> Status</h3>
       <div class="grid grid-cols-3 gap-3">
-        <div class="kpi"><p class="kpi-label">Gesamt</p><p id="kpiScore" class="kpi-value">–</p><div class="meter"><span id="scoreBar"></span></div></div>
-        <div class="kpi"><p class="kpi-label">Ø WPM</p><p id="kpiWpm" class="kpi-value">–</p></div>
-        <div class="kpi"><p class="kpi-label">Füllwörter</p><p id="kpiFill" class="kpi-value">–</p></div>
+        <div class="kpi">
+          <p class="kpi-label">Gesamt</p>
+          <p id="kpiScore" class="kpi-value">–</p>
+          <div class="meter"><span id="scoreBar"></span></div>
+        </div>
+        <div class="kpi">
+          <p class="kpi-label">Ø WPM</p>
+          <p id="kpiWpm" class="kpi-value">–</p>
+        </div>
+        <div class="kpi">
+          <p class="kpi-label">Füllwörter</p>
+          <p id="kpiFill" class="kpi-value">–</p>
+        </div>
       </div>
+      <!-- Platzfüller sorgt dafür, dass die Karte die volle Höhe der Zeile einnimmt -->
+      <div class="mt-auto"></div>
     </div>
   </section>
 
-  <!-- WPM -->
+  <!-- Zeile 2: WPM + Füllwörter -->
   <section class="card p-4">
     <h3 class="title mb-2">Geschwindigkeit (WPM)</h3>
     <div class="chart chart-lg"><canvas id="wpmChart"></canvas></div>
   </section>
 
-  <!-- Füllwörter -->
   <section class="card p-4">
     <h3 class="title mb-2">Füllwörter</h3>
     <div class="grid md:grid-cols-2 gap-3">
@@ -127,7 +148,7 @@ main{max-width:1200px;margin:18px auto;padding:0 16px;display:grid;grid-template
     </div>
   </section>
 
-  <!-- Fokus -->
+  <!-- Zeile 3: Publikumsfokus + Gestik -->
   <section class="card p-4">
     <h3 class="title mb-2">Publikumsfokus</h3>
     <div>
@@ -139,7 +160,6 @@ main{max-width:1200px;margin:18px auto;padding:0 16px;display:grid;grid-template
     </div>
   </section>
 
-  <!-- Gestik -->
   <section class="card p-4" id="gestureCard">
     <div class="flex items-center justify-between mb-1">
       <h3 class="title">Gestik – KI-Fazit</h3>
@@ -172,7 +192,11 @@ function makeData(){
   const fillers=Array.from({length:rnd(8,15)},()=>({t:rnd(0,180),word:pick(['äh','ähm','sozusagen','halt','irgendwie'])}));
   const gaze=rnd(40,90);
   const gest={expressiveness:rnd(40,95),naturalness:rnd(40,95),tensionLow:rnd(30,95),sync:rnd(35,95)};
-  const overall=Math.round(0.4*(segs.filter(x=>x>=120&&x<=160).length/segs.length)*100+0.3*(100-fillers.length*3)+0.3*gaze);
+  const overall=Math.max(0,Math.min(100, Math.round(
+    0.40*(segs.filter(x=>x>=120&&x<=160).length/segs.length)*100 +
+    0.30*(100 - fillers.length*3) +
+    0.30*gaze
+  )));
   return {segs,fillers,gaze,gest,overall};
 }
 
@@ -201,26 +225,37 @@ function renderGestureFazit(gest){
   const whyList=document.getElementById('gestureWhy');
   const info=document.getElementById('gestureInfo');
   const btn=document.getElementById('gestureInfoBtn');
+
   vEl.textContent=`${res.verdict} (${res.score}/100)`;
   sEl.textContent=res.subtitle;
   whyList.innerHTML=res.bullets.map(b=>
     `<li class="point ${b.positive?'plus':'minus'}">
        <span class="point-symbol">${b.positive?'+':'–'}</span>${b.text}
      </li>`).join("");
-  btn.onclick=()=>{info.classList.toggle('hidden');};
+
+  // Toggle Popover
+  function closePop(){ info.classList.add('hidden'); btn.setAttribute('aria-expanded','false'); }
+  function openPop(){ info.classList.remove('hidden'); btn.setAttribute('aria-expanded','true'); }
+  btn.onclick=()=> btn.getAttribute('aria-expanded')==='true' ? closePop() : openPop();
+  document.addEventListener('click',e=>{ if(!e.target.closest('#gestureCard')) closePop(); });
+
   lucide.createIcons();
 }
 
 // Charts
 let wpmChart,fillerBars,fillerScatter;
 function render(data){
+  // KPIs
   document.getElementById('kpiWpm').textContent=Math.round(data.segs.reduce((a,b)=>a+b)/data.segs.length)+' wpm';
   document.getElementById('kpiFill').textContent=data.fillers.length;
   document.getElementById('kpiScore').textContent=data.overall;
   document.getElementById('scoreBar').style.width=data.overall+'%';
+
+  // Fokus
   document.getElementById('gazePubPct').textContent=data.gaze+'%';
   document.getElementById('gazeBar').style.width=data.gaze+'%';
 
+  // WPM
   if(wpmChart)wpmChart.destroy();
   wpmChart=new Chart(document.getElementById('wpmChart'),{
     type:'bar',
@@ -228,19 +263,21 @@ function render(data){
     options:{responsive:true,scales:{y:{beginAtZero:true}}}
   });
 
-  const mins=Math.ceil(data.segs.length/2),fcounts=new Array(mins).fill(0);
-  data.fillers.forEach(f=>fcounts[Math.floor(f.t/60)]++);
+  // Füllwörter pro Minute
+  const mins=4; const counts=new Array(mins).fill(0);
+  data.fillers.forEach(f=>{const m=Math.min(mins-1,Math.floor(f.t/60)); counts[m]++;});
   if(fillerBars)fillerBars.destroy();
   fillerBars=new Chart(document.getElementById('fillerBars'),{
-    type:'bar',data:{labels:fcounts.map((_,i)=>i+1),datasets:[{data:fcounts,label:'Füllwörter/Min'}]},
+    type:'bar',data:{labels:counts.map((_,i)=>i+1),datasets:[{data:counts,label:'Füllwörter/Min'}]},
     options:{responsive:true,scales:{y:{beginAtZero:true}}}
   });
 
+  // Zeitpunkte (größere Punkte)
   if(fillerScatter)fillerScatter.destroy();
   fillerScatter=new Chart(document.getElementById('fillerScatter'),{
     type:'scatter',
     data:{datasets:[{label:'Zeitpunkte',data:data.fillers.map(f=>({x:f.t/60,y:1})),pointRadius:5}]},
-    options:{responsive:true,scales:{x:{title:{display:true,text:'Minuten'}},y:{display:false,min:0,max:2}}}
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{title:{display:true,text:'Minuten'}},y:{display:false,min:0,max:2}}}
   });
 
   renderGestureFazit(data.gest);
@@ -248,7 +285,7 @@ function render(data){
 
 // Init
 let STATE=makeData(); render(STATE);
-document.getElementById('rerun').onclick=()=>{STATE=makeData();render(STATE);}
+document.getElementById('rerun').onclick=()=>{STATE=makeData();render(STATE);};
 </script>
 </body>
 </html>
