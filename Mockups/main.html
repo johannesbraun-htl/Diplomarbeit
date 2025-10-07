@@ -3,40 +3,28 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>PresentAI – Demo Dashboard</title>
+<title>PresentAI – Analyse Dashboard</title>
 
-<!-- Tailwind für Layout -->
+<!-- Tailwind -->
 <script src="https://cdn.tailwindcss.com"></script>
-<!-- Chart.js + Icons -->
+<!-- Chart.js & Lucide Icons -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
 
 <style>
 :root{
-  --bg:#f6f7fb; --panel:#fff; --border:#e6e8ef; --text:#0f172a;
-  --muted:#667085; --brand:#6d28d9; --good:#22c55e;
+  --bg:#f6f7fb; --panel:#fff; --border:#e6e8ef; --text:#0f172a; --muted:#667085; --brand:#6d28d9;
 }
 *{box-sizing:border-box}
-body{
-  font-family:ui-sans-serif,system-ui,Inter,Roboto,Arial;
-  color:var(--text);
-  background:
-    radial-gradient(1100px 600px at 8% -20%, #ede9fe55 0%, transparent 60%),
-    radial-gradient(900px 500px at 110% -10%, #dbeafe55 0%, transparent 55%),
-    var(--bg);
-  margin:0;
-}
-.app-header{
-  height:64px;background:#fff8;backdrop-filter:blur(8px);
-  border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 16px;position:sticky;top:0;z-index:10;
-}
-.app-title{font-weight:800;letter-spacing:.2px;}
+body{font-family:ui-sans-serif,system-ui,Inter,Roboto,Arial;color:var(--text);
+  background:radial-gradient(1100px 600px at 8% -20%, #ede9fe55 0%, transparent 60%),
+             radial-gradient(900px 500px at 110% -10%, #dbeafe55 0%, transparent 55%), var(--bg); margin:0}
+.app-header{height:64px;background:#fff8;backdrop-filter:blur(8px);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:sticky;top:0;z-index:10}
+.app-title{font-weight:800;letter-spacing:.2px}
 .chip{font-size:12px;padding:.15rem .55rem;border-radius:999px;background:#f3f4f6;border:1px solid var(--border)}
 .btn{display:inline-flex;align-items:center;gap:.45rem;border-radius:12px;font-weight:700}
-.btn-primary{padding:.55rem .9rem;background:var(--brand);color:#fff}
-.btn-primary:hover{filter:brightness(.95)}
+.btn-primary{padding:.55rem .9rem;background:var(--brand);color:#fff} .btn-primary:hover{filter:brightness(.95)}
 
 main{max-width:1200px;margin:18px auto;padding:0 16px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .hero{grid-column:1/3;display:grid;grid-template-columns:7fr 5fr;gap:18px;align-items:stretch}
@@ -48,46 +36,29 @@ main{max-width:1200px;margin:18px auto;padding:0 16px;display:grid;grid-template
 .kpi-value{font-weight:900;font-size:22px}
 .meter{width:100%;height:10px;background:#eef2f7;border:1px solid var(--border);border-radius:999px;overflow:hidden;margin-top:6px}
 .meter>span{display:block;height:100%;background:linear-gradient(90deg,#06b6d4,#22c55e)}
-.chart{height:200px}
-.chart-lg{height:280px}
+
+.chart{height:200px} .chart-lg{height:280px}
 .chart canvas{width:100%!important;height:100%!important}
+
 .statbar{height:12px;border:1px solid var(--border);background:#eef2f7;border-radius:999px;overflow:hidden}
 .statbar>span{display:block;height:100%}
 .badge-soft{font-size:12px;padding:.15rem .5rem;border-radius:999px;border:1px solid var(--border);background:#f8fafc}
 
-/* Info-Button & Popover (Gestik) */
-.info-btn{
-  display:inline-flex;align-items:center;justify-content:center;
-  width:32px;height:32px;border-radius:10px;
-  border:1px solid var(--border);background:#f8fafc;
-  transition:background .15s ease;
-}
+.app-footer{grid-column:1/3;height:40px;display:flex;align-items:center;justify-content:center;
+  border-top:1px solid var(--border);color:#6b7280;background:#fff8;backdrop-filter:blur(6px);margin-top:8px}
+
+/* Gestik – i-Popover mit +/− */
+.info-btn{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:10px;border:1px solid var(--border);background:#f8fafc;transition:background .15s}
 .info-btn:hover{background:#eef2f7}
-.popover{
-  position:relative;margin-top:.7rem;
-  background:#fff;border:1px solid var(--border);
-  border-radius:14px;padding:12px 14px;
-  box-shadow:0 12px 28px rgba(2,6,23,.08);
-}
-.popover-arrow{
-  position:absolute;top:-7px;right:14px;
-  width:12px;height:12px;transform:rotate(45deg);
-  background:#fff;border-left:1px solid var(--border);border-top:1px solid var(--border);
-}
+.popover{position:relative;margin-top:.7rem;background:#fff;border:1px solid var(--border);border-radius:14px;padding:12px 14px;box-shadow:0 12px 28px rgba(2,6,23,.08)}
+.popover-arrow{position:absolute;top:-7px;right:14px;width:12px;height:12px;transform:rotate(45deg);background:#fff;border-left:1px solid var(--border);border-top:1px solid var(--border)}
 .point{display:flex;align-items:center;gap:.55rem;padding:.5rem .55rem;border-radius:10px}
 .point.plus{color:#16a34a;background:#ecfdf5}
 .point.minus{color:#dc2626;background:#fef2f2}
 .point .sym{font-weight:900;width:16px;text-align:center}
 .hidden{display:none}
 
-.app-footer{
-  grid-column:1/3;height:40px;display:flex;align-items:center;justify-content:center;
-  border-top:1px solid var(--border);color:#6b7280;background:#fff8;backdrop-filter:blur(6px);margin-top:8px;
-}
-@media (max-width:1000px){
-  .hero{grid-template-columns:1fr}
-  main{grid-template-columns:1fr}
-}
+@media (max-width:1000px){ .hero{grid-template-columns:1fr} main{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
@@ -101,11 +72,13 @@ main{max-width:1200px;margin:18px auto;padding:0 16px;display:grid;grid-template
 </header>
 
 <main>
-  <!-- Beispiel-Video & Status -->
+  <!-- Zeile 1: Video + Status (gleich hoch) -->
   <section class="hero">
-    <div class="card p-4 flex justify-center items-center bg-slate-900 text-gray-300">
-      Demo Video
+    <div class="card p-4">
+      <h3 class="title mb-3">Video-Vorschau</h3>
+      <div class="bg-black aspect-video rounded-lg flex items-center justify-center text-gray-300 text-sm">Demo Video</div>
     </div>
+
     <div class="card p-4">
       <h3 class="title mb-3 flex items-center gap-2"><i data-lucide="bar-chart-2" class="w-5 h-5"></i>Status</h3>
       <div class="grid grid-cols-3 gap-3">
@@ -113,10 +86,38 @@ main{max-width:1200px;margin:18px auto;padding:0 16px;display:grid;grid-template
         <div class="kpi"><p class="kpi-label">Ø WPM</p><p id="kpiWpm" class="kpi-value">–</p></div>
         <div class="kpi"><p class="kpi-label">Füllwörter</p><p id="kpiFill" class="kpi-value">–</p></div>
       </div>
+      <div class="mt-auto"></div>
     </div>
   </section>
 
-  <!-- Gestik – KI-Fazit -->
+  <!-- Zeile 2: WPM + Füllwörter -->
+  <section class="card p-4">
+    <h3 class="title mb-2">Geschwindigkeit (WPM) – 30-Sekunden-Segmente</h3>
+    <div class="chart chart-lg"><canvas id="wpmChart"></canvas></div>
+    <p class="text-xs text-gray-500 mt-2">Grünes Band = Zielbereich 120–160 WPM</p>
+  </section>
+
+  <section class="card p-4">
+    <h3 class="title mb-2">Füllwörter</h3>
+    <div class="grid md:grid-cols-2 gap-3">
+      <div class="chart"><canvas id="fillerBars"></canvas></div>
+      <div class="chart"><canvas id="fillerScatter"></canvas></div>
+    </div>
+    <div class="mt-3 flex flex-wrap gap-2" id="chips"></div>
+  </section>
+
+  <!-- Zeile 3: Fokus + Gestik -->
+  <section class="card p-4">
+    <h3 class="title mb-2">Publikumsfokus</h3>
+    <div>
+      <div class="flex items-center justify-between text-sm mb-1">
+        <span class="font-medium">Blick → Publikum</span><span id="gazePubPct" class="badge-soft">–%</span>
+      </div>
+      <div class="statbar"><span id="gazeBar" style="width:0%;background:#0ea5e9"></span></div>
+      <p class="text-xs text-gray-500 mt-1">Rest: Boden/Decke</p>
+    </div>
+  </section>
+
   <section class="card p-4" id="gestureCard">
     <div class="flex items-center justify-between mb-1">
       <h3 class="title">Gestik – KI-Fazit</h3>
@@ -124,11 +125,8 @@ main{max-width:1200px;margin:18px auto;padding:0 16px;display:grid;grid-template
         <i data-lucide="info" class="w-4 h-4"></i>
       </button>
     </div>
-
     <p id="gestureVerdict" class="text-xl font-extrabold">—</p>
-    <p id="gestureSubtitle" class="text-sm text-gray-600">
-      Automatische Einschätzung deiner Körpersprache.
-    </p>
+    <p id="gestureSubtitle" class="text-sm text-gray-600">Automatische Einschätzung deiner Körpersprache.</p>
 
     <div id="gestureInfo" class="popover hidden">
       <div class="popover-arrow"></div>
@@ -142,61 +140,130 @@ main{max-width:1200px;margin:18px auto;padding:0 16px;display:grid;grid-template
 
 <script>
 lucide.createIcons();
-document.getElementById("year").textContent = new Date().getFullYear();
+document.getElementById('year').textContent = new Date().getFullYear();
 
-// Dummy Gestik-Daten
-function rnd(min,max){return Math.round(min+Math.random()*(max-min));}
-function makeGestureInternals(){
-  return {
-    expressiveness:rnd(40,95),
-    naturalness:rnd(40,95),
-    tensionLow:rnd(30,95),
-    sync:rnd(35,95)
-  };
+const rnd=(min,max)=>Math.round(min+Math.random()*(max-min));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const fmt=s=>{const m=String(Math.floor(s/60)).padStart(2,'0');const ss=String(Math.floor(s%60)).padStart(2,'0');return `${m}:${ss}`};
+
+// ===== Dummy-Daten erzeugen =====
+function makeData(){
+  const duration=192; // 3:12
+  // WPM Segmente à 30s
+  const segs=[]; let t=0;
+  while(t<duration){ const end=Math.min(duration,t+30); const sec=end-t;
+    const words=rnd(70,230)*sec/60; const wpm=Math.round((words/sec)*60);
+    segs.push({start:t,end,sec,words:Math.round(words),wpm}); t=end; }
+  // Füllwörter
+  const fillers=[], lex=['äh','ähm','sozusagen','quasi','halt','irgendwie','hm'];
+  const total=rnd(9,18); for(let i=0;i<total;i++) fillers.push({t:Math.random()*duration, word:pick(lex)});
+  // Publikumsfokus
+  const gazePct=rnd(40,90);
+
+  // Gestik-Features (für KI-Fazit)
+  const gest={expressiveness:rnd(40,95),naturalness:rnd(40,95),tensionLow:rnd(30,95),sync:rnd(35,95)};
+
+  // Gesamt-Score (einfaches Modell)
+  const hit=(segs.filter(s=>s.wpm>=120 && s.wpm<=160).length/segs.length)*100;
+  const fpm= total/(duration/60);
+  const fillScore=Math.max(0,100-Math.min(100,(fpm/6)*100)); // 6 Füllw./min ~ 0 Punkte
+  const overall=Math.round(0.45*hit + 0.25*fillScore + 0.30*gazePct);
+
+  return {duration,segs,fillers,gazePct,gest,overall};
 }
 
-// Bewertung + Gründe (+/−)
+// ===== Gestik – Bewertung & Popover (+/−) =====
 function gestureVerdictFrom(g){
-  const score=Math.round(0.30*g.expressiveness+0.30*g.naturalness+0.25*g.sync+0.15*g.tensionLow);
+  const score=Math.round(0.30*g.expressiveness + 0.30*g.naturalness + 0.25*g.sync + 0.15*g.tensionLow);
   let verdict,subtitle;
-  if(score>=82){verdict="Gestik sehr überzeugend";subtitle="Natürlich, passend und wirkungsvoll.";}
-  else if(score>=68){verdict="Gute Gestik";subtitle="Meist flüssig, punktuell noch präziser einsetzbar.";}
-  else if(score>=52){verdict="Ausbaufähige Gestik";subtitle="Mehr Ruhe, klarere Akzente und passendes Timing helfen.";}
-  else{verdict="Zurückhaltende/inkonsistente Gestik";subtitle="Mehr Ausdruck & Synchronität, weniger Restbewegungen.";}
+  if(score>=82){verdict='Gestik sehr überzeugend';subtitle='Natürlich, passend und wirkungsvoll.';}
+  else if(score>=68){verdict='Gute Gestik';subtitle='Meist flüssig, punktuell noch präziser einsetzbar.';}
+  else if(score>=52){verdict='Ausbaufähige Gestik';subtitle='Mehr Ruhe, klarere Akzente & passendes Timing helfen.';}
+  else{verdict='Zurückhaltende/inkonsistente Gestik';subtitle='Mehr Ausdruck & Synchronität, weniger Restbewegungen.';}
 
   const bullets=[
-    {text:g.expressiveness>=70?"sichtbare, abwechslungsreiche Handbewegungen":"Gesten oft zu klein/selten sichtbar",positive:g.expressiveness>=70},
-    {text:g.naturalness>=70?"Bewegungen wirken frei und ungezwungen":"teilweise steif oder unnatürlich",positive:g.naturalness>=70},
-    {text:g.sync>=70?"Gesten kommen an Satzhöhepunkten":"Timing passt nicht immer zum Gesagten",positive:g.sync>=70},
-    {text:g.tensionLow>=70?"ruhige Schultern, wenig Nervosität":"spürbare Körperspannung oder Unruhe",positive:g.tensionLow>=70}
+    {text:g.expressiveness>=70?'sichtbare, abwechslungsreiche Handbewegungen':'Gesten oft zu klein/selten sichtbar',positive:g.expressiveness>=70},
+    {text:g.naturalness>=70?'Bewegungen wirken frei und ungezwungen':'teilweise steif oder unnatürlich',positive:g.naturalness>=70},
+    {text:g.sync>=70?'Gesten kommen an Satzhöhepunkten':'Timing passt nicht immer zum Gesagten',positive:g.sync>=70},
+    {text:g.tensionLow>=70?'ruhige Schultern, wenig Nervosität':'spürbare Körperspannung oder Unruhe',positive:g.tensionLow>=70},
   ];
   return {score,verdict,subtitle,bullets};
 }
-
-// Rendering & Popover-Logik
-function renderGesture(){
-  const g=makeGestureInternals();
-  const res=gestureVerdictFrom(g);
-
-  document.getElementById("gestureVerdict").textContent=`${res.verdict} (${res.score}/100)`;
-  document.getElementById("gestureSubtitle").textContent=res.subtitle;
-  document.getElementById("gestureWhy").innerHTML=res.bullets.map(b=>
-    `<li class="point ${b.positive?'plus':'minus'}">
-       <span class="sym">${b.positive?'+':'–'}</span>${b.text}
-     </li>`).join('');
-
-  const info=document.getElementById("gestureInfo");
-  const btn=document.getElementById("gestureInfoBtn");
-  function close(){info.classList.add("hidden");btn.setAttribute("aria-expanded","false");}
-  function open(){info.classList.remove("hidden");btn.setAttribute("aria-expanded","true");}
-  btn.onclick=()=>btn.getAttribute("aria-expanded")==="true"?close():open();
-  document.addEventListener("click",e=>{if(!e.target.closest("#gestureCard"))close();});
-  lucide.createIcons();
+function renderGestureFazit(gest){
+  const res=gestureVerdictFrom(gest);
+  document.getElementById('gestureVerdict').textContent=`${res.verdict} (${res.score}/100)`;
+  document.getElementById('gestureSubtitle').textContent=res.subtitle;
+  document.getElementById('gestureWhy').innerHTML=res.bullets.map(b=>
+    `<li class="point ${b.positive?'plus':'minus'}"><span class="sym">${b.positive?'+':'–'}</span>${b.text}</li>`
+  ).join('');
+  const info=document.getElementById('gestureInfo'); const btn=document.getElementById('gestureInfoBtn');
+  function close(){info.classList.add('hidden'); btn.setAttribute('aria-expanded','false');}
+  function open(){info.classList.remove('hidden'); btn.setAttribute('aria-expanded','true');}
+  btn.onclick=()=> btn.getAttribute('aria-expanded')==='true' ? close() : open();
+  document.addEventListener('click',e=>{ if(!e.target.closest('#gestureCard')) close(); });
+  if(window.lucide) lucide.createIcons();
 }
 
-// Init
-renderGesture();
-document.getElementById("rerun").onclick=renderGesture;
+// ===== Charts =====
+let wpmChart,fillerBars,fillerScatter;
+const RangeBand={id:'rangeBand',beforeDraw(c,a,o){if(!o)return;const {ctx,chartArea:{left,right},scales:{y}}=c;
+  const y1=y.getPixelForValue(o.min),y2=y.getPixelForValue(o.max);ctx.save();ctx.fillStyle='rgba(16,185,129,.12)';ctx.fillRect(left,y2,right-left,y1-y2);ctx.restore();}};
+
+function renderAll(data){
+  // KPIs
+  document.getElementById('kpiWpm').textContent=
+    Math.round(data.segs.reduce((s,x)=>s+x.wpm,0)/data.segs.length) + ' wpm';
+  document.getElementById('kpiFill').textContent=data.fillers.length;
+  document.getElementById('kpiScore').textContent=data.overall;
+  document.getElementById('scoreBar').style.width=data.overall+'%';
+
+  // Fokus
+  document.getElementById('gazePubPct').textContent=data.gazePct+'%';
+  document.getElementById('gazeBar').style.width=data.gazePct+'%';
+
+  // WPM
+  const labels=data.segs.map((_,i)=>'S'+(i+1)); const w=data.segs.map(s=>s.wpm);
+  if(wpmChart) wpmChart.destroy();
+  wpmChart=new Chart(document.getElementById('wpmChart'),{
+    type:'bar',
+    data:{labels,datasets:[{label:'WPM',data:w}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'},rangeBand:{min:120,max:160}},
+      scales:{x:{title:{display:true,text:'30s-Segmente'}},y:{title:{display:true,text:'Wörter/Minute'},beginAtZero:true}}},
+    plugins:[RangeBand]
+  });
+
+  // Füllwörter/Minute (Balken)
+  const mins=Math.ceil(data.duration/60), counts=new Array(mins).fill(0);
+  data.fillers.forEach(f=>counts[Math.min(mins-1,Math.floor(f.t/60))]++);
+  if(fillerBars) fillerBars.destroy();
+  fillerBars=new Chart(document.getElementById('fillerBars'),{
+    type:'bar',
+    data:{labels:counts.map((_,i)=>i+1),datasets:[{label:'Füllwörter/Minute',data:counts}]},
+    options:{responsive:true,maintainAspectRatio:false,scales:{x:{title:{display:true,text:'Minute'}},y:{title:{display:true,text:'Anzahl'},beginAtZero:true,ticks:{precision:0}}}}
+  });
+
+  // Füllwörter Zeitpunkte (größere Punkte)
+  const pts=data.fillers.map(f=>({x:f.t/60,y:1,label:`${fmt(f.t)} – ${f.word}`}));
+  if(fillerScatter) fillerScatter.destroy();
+  fillerScatter=new Chart(document.getElementById('fillerScatter'),{
+    type:'scatter',
+    data:{datasets:[{label:'Zeitpunkte',data:pts,pointRadius:5,pointHoverRadius:7}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:(c)=>c.raw.label}}},
+      scales:{x:{title:{display:true,text:'Zeit (Minuten)'}},y:{display:false,min:0,max:2}}}
+  });
+
+  // Chips – letzte 10
+  document.getElementById('chips').innerHTML =
+    [...data.fillers].sort((a,b)=>a.t-b.t).slice(-10)
+      .map(f=>`<span class="chip">${fmt(f.t)} · ${f.word}</span>`).join('');
+
+  // Gestik
+  renderGestureFazit(data.gest);
+}
+
+// Init & Re-Run
+let STATE = makeData(); renderAll(STATE);
+document.getElementById('rerun').onclick = ()=>{ STATE = makeData(); renderAll(STATE); };
 </script>
 </body>
 </html>
