@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>PresentAI – Demo Dashboard</title>
+<title>PresentAI – Analyse Dashboard</title>
 
-<!-- Tailwind für Layout-Utilities -->
+<!-- Tailwind -->
 <script src="https://cdn.tailwindcss.com"></script>
-<!-- Chart.js + Icons -->
+<!-- Chart.js & Lucide Icons -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -16,63 +16,47 @@
   --bg:#f6f7fb; --panel:#fff; --border:#e6e8ef; --text:#0f172a;
   --muted:#667085; --brand:#6d28d9; --good:#22c55e; --warn:#f59e0b;
 }
-*{box-sizing:border-box} html,body{height:100%}
 body{
   font-family: ui-sans-serif,system-ui,Inter,Roboto,Arial;
   color:var(--text);
-  background:
-    radial-gradient(1100px 600px at 8% -20%, #ede9fe55 0%, transparent 60%),
-    radial-gradient(900px 500px at 110% -10%, #dbeafe55 0%, transparent 55%),
-    var(--bg);
-  letter-spacing:.1px;
+  background: radial-gradient(1100px 600px at 8% -20%, #ede9fe55 0%, transparent 60%),
+              radial-gradient(900px 500px at 110% -10%, #dbeafe55 0%, transparent 55%), var(--bg);
+  margin:0;
 }
-.app-header{height:64px; position:sticky; top:0; z-index:20; background:linear-gradient(180deg,#fff,rgba(255,255,255,.85));
-  border-bottom:1px solid var(--border); backdrop-filter:blur(8px);
-  display:flex; align-items:center; justify-content:space-between; padding:0 16px}
-.app-title{font-weight:800; letter-spacing:.3px}
-.chip{font-size:12px; padding:.15rem .55rem; border-radius:999px; background:#f3f4f6; border:1px solid var(--border)}
+.app-header{
+  height:64px; background:#fff8; backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 16px; position:sticky; top:0; z-index:10;
+}
+.app-title{font-weight:800;}
+.chip{font-size:12px;padding:.15rem .55rem;border-radius:999px;background:#f3f4f6;border:1px solid var(--border)}
 .btn{display:inline-flex;align-items:center;gap:.45rem;border-radius:12px;font-weight:700}
 .btn-primary{padding:.55rem .9rem;background:var(--brand);color:#fff} .btn-primary:hover{filter:brightness(.95)}
 
 main{max-width:1200px;margin:18px auto;padding:0 16px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .hero{grid-column:1/3;display:grid;grid-template-columns:7fr 5fr;gap:18px}
-.card{background:var(--panel);border:1px solid var(--border);border-radius:16px;
-  box-shadow:0 10px 30px rgba(2,6,23,.06),0 2px 10px rgba(2,6,23,.04)}
-.title{font-weight:800; letter-spacing:.2px}
-.kpi{background:linear-gradient(180deg,#fafafa,#fff);border:1px solid var(--border);border-radius:14px;padding:10px}
-.kpi-label{color:var(--muted);font-size:12px} .kpi-value{font-weight:900;font-size:22px}
-.kpi-sub{color:#9aa4b2;font-size:11px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,.05)}
+.title{font-weight:700;}
+.kpi{background:#fff;border:1px solid var(--border);border-radius:14px;padding:10px;text-align:center}
+.kpi-label{color:var(--muted);font-size:12px}
+.kpi-value{font-weight:900;font-size:22px}
 .meter{width:100%;height:10px;background:#eef2f7;border:1px solid var(--border);border-radius:999px;overflow:hidden;margin-top:6px}
 .meter>span{display:block;height:100%;background:linear-gradient(90deg,#06b6d4,#22c55e)}
-.insights{display:flex;flex-wrap:wrap;gap:8px}
-.insight{display:inline-flex;align-items:center;gap:.4rem;background:#f8fafc;border:1px solid var(--border);
-  padding:.35rem .6rem;border-radius:999px;font-size:13px}
-.chart{width:100%;height:100%} .chart-sm{height:160px} .chart-md{height:220px} .chart-lg{height:300px}
+.chart{height:200px} .chart-lg{height:280px}
 .chart canvas{width:100%!important;height:100%!important}
-
-/* Fake-Video */
-.fake-video{background:#0b1220; border-radius:18px; border:1px solid #0b1220; aspect-ratio:16/9; overflow:hidden; position:relative; box-shadow:0 8px 24px rgba(2,6,23,.35)}
-.fake-video-inner{position:relative; width:100%; height:100%; background:linear-gradient(45deg,#0b1220 30%,#0e1a32 100%)}
-.badge{position:absolute; top:12px; left:12px; font-size:12px; background:#111827aa; color:#e5e7eb; padding:.25rem .5rem; border-radius:999px; display:flex; gap:.4rem; align-items:center; border:1px solid #1f2937}
-.badge .dot{width:8px;height:8px;border-radius:999px;background:var(--good); box-shadow:0 0 0 6px rgba(16,185,129,.12)}
-.tc{position:absolute; right:12px; bottom:10px; font-size:12px; color:#cbd5e1; background:#11182780; padding:.15rem .4rem; border-radius:6px}
-.scan{position:absolute; inset:0; display:grid; grid-template-rows:1fr 1fr 1fr; gap:18px; padding:22px}
-.scan>div{border-radius:10px; background:linear-gradient(90deg,rgba(255,255,255,.06),rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.06)}
-
-/* Statbars */
 .statbar{height:12px;border:1px solid var(--border);background:#eef2f7;border-radius:999px;overflow:hidden}
 .statbar>span{display:block;height:100%}
 .badge-soft{font-size:12px;padding:.15rem .5rem;border-radius:999px;border:1px solid var(--border);background:#f8fafc}
 
-/* + / − Toggle & Popover (Gestik) */
-.toggle-btn{
+/* Info-Button & Popover (Gestik) */
+.info-btn{
   display:inline-flex;align-items:center;justify-content:center;
   width:28px;height:28px;border-radius:8px;
   border:1px solid var(--border); background:#f8fafc;
-  font-weight:900; line-height:0; font-size:18px;
   transition:background .15s ease;
 }
-.toggle-btn:hover{ background:#eef2f7 }
+.info-btn:hover{ background:#eef2f7 }
 .popover{
   position:relative; margin-top:.6rem;
   background:#fff; border:1px solid var(--border);
@@ -84,11 +68,20 @@ main{max-width:1200px;margin:18px auto;padding:0 16px;display:grid;grid-template
   width:12px; height:12px; transform:rotate(45deg);
   background:#fff; border-left:1px solid var(--border); border-top:1px solid var(--border);
 }
+.point {
+  display:flex; align-items:center; gap:.5rem;
+  font-size:14px; padding:.3rem .4rem; border-radius:8px;
+}
+.point.plus { color:#16a34a; background:#ecfdf5; }
+.point.minus { color:#dc2626; background:#fef2f2; }
+.point-symbol { font-weight:900; width:14px; text-align:center; }
 .hidden{ display:none; }
 
-.app-footer{grid-column:1/3;height:40px;display:flex;align-items:center;justify-content:center;border-top:1px solid var(--border);color:#6b7280;background:#fff8;backdrop-filter:blur(6px);margin-top:8px}
-
-@media (max-width:1100px){ .hero{grid-template-columns:1fr} main{grid-template-columns:1fr} }
+.app-footer{
+  grid-column:1/3;height:40px;display:flex;align-items:center;justify-content:center;
+  border-top:1px solid var(--border);color:#6b7280;background:#fff8;backdrop-filter:blur(6px);margin-top:8px;
+}
+@media (max-width:1000px){ .hero{grid-template-columns:1fr} main{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
@@ -96,106 +89,70 @@ main{max-width:1200px;margin:18px auto;padding:0 16px;display:grid;grid-template
   <div class="flex items-center gap-2">
     <i data-lucide="sparkles" class="w-5 h-5 text-violet-700"></i>
     <span class="app-title">PresentAI</span>
-    <span class="chip">AI Demo</span>
+    <span class="chip">Prototype</span>
   </div>
   <button id="rerun" class="btn btn-primary"><i data-lucide="wand-2" class="w-4 h-4"></i> Neu bewerten</button>
 </header>
 
 <main>
-  <!-- HERO -->
+  <!-- Übersicht -->
   <section class="hero">
-    <!-- Fake Video -->
-    <div>
-      <div class="fake-video">
-        <div class="fake-video-inner">
-          <div class="badge"><span class="dot"></span> Demo</div>
-          <div class="scan"><div></div><div></div><div></div></div>
-          <div class="tc">03:12</div>
-        </div>
-      </div>
+    <div class="card p-4">
+      <h3 class="title mb-2">Video-Vorschau</h3>
+      <div class="bg-black aspect-video rounded-lg flex items-center justify-center text-gray-400 text-sm">Demo Video</div>
     </div>
 
-    <!-- KPIs & Insights -->
     <div class="card p-4">
-      <div class="flex items-center justify-between">
-        <h3 class="title flex items-center gap-2"><i data-lucide="bar-chart-2" class="w-5 h-5"></i> Analyse-Übersicht</h3>
-        <span class="text-sm text-gray-500" id="sumTime">3:12</span>
+      <h3 class="title mb-2 flex items-center gap-2"><i data-lucide="bar-chart-2" class="w-5 h-5"></i> Status</h3>
+      <div class="grid grid-cols-3 gap-3">
+        <div class="kpi"><p class="kpi-label">Gesamt</p><p id="kpiScore" class="kpi-value">–</p><div class="meter"><span id="scoreBar"></span></div></div>
+        <div class="kpi"><p class="kpi-label">Ø WPM</p><p id="kpiWpm" class="kpi-value">–</p></div>
+        <div class="kpi"><p class="kpi-label">Füllwörter</p><p id="kpiFill" class="kpi-value">–</p></div>
       </div>
-
-      <div class="grid grid-cols-3 gap-3 mt-3">
-        <div class="kpi">
-          <p class="kpi-label">Gesamt-Score</p>
-          <p id="kpiScore" class="kpi-value">—</p>
-          <div class="meter"><span id="scoreBar" style="width:0%"></span></div>
-        </div>
-        <div class="kpi">
-          <p class="kpi-label">Durchschnitt WPM</p>
-          <p id="kpiWpm" class="kpi-value">—</p>
-          <p class="kpi-sub">Ziel 120–160</p>
-        </div>
-        <div class="kpi">
-          <p class="kpi-label">Füllwörter</p>
-          <p id="kpiFill" class="kpi-value">—</p>
-          <p class="kpi-sub">insgesamt</p>
-        </div>
-      </div>
-
-      <div class="insights mt-3" id="insights"></div>
     </div>
   </section>
 
   <!-- WPM -->
   <section class="card p-4">
-    <h3 class="title mb-2">Geschwindigkeit (WPM) – 30-Sekunden-Segmente</h3>
+    <h3 class="title mb-2">Geschwindigkeit (WPM)</h3>
     <div class="chart chart-lg"><canvas id="wpmChart"></canvas></div>
-    <p class="text-xs text-gray-500 mt-2">Grünes Band = Ziel (120–160 WPM)</p>
   </section>
 
   <!-- Füllwörter -->
   <section class="card p-4">
     <h3 class="title mb-2">Füllwörter</h3>
     <div class="grid md:grid-cols-2 gap-3">
-      <div class="chart chart-md"><canvas id="fillerBars"></canvas></div>
-      <div class="chart chart-md"><canvas id="fillerScatter"></canvas></div>
+      <div class="chart"><canvas id="fillerBars"></canvas></div>
+      <div class="chart"><canvas id="fillerScatter"></canvas></div>
     </div>
-    <div class="mt-3 flex flex-wrap gap-2" id="chips"></div>
   </section>
 
-  <!-- Fokus/Ausrichtung -->
+  <!-- Fokus -->
   <section class="card p-4">
-    <h3 class="title mb-2">Publikumsfokus & Ausrichtung (Anteil der Dauer)</h3>
-    <div class="grid gap-4">
-      <div>
-        <div class="flex items-center justify-between text-sm mb-1">
-          <span class="font-medium">Blick → Publikum</span>
-          <span id="gazePubPct" class="badge-soft">—%</span>
-        </div>
-        <div class="statbar"><span id="gazeBar" style="width:0%; background:#0ea5e9"></span></div>
-        <p class="text-xs text-gray-500 mt-1">Rest: Boden/Decke</p>
+    <h3 class="title mb-2">Publikumsfokus</h3>
+    <div>
+      <div class="flex items-center justify-between text-sm mb-1">
+        <span class="font-medium">Blick → Publikum</span><span id="gazePubPct" class="badge-soft">–%</span>
       </div>
-      <div>
-        <div class="flex items-center justify-between text-sm mb-1">
-          <span class="font-medium">Ausrichtung → Publikum</span>
-          <span id="oriPubPct" class="badge-soft">—%</span>
-        </div>
-        <div class="statbar"><span id="oriBar" style="width:0%; background:#10b981"></span></div>
-        <p class="text-xs text-gray-500 mt-1">Rest: Tafel/Seitlich</p>
-      </div>
+      <div class="statbar"><span id="gazeBar" style="width:0%;background:#0ea5e9"></span></div>
+      <p class="text-xs text-gray-500 mt-1">Rest: Boden/Decke</p>
     </div>
   </section>
 
-  <!-- Gestik – nur Fazit + +/− Popover -->
+  <!-- Gestik -->
   <section class="card p-4" id="gestureCard">
     <div class="flex items-center justify-between mb-1">
       <h3 class="title">Gestik – KI-Fazit</h3>
-      <button id="gestureToggle" class="toggle-btn" aria-label="Details ein-/ausklappen" aria-expanded="false" aria-controls="gestureInfo">+</button>
+      <button id="gestureInfoBtn" class="info-btn" aria-label="Warum?" aria-expanded="false" aria-controls="gestureInfo">
+        <i data-lucide="info" class="w-4 h-4"></i>
+      </button>
     </div>
-    <p id="gestureVerdict" class="text-xl font-extrabold">—</p>
+    <p id="gestureVerdict" class="text-xl font-extrabold">–</p>
     <p id="gestureSubtitle" class="text-sm text-gray-600">Automatische Einschätzung deiner Körpersprache.</p>
     <div id="gestureInfo" class="popover hidden">
       <div class="popover-arrow"></div>
       <p class="font-medium mb-1">Warum dieses Fazit?</p>
-      <ul id="gestureWhy" class="list-disc pl-5 text-sm space-y-1"></ul>
+      <ul id="gestureWhy" class="list-none space-y-1"></ul>
     </div>
   </section>
 
@@ -208,146 +165,90 @@ document.getElementById('year').textContent = new Date().getFullYear();
 
 const rnd=(min,max)=>Math.round(min+Math.random()*(max-min));
 const pick=a=>a[Math.floor(Math.random()*a.length)];
-const fmt=s=>{const m=String(Math.floor(s/60)).padStart(2,'0');const ss=String(Math.floor(s%60)).padStart(2,'0');return `${m}:${ss}`};
 
-// ===== Dummy-Generator =====
+// Dummy Daten
 function makeData(){
-  const duration=192; // 3:12
-  // WPM 30s
-  const segs=[]; let t=0;
-  while(t<duration){ const end=Math.min(duration,t+30); const sec=end-t;
-    const words=rnd(70,230)*sec/60; const wpm=Math.round((words/sec)*60);
-    segs.push({start:t,end,sec,words:Math.round(words),wpm}); t=end; }
-  // Füllwörter
-  const fillers=[], lex=['äh','ähm','sozusagen','quasi','halt','irgendwie','hm'];
-  const total=rnd(9,18); for(let i=0;i<total;i++) fillers.push({t:Math.random()*duration, word:pick(lex)});
-  // Fokus/Ausrichtung
-  const parts=n=>{let a=Math.random(),b=Math.random(),c=Math.random();let s=a+b+c;return [a/s*n,b/s*n,c/s*n]};
-  const gaze=parts(duration); const ori=parts(duration);
-  // interne Gestik-Features
-  const gest = {
-    expressiveness: rnd(40,95),
-    naturalness: rnd(40,95),
-    tensionLow: rnd(30,95),  // hohe Zahl = ruhig
-    sync: rnd(35,95)
-  };
-
-  // Scores für Gesamt-Score (nur KPI)
-  const hit=(segs.filter(s=>s.wpm>=120 && s.wpm<=160).length/segs.length)*100;
-  const fpm= total/(duration/60);
-  const fillScore=Math.max(0,100-Math.min(100,(fpm/6)*100));
-  const gazeScore=(gaze[0]/(gaze[0]+gaze[1]+gaze[2]))*100;
-  const oriScore=(ori[0]/(ori[0]+ori[1]+ori[2]))*100;
-  const overall=Math.round(0.35*hit + 0.25*fillScore + 0.20*gazeScore + 0.20*oriScore);
-
-  return {duration,segs,fillers,gaze,ori, overall,
-          pubGazePct:Math.round(gazeScore), pubOriPct:Math.round(oriScore), gest};
+  const segs=Array.from({length:7},()=>rnd(100,180));
+  const fillers=Array.from({length:rnd(8,15)},()=>({t:rnd(0,180),word:pick(['äh','ähm','sozusagen','halt','irgendwie'])}));
+  const gaze=rnd(40,90);
+  const gest={expressiveness:rnd(40,95),naturalness:rnd(40,95),tensionLow:rnd(30,95),sync:rnd(35,95)};
+  const overall=Math.round(0.4*(segs.filter(x=>x>=120&&x<=160).length/segs.length)*100+0.3*(100-fillers.length*3)+0.3*gaze);
+  return {segs,fillers,gaze,gest,overall};
 }
 
-// ===== Gestik-Fazit (nur Fazit + Popover) =====
+// Gestik Bewertung
 function gestureVerdictFrom(g){
-  const score = Math.round(0.30*g.expressiveness + 0.30*g.naturalness + 0.25*g.sync + 0.15*g.tensionLow);
-  let verdict, subtitle;
-  if(score >= 82){ verdict='Gestik sehr überzeugend'; subtitle='Natürlich, passend und wirkungsvoll.'; }
-  else if(score >= 68){ verdict='Gute Gestik'; subtitle='Meist flüssig, punktuell noch präziser einsetzbar.'; }
-  else if(score >= 52){ verdict='Ausbaufähige Gestik'; subtitle='Mehr Ruhe, klarere Akzente und passende Handbewegungen helfen.'; }
-  else { verdict='Zurückhaltende/inkonsistente Gestik'; subtitle='Mehr Ausdruck & Synchronität, weniger Restbewegungen.'; }
+  const score=Math.round(0.3*g.expressiveness+0.3*g.naturalness+0.25*g.sync+0.15*g.tensionLow);
+  let verdict,subtitle;
+  if(score>=82){verdict='Gestik sehr überzeugend';subtitle='Natürlich, passend und wirkungsvoll.';}
+  else if(score>=68){verdict='Gute Gestik';subtitle='Meist flüssig, punktuell noch präziser einsetzbar.';}
+  else if(score>=52){verdict='Ausbaufähige Gestik';subtitle='Mehr Ruhe, klarere Akzente helfen.';}
+  else{verdict='Zurückhaltende Gestik';subtitle='Mehr Ausdruck und Offenheit empfehlenswert.';}
 
   const bullets=[];
-  bullets.push(g.expressiveness>=70 ? 'sichtbare, abwechslungsreiche Handbewegungen' : 'Gesten oft zu klein/selten sichtbar');
-  bullets.push(g.naturalness>=70 ? 'Bewegungen wirken frei und ungezwungen' : 'teilweise mechanische oder abgebrochene Bewegungen');
-  bullets.push(g.sync>=70 ? 'Gesten kommen an Satzhöhepunkten' : 'Timing passt nicht immer zum Gesagten');
-  bullets.push(g.tensionLow>=70 ? 'ruhige Schultern, wenig Nervosität' : 'spürbare Körperspannung (Unruhe/Verkrampfung)');
+  bullets.push({text:g.expressiveness>=70?'sichtbare, abwechslungsreiche Handbewegungen':'Gesten oft zu klein oder selten sichtbar',positive:g.expressiveness>=70});
+  bullets.push({text:g.naturalness>=70?'Bewegungen wirken frei und ungezwungen':'teilweise steif oder unnatürlich',positive:g.naturalness>=70});
+  bullets.push({text:g.sync>=70?'Gesten kommen an Satzhöhepunkten':'Timing passt nicht immer zum Gesagten',positive:g.sync>=70});
+  bullets.push({text:g.tensionLow>=70?'ruhige Schultern, wenig Nervosität':'spürbare Körperspannung oder Unruhe',positive:g.tensionLow>=70});
 
-  return {score, verdict, subtitle, bullets};
+  return {score,verdict,subtitle,bullets};
 }
 
 function renderGestureFazit(gest){
-  const res = gestureVerdictFrom(gest);
-  const vEl = document.getElementById('gestureVerdict');
-  const sEl = document.getElementById('gestureSubtitle');
-  const whyList = document.getElementById('gestureWhy');
-  const info = document.getElementById('gestureInfo');
-  const btn  = document.getElementById('gestureToggle');
-
-  vEl.textContent = `${res.verdict} (${res.score}/100)`;
-  sEl.textContent = res.subtitle;
-  whyList.innerHTML = res.bullets.map(b => `<li>${b}</li>`).join("");
-
-  function closePopover(){ info.classList.add('hidden'); btn.setAttribute('aria-expanded','false'); btn.textContent='+'; }
-  function openPopover(){ info.classList.remove('hidden'); btn.setAttribute('aria-expanded','true'); btn.textContent='–'; }
-
-  btn.onclick = ()=> (btn.getAttribute('aria-expanded')==='true') ? closePopover() : openPopover();
-  document.addEventListener('click', (e)=>{ if(!e.target.closest('#gestureCard')) closePopover(); });
+  const res=gestureVerdictFrom(gest);
+  const vEl=document.getElementById('gestureVerdict');
+  const sEl=document.getElementById('gestureSubtitle');
+  const whyList=document.getElementById('gestureWhy');
+  const info=document.getElementById('gestureInfo');
+  const btn=document.getElementById('gestureInfoBtn');
+  vEl.textContent=`${res.verdict} (${res.score}/100)`;
+  sEl.textContent=res.subtitle;
+  whyList.innerHTML=res.bullets.map(b=>
+    `<li class="point ${b.positive?'plus':'minus'}">
+       <span class="point-symbol">${b.positive?'+':'–'}</span>${b.text}
+     </li>`).join("");
+  btn.onclick=()=>{info.classList.toggle('hidden');};
+  lucide.createIcons();
 }
 
-// ===== Charts =====
+// Charts
 let wpmChart,fillerBars,fillerScatter;
-const RangeBand={id:'rangeBand',beforeDraw(c,a,o){if(!o)return;const {ctx,chartArea:{left,right},scales:{y}}=c;
-  const y1=y.getPixelForValue(o.min),y2=y.getPixelForValue(o.max);ctx.save();ctx.fillStyle='rgba(16,185,129,.12)';ctx.fillRect(left,y2,right-left,y1-y2);ctx.restore();}};
-
 function render(data){
-  const avgWpm=Math.round(data.segs.reduce((s,x)=>s+x.wpm,0)/data.segs.length);
-  document.getElementById('kpiWpm').textContent=avgWpm+' wpm';
+  document.getElementById('kpiWpm').textContent=Math.round(data.segs.reduce((a,b)=>a+b)/data.segs.length)+' wpm';
   document.getElementById('kpiFill').textContent=data.fillers.length;
-  document.getElementById('kpiScore').textContent=data.overall+' / 100';
+  document.getElementById('kpiScore').textContent=data.overall;
   document.getElementById('scoreBar').style.width=data.overall+'%';
+  document.getElementById('gazePubPct').textContent=data.gaze+'%';
+  document.getElementById('gazeBar').style.width=data.gaze+'%';
 
-  // Insights
-  const ins=[];
-  ins.push(avgWpm<120?'Tempo etwas steigern (≥120).':avgWpm>160?'Tempo leicht reduzieren (≤160).':'Tempo im Ziel – weiter so.');
-  ins.push(data.fillers.length>12?'Viele Füllwörter – bewusste Pausen setzen.':'Füllwörter im Rahmen.');
-  ins.push(data.pubGazePct<55?'Mehr Blick ins Publikum.':'Guter Publikumsfokus.');
-  document.getElementById('insights').innerHTML=ins.map(t=>`<span class="insight"><i data-lucide="check-circle-2" class="w-4 h-4"></i>${t}</span>`).join('');
-  lucide.createIcons();
-
-  // WPM Balken
-  const labels=data.segs.map((_,i)=>`S${i+1}`), w=data.segs.map(s=>s.wpm);
-  if(wpmChart) wpmChart.destroy();
+  if(wpmChart)wpmChart.destroy();
   wpmChart=new Chart(document.getElementById('wpmChart'),{
     type:'bar',
-    data:{labels,datasets:[{label:'WPM',data:w}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'},rangeBand:{min:120,max:160}},
-      scales:{x:{title:{display:true,text:'30s-Segmente'}},y:{title:{display:true,text:'Wörter/Minute'},beginAtZero:true}}},
-    plugins:[RangeBand]
+    data:{labels:data.segs.map((_,i)=>'S'+(i+1)),datasets:[{data:data.segs,label:'WPM'}]},
+    options:{responsive:true,scales:{y:{beginAtZero:true}}}
   });
 
-  // Füllwörter/Minute
-  const mins=Math.ceil(data.duration/60), lab=Array.from({length:mins},(_,i)=>`${i+1}`), cnt=new Array(mins).fill(0);
-  data.fillers.forEach(f=>{cnt[Math.min(mins-1,Math.floor(f.t/60))]++});
-  if(fillerBars) fillerBars.destroy();
+  const mins=Math.ceil(data.segs.length/2),fcounts=new Array(mins).fill(0);
+  data.fillers.forEach(f=>fcounts[Math.floor(f.t/60)]++);
+  if(fillerBars)fillerBars.destroy();
   fillerBars=new Chart(document.getElementById('fillerBars'),{
-    type:'bar', data:{labels:lab,datasets:[{label:'Füllwörter/Minute',data:cnt}]},
-    options:{responsive:true,maintainAspectRatio:false,scales:{x:{title:{display:true,text:'Minute'}},y:{title:{display:true,text:'Anzahl'},beginAtZero:true,ticks:{precision:0}}}}});
+    type:'bar',data:{labels:fcounts.map((_,i)=>i+1),datasets:[{data:fcounts,label:'Füllwörter/Min'}]},
+    options:{responsive:true,scales:{y:{beginAtZero:true}}}
+  });
 
-  // Füllwörter Zeitpunkte – größere Punkte
-  if(fillerScatter) fillerScatter.destroy();
-  const pts=data.fillers.map(f=>({x:f.t/60,y:1,label:`${fmt(f.t)} – ${f.word}`}));
+  if(fillerScatter)fillerScatter.destroy();
   fillerScatter=new Chart(document.getElementById('fillerScatter'),{
     type:'scatter',
-    data:{datasets:[{label:'Zeitpunkte',data:pts, pointRadius:5, pointHoverRadius:7}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:(c)=>c.raw.label}}},
-      scales:{x:{title:{display:true,text:'Zeit (Minuten)'}},y:{display:false,min:0,max:2}}}});
+    data:{datasets:[{label:'Zeitpunkte',data:data.fillers.map(f=>({x:f.t/60,y:1})),pointRadius:5}]},
+    options:{responsive:true,scales:{x:{title:{display:true,text:'Minuten'}},y:{display:false,min:0,max:2}}}
+  });
 
-  // Chips (letzte 10)
-  const chips=[...data.fillers].sort((a,b)=>a.t-b.t).slice(-10)
-    .map(f=>`<span class="chip">${fmt(f.t)} · ${f.word}</span>`).join('');
-  document.getElementById('chips').innerHTML=chips;
-
-  // Fokus/Ausrichtung – Prozent
-  document.getElementById('gazePubPct').textContent=data.pubGazePct+'%';
-  document.getElementById('gazeBar').style.width=data.pubGazePct+'%';
-  document.getElementById('oriPubPct').textContent=data.pubOriPct+'%';
-  document.getElementById('oriBar').style.width=data.pubOriPct+'%';
-
-  // Gestik-Fazit
   renderGestureFazit(data.gest);
 }
 
-// Initial & Neu bewerten
-document.getElementById('year').textContent = new Date().getFullYear();
+// Init
 let STATE=makeData(); render(STATE);
-document.getElementById('rerun').addEventListener('click',()=>{ STATE=makeData(); render(STATE); });
+document.getElementById('rerun').onclick=()=>{STATE=makeData();render(STATE);}
 </script>
 </body>
 </html>
