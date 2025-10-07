@@ -64,14 +64,15 @@ main{max-width:1200px;margin:18px auto;padding:0 16px;display:grid;grid-template
 .statbar>span{display:block;height:100%}
 .badge-soft{font-size:12px;padding:.15rem .5rem;border-radius:999px;border:1px solid var(--border);background:#f8fafc}
 
-/* Info-Button & Popover (Gestik) */
-.info-btn{
+/* + / − Toggle & Popover (Gestik) */
+.toggle-btn{
   display:inline-flex;align-items:center;justify-content:center;
   width:28px;height:28px;border-radius:8px;
   border:1px solid var(--border); background:#f8fafc;
+  font-weight:900; line-height:0; font-size:18px;
   transition:background .15s ease;
 }
-.info-btn:hover{ background:#eef2f7 }
+.toggle-btn:hover{ background:#eef2f7 }
 .popover{
   position:relative; margin-top:.6rem;
   background:#fff; border:1px solid var(--border);
@@ -107,7 +108,7 @@ main{max-width:1200px;margin:18px auto;padding:0 16px;display:grid;grid-template
     <div>
       <div class="fake-video">
         <div class="fake-video-inner">
-          <div class="badge"><span class="dot"></"></span> Demo</div>
+          <div class="badge"><span class="dot"></span> Demo</div>
           <div class="scan"><div></div><div></div><div></div></div>
           <div class="tc">03:12</div>
         </div>
@@ -183,13 +184,11 @@ main{max-width:1200px;margin:18px auto;padding:0 16px;display:grid;grid-template
     </div>
   </section>
 
-  <!-- Gestik – KI-Fazit (nur Fazit + Info-Popover) -->
+  <!-- Gestik – nur Fazit + +/− Popover -->
   <section class="card p-4" id="gestureCard">
     <div class="flex items-center justify-between mb-1">
       <h3 class="title">Gestik – KI-Fazit</h3>
-      <button id="gestureInfoBtn" class="info-btn" aria-label="Warum?" aria-expanded="false" aria-controls="gestureInfo">
-        <i data-lucide="info" class="w-4 h-4"></i>
-      </button>
+      <button id="gestureToggle" class="toggle-btn" aria-label="Details ein-/ausklappen" aria-expanded="false" aria-controls="gestureInfo">+</button>
     </div>
     <p id="gestureVerdict" class="text-xl font-extrabold">—</p>
     <p id="gestureSubtitle" class="text-sm text-gray-600">Automatische Einschätzung deiner Körpersprache.</p>
@@ -222,7 +221,7 @@ function makeData(){
   // Füllwörter
   const fillers=[], lex=['äh','ähm','sozusagen','quasi','halt','irgendwie','hm'];
   const total=rnd(9,18); for(let i=0;i<total;i++) fillers.push({t:Math.random()*duration, word:pick(lex)});
-  // Fokus/Ausrichtung/Gestik (intern)
+  // Fokus/Ausrichtung
   const parts=n=>{let a=Math.random(),b=Math.random(),c=Math.random();let s=a+b+c;return [a/s*n,b/s*n,c/s*n]};
   const gaze=parts(duration); const ori=parts(duration);
   // interne Gestik-Features
@@ -233,7 +232,7 @@ function makeData(){
     sync: rnd(35,95)
   };
 
-  // Scores
+  // Scores für Gesamt-Score (nur KPI)
   const hit=(segs.filter(s=>s.wpm>=120 && s.wpm<=160).length/segs.length)*100;
   const fpm= total/(duration/60);
   const fillScore=Math.max(0,100-Math.min(100,(fpm/6)*100));
@@ -269,17 +268,17 @@ function renderGestureFazit(gest){
   const sEl = document.getElementById('gestureSubtitle');
   const whyList = document.getElementById('gestureWhy');
   const info = document.getElementById('gestureInfo');
-  const btn  = document.getElementById('gestureInfoBtn');
+  const btn  = document.getElementById('gestureToggle');
 
   vEl.textContent = `${res.verdict} (${res.score}/100)`;
   sEl.textContent = res.subtitle;
   whyList.innerHTML = res.bullets.map(b => `<li>${b}</li>`).join("");
 
-  function closePopover(){ info.classList.add('hidden'); btn.setAttribute('aria-expanded','false'); }
-  function openPopover(){ info.classList.remove('hidden'); btn.setAttribute('aria-expanded','true'); }
+  function closePopover(){ info.classList.add('hidden'); btn.setAttribute('aria-expanded','false'); btn.textContent='+'; }
+  function openPopover(){ info.classList.remove('hidden'); btn.setAttribute('aria-expanded','true'); btn.textContent='–'; }
+
   btn.onclick = ()=> (btn.getAttribute('aria-expanded')==='true') ? closePopover() : openPopover();
   document.addEventListener('click', (e)=>{ if(!e.target.closest('#gestureCard')) closePopover(); });
-  lucide.createIcons();
 }
 
 // ===== Charts =====
@@ -346,9 +345,9 @@ function render(data){
 }
 
 // Initial & Neu bewerten
+document.getElementById('year').textContent = new Date().getFullYear();
 let STATE=makeData(); render(STATE);
 document.getElementById('rerun').addEventListener('click',()=>{ STATE=makeData(); render(STATE); });
-
 </script>
 </body>
 </html>
