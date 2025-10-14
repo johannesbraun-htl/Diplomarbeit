@@ -7,9 +7,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
 let WPM_CHART, FUELL_STREU_CHART;
 
+// Hilfsfunktion: Basispfad für GitHub Pages (/Diplomarbeit/Frontend/)
+function base(url){
+  // funktioniert lokal (file server) und auf Pages
+  const prefix = '/Diplomarbeit/Frontend/';
+  const onPages = location.pathname.startsWith(prefix);
+  return (onPages ? prefix : '') + url;
+}
+
 async function init(){
   try {
-    const res = await fetch('api/analyse.php', { cache: 'no-store' });
+    // JSON liegt unter Frontend/data/analyse.json (muss so ins Repo!)
+    const res = await fetch(base('data/analyse.json'), { cache: 'no-store' });
     if (!res.ok) throw new Error(`analyse.json HTTP ${res.status}`);
     const DATA = await res.json();
 
@@ -71,26 +80,22 @@ function renderGestik(D){
   }
 }
 
-/* === NEU: Alle Füllwörter anzeigen === */
 function renderFuellwoerter(D){
   const chips = document.getElementById('chips');
   if (!chips) return;
 
-  // Falls neue JSON-Struktur → erstelle aus fuell_zeitpunkte oder fallback
+  // Zeige ALLE Füllwörter, bevorzugt aus "fuellwoerter_alle", sonst aus Scatterlabels
   let alle = [];
   if (Array.isArray(D.fuellwoerter_alle)) {
     alle = D.fuellwoerter_alle;
   } else if (Array.isArray(D.charts?.fuell_zeitpunkte)) {
     alle = D.charts.fuell_zeitpunkte.map(p => p.label);
-  } else if (Array.isArray(D.fuellwoerter_letzte10)) {
-    alle = D.fuellwoerter_letzte10;
   }
-
   chips.innerHTML = alle.map(t => `<span class="chip">${t}</span>`).join('');
 }
 
 function renderCharts(D){
-  // === WPM Chart ===
+  // === WPM ===
   if (WPM_CHART) WPM_CHART.destroy();
   const wpmLabels = D.charts.wpm.labels;
   const wpmValues = D.charts.wpm.values;
@@ -136,7 +141,7 @@ function renderCharts(D){
     }]
   });
 
-  // === Füllwörter Zeitpunkte (Scatter only, vergrößert) ===
+  // === Füllwörter Scatter ===
   if (FUELL_STREU_CHART) FUELL_STREU_CHART.destroy();
   FUELL_STREU_CHART = new Chart(document.getElementById('fuellStreuCanvas'), {
     type: 'scatter',
@@ -144,10 +149,7 @@ function renderCharts(D){
       label: 'Zeitpunkte',
       data: D.charts.fuell_zeitpunkte,
       pointRadius: 6,
-      pointHoverRadius: 8,
-      backgroundColor: 'rgba(59,130,246,0.6)',
-      borderColor: 'rgba(37,99,235,0.8)',
-      borderWidth: 1.5
+      pointHoverRadius: 8
     }]},
     options: {
       responsive: true, maintainAspectRatio: false,
@@ -163,6 +165,6 @@ function renderCharts(D){
   });
 }
 
-// ==== kleine Helfer ====
+// Helpers
 function setText(id, v){ const el = document.getElementById(id); if (el) el.textContent = v; }
 function setWidth(id, v){ const el = document.getElementById(id); if (el) el.style.width = v; }
