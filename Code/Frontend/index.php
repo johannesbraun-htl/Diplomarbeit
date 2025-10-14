@@ -8,52 +8,51 @@
     <?php include __DIR__ . '/partials/header.php'; ?>
 
     <main>
-      <!-- Zeile 1: Video + Status -->
-      <section class="hero">
-        <div class="card p-4">
-          <h3 class="title mb-3">Video-Vorschau</h3>
-          <div id="videoContainer" class="bg-black aspect-video rounded-lg flex items-center justify-center text-gray-300 text-sm">
-            Demo Video
-          </div>
+      <!-- Zeile 1: Video -->
+      <section class="card p-4 col-span-2">
+        <h3 class="title mb-3">Video-Vorschau</h3>
+        <div id="videoContainer" class="bg-black aspect-video rounded-lg flex items-center justify-center text-gray-300 text-sm">
+          Demo Video
         </div>
+      </section>
 
-        <div class="card p-4">
-          <h3 class="title mb-3 flex items-center gap-2">
-            <i data-lucide="bar-chart-2" class="w-5 h-5"></i>Status
-          </h3>
-          <div class="grid grid-cols-3 gap-3">
-            <div class="kpi">
-              <p class="kpi-label">Gesamt</p>
-              <p id="kpiGesamt" class="kpi-value">–</p>
-              <div class="meter"><span id="scoreBalken"></span></div>
-            </div>
-            <div class="kpi">
-              <p class="kpi-label">Ø WPM</p>
-              <p id="kpiWpm" class="kpi-value">–</p>
-            </div>
-            <div class="kpi">
-              <p class="kpi-label">Füllwörter</p>
-              <p id="kpiFuell" class="kpi-value">–</p>
-            </div>
+      <!-- Zeile 2: Status -->
+      <section class="card p-4 col-span-2">
+        <h3 class="title mb-3 flex items-center gap-2">
+          <i data-lucide="bar-chart-2" class="w-5 h-5"></i>Status
+        </h3>
+        <div class="grid grid-cols-3 gap-3">
+          <div class="kpi">
+            <p class="kpi-label">Gesamt</p>
+            <p id="kpiGesamt" class="kpi-value">–</p>
+            <div class="meter"><span id="scoreBalken"></span></div>
+          </div>
+          <div class="kpi">
+            <p class="kpi-label">Ø WPM</p>
+            <p id="kpiWpm" class="kpi-value">–</p>
+          </div>
+          <div class="kpi">
+            <p class="kpi-label">Füllwörter</p>
+            <p id="kpiFuell" class="kpi-value">–</p>
           </div>
         </div>
       </section>
 
-      <!-- Zeile 2: Geschwindigkeit -->
-      <section class="card p-4">
+      <!-- Zeile 3: Geschwindigkeit -->
+      <section class="card p-4 col-span-2">
         <h3 class="title mb-2">Geschwindigkeit (WPM) – 30-Sekunden-Segmente</h3>
         <div class="chart chart-lg"><canvas id="wpmDiagrammCanvas"></canvas></div>
         <p class="text-xs text-gray-500 mt-2">Grünes Band = Zielbereich 120–160 WPM</p>
       </section>
 
-      <!-- Zeile 3: Füllwörter (nur Streudiagramm, vergrößert) -->
-      <section class="card p-4">
+      <!-- Zeile 4: Füllwörter -->
+      <section class="card p-4 col-span-2">
         <h3 class="title mb-2">Füllwörter</h3>
         <div class="chart chart-xl"><canvas id="fuellStreuCanvas"></canvas></div>
         <div class="mt-3 flex flex-wrap gap-2" id="chips"></div>
       </section>
 
-      <!-- Zeile 4: Fokus + Gestik -->
+      <!-- Zeile 5: Fokus + Gestik -->
       <section class="card p-4">
         <h3 class="title mb-2">Publikumsfokus</h3>
         <div>
@@ -65,7 +64,7 @@
         </div>
       </section>
 
-      <section class="card p-4" id="karteGestik">
+      <section class="card p-4">
         <div class="flex items-center justify-between mb-1">
           <h3 class="title">Gestik – KI-Fazit</h3>
           <button id="gestikInfoBtn" class="info-btn" aria-label="Details">
