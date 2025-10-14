@@ -16,7 +16,7 @@ Diplomarbeit 2025/26 von **Johannes Braun** und **Felix Ilmer**
 ---
 
 ## Download Projekt
-[![Download Projekt](./Code)](./docs/Project_Plan_PresentAI.pdf)
+[![Download Projekt](./Code)](./Code)
 
 ---
 
