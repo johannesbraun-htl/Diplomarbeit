@@ -1,12 +1,27 @@
 {
-  "metadaten": { "video_url": "" },
-  "kpi": { "durchschnitt_wpm": 144, "fuellwoerter_anzahl": 6, "gesamt_score": 72 },
-  "blick": { "publikum_prozent": 74 },
+  "metadaten": {
+    "video_url": ""
+  },
+
+  "kpi": {
+    "durchschnitt_wpm": 144,
+    "fuellwoerter_anzahl": 6,
+    "gesamt_score": 72
+  },
+
+  "blick": {
+    "publikum_prozent": 74
+  },
+
   "charts": {
     "wpm": {
       "labels": ["S1 (30s)", "S2 (30s)", "S3 (30s)", "S4 (30s)", "S5 (30s)", "S6 (30s)", "S7 (12s)"],
       "values": [144, 168, 132, 156, 120, 168, 120],
       "secs":   [30,   30,   30,   30,   30,   30,   12]
+    },
+    "fuell_minute": {
+      "labels": [1, 2, 3, 4],
+      "values": [2, 2, 2, 0]
     },
     "fuell_zeitpunkte": [
       { "x": 0.29, "y": 1, "label": "00:17 – äh" },
@@ -17,6 +32,7 @@
       { "x": 2.76, "y": 1, "label": "02:45 – irgendwie" }
     ]
   },
+
   "gestik_fazit": {
     "punktzahl": 77,
     "urteil": "Gute Gestik",
@@ -28,6 +44,7 @@
       { "text": "spürbare Körperspannung oder Unruhe", "positiv": false }
     ]
   },
+  
   "fuellwoerter_alle": [
     "00:17 · äh",
     "00:42 · ähm",
