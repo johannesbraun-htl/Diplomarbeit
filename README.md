@@ -15,10 +15,6 @@ Diplomarbeit 2025/26 von **Johannes Braun** und **Felix Ilmer**
 
 ---
 
-## 📦 [![Download Projekt](https://img.shields.io/badge/Download_Code-ZIP-green?style=for-the-badge&logo=github)](https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/johannesbraun-htl/Diplomarbeit/tree/main/Code)
-
----
-
 ## 🎯 Ziele
 - **Sprache**
   - Erkennung von Füllwörtern  
