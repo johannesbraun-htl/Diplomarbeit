@@ -9,10 +9,15 @@ let WPM_CHART, FUELL_STREU_CHART;
 
 async function init(){
   try {
-    const res = await fetch('api/analyse.php', { cache: 'no-store' });
+    // 🔹 Präsentation-ID aus URL lesen (Standard = 1)
+    const pid = new URLSearchParams(location.search).get('pid') || '1';
+
+    // 🔹 API-Aufruf mit PID
+    const res = await fetch(`api/analyse.php?pid=${encodeURIComponent(pid)}`, { cache: 'no-store' });
     if (!res.ok) throw new Error(`analyse.json HTTP ${res.status}`);
     const DATA = await res.json();
 
+    // 🔹 Inhalte rendern
     renderVideo(DATA);
     renderKPIs(DATA);
     renderFokus(DATA);
@@ -20,6 +25,7 @@ async function init(){
     renderFuellwoerter(DATA);
     renderCharts(DATA);
 
+    // 🔹 Gestik-Popup
     const infoBtn = document.getElementById('gestikInfoBtn');
     const pop = document.getElementById('gestikInfo');
     if (infoBtn && pop) {
@@ -34,17 +40,20 @@ async function init(){
         }
       });
     }
+
   } catch (e) {
     console.error('Initialisierung fehlgeschlagen:', e);
   }
 }
 
+/* === Video === */
 function renderVideo(D){
   const url = D?.metadaten?.video_url;
   const c = document.getElementById('videoContainer');
   if (c && url) c.innerHTML = `<video src="${url}" controls class="w-full h-full rounded-lg"></video>`;
 }
 
+/* === KPIs === */
 function renderKPIs(D){
   setText('kpiWpm', `${D.kpi.durchschnitt_wpm} wpm`);
   setText('kpiFuell', D.kpi.fuellwoerter_anzahl);
@@ -52,12 +61,14 @@ function renderKPIs(D){
   setWidth('scoreBalken', D.kpi.gesamt_score + '%');
 }
 
+/* === Fokus / Blickkontakt === */
 function renderFokus(D){
   const p = D?.blick?.publikum_prozent ?? 0;
   setText('blickPublikumProzentBadge', p + '%');
   setWidth('blickBalken', p + '%');
 }
 
+/* === Gestik-Fazit === */
 function renderGestik(D){
   const G = D.gestik_fazit;
   if (!G) return;
@@ -66,12 +77,14 @@ function renderGestik(D){
   const list = document.getElementById('gestikWarum');
   if (list) {
     list.innerHTML = (G.punkte || []).map(p =>
-      `<li class="point ${p.positiv?'plus':'minus'}"><span class="sym">${p.positiv?'+':'–'}</span>${p.text}</li>`
+      `<li class="point ${p.positiv?'plus':'minus'}">
+         <span class="sym">${p.positiv?'+':'–'}</span>${p.text}
+       </li>`
     ).join('');
   }
 }
 
-/* === NEU: Alle Füllwörter anzeigen === */
+/* === Füllwörter === */
 function renderFuellwoerter(D){
   const chips = document.getElementById('chips');
   if (!chips) return;
@@ -89,6 +102,7 @@ function renderFuellwoerter(D){
   chips.innerHTML = alle.map(t => `<span class="chip">${t}</span>`).join('');
 }
 
+/* === Diagramme === */
 function renderCharts(D){
   // === WPM Chart ===
   if (WPM_CHART) WPM_CHART.destroy();
@@ -100,7 +114,8 @@ function renderCharts(D){
     type: 'bar',
     data: { labels: wpmLabels, datasets: [{ label: 'WPM', data: wpmValues }] },
     options: {
-      responsive: true, maintainAspectRatio: false,
+      responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: { position: 'top' },
         zielbereichOverlay: { min: 120, max: 160 },
@@ -130,27 +145,32 @@ function renderCharts(D){
         if(!opt) return;
         const {ctx, chartArea:{left,right}, scales:{y}} = chart;
         const y1 = y.getPixelForValue(opt.min), y2 = y.getPixelForValue(opt.max);
-        ctx.save(); ctx.fillStyle = 'rgba(16,185,129,.12)';
-        ctx.fillRect(left, y2, right-left, y1-y2); ctx.restore();
+        ctx.save();
+        ctx.fillStyle = 'rgba(16,185,129,.12)';
+        ctx.fillRect(left, y2, right-left, y1-y2);
+        ctx.restore();
       }
     }]
   });
 
-  // === Füllwörter Zeitpunkte (Scatter only, vergrößert) ===
+  // === Füllwörter Zeitpunkte (Scatter) ===
   if (FUELL_STREU_CHART) FUELL_STREU_CHART.destroy();
   FUELL_STREU_CHART = new Chart(document.getElementById('fuellStreuCanvas'), {
     type: 'scatter',
-    data: { datasets: [{
-      label: 'Zeitpunkte',
-      data: D.charts.fuell_zeitpunkte,
-      pointRadius: 6,
-      pointHoverRadius: 8,
-      backgroundColor: 'rgba(59,130,246,0.6)',
-      borderColor: 'rgba(37,99,235,0.8)',
-      borderWidth: 1.5
-    }]},
+    data: {
+      datasets: [{
+        label: 'Zeitpunkte',
+        data: D.charts.fuell_zeitpunkte,
+        pointRadius: 6,
+        pointHoverRadius: 8,
+        backgroundColor: 'rgba(59,130,246,0.6)',
+        borderColor: 'rgba(37,99,235,0.8)',
+        borderWidth: 1.5
+      }]
+    },
     options: {
-      responsive: true, maintainAspectRatio: false,
+      responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: { display: false },
         tooltip: { callbacks: { label: (c) => c.raw.label } }
@@ -163,6 +183,6 @@ function renderCharts(D){
   });
 }
 
-// ==== kleine Helfer ====
+/* === kleine Helfer === */
 function setText(id, v){ const el = document.getElementById(id); if (el) el.textContent = v; }
 function setWidth(id, v){ const el = document.getElementById(id); if (el) el.style.width = v; }
