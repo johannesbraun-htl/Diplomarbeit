@@ -8,6 +8,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ---
+## Wichtig in php.ini "extension=pdo_mysql" aktivieren für lokale tests
+---
 
 ## 📌 Projektbeschreibung
 Diplomarbeit 2025/26 von **Johannes Braun** und **Felix Ilmer**  
