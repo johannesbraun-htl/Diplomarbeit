@@ -7,6 +7,12 @@ Grund dazu:
 Die Videodatei ist zu groß, um sie in einem Stück in die DB zu laden
 und kann teilweise nicht einmal hochgeladen werden, wenn sie über 2.048MiB groß ist.
 
+Wichtige Informationen:
+moviepy muss die Version 1.0.3 sein, damit der edeitor.VideoFileClip funktioniert.
+
+Verwendete Datebank:
+h109556_presentai auf dem Server
+
 Quellen:
 - W3Schools: File Handling (binär lesen): https://www.w3schools.com/python/python_file_handling.asp
 - W3Schools: Python MySQL Basics: https://www.w3schools.com/python/python_mysql_getstarted.asp

@@ -1,16 +1,16 @@
 import os
-os.environ["OMP_NUM_THREADS"] = "1"
-os.environ["TF_NUM_INTEROP_THREADS"] = "1"
-os.environ["TF_NUM_INTRAOP_THREADS"] = "1"
-
 import cv2
-cv2.setNumThreads(1)
-
 import tempfile
 import mediapipe as mp
 import mysql.connector
 from mysql.connector import Error
 from collections import deque
+
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["TF_NUM_INTEROP_THREADS"] = "1"
+os.environ["TF_NUM_INTRAOP_THREADS"] = "1"
+
+cv2.setNumThreads(1)
 
 # ========= OPTIONEN =========
 USE_SAVE_DIALOG = True  # True -> Tk Save-Dialog für Ausgabedatei; False -> auto-Pfad

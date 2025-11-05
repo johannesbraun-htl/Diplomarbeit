@@ -1,6 +1,6 @@
 import cv2
 import time
-import mediapipe as mp
+import mediapipe as mp # pip install mediapipe (aber geht nur mit Python 3.9-3.12)
 
 mp_face_mesh = mp.solutions.face_mesh
 
