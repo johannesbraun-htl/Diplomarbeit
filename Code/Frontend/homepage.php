@@ -31,18 +31,15 @@ if (empty($_SESSION['user_id'])) {
     </div>
 
     <div id="home" class="tabcontent">
-        <h3>Home</h3>
-        <p>Willkommen, <?php echo htmlspecialchars($_SESSION['username']); ?>!</p>
+        <?php include "home.php"; ?>
     </div>
 
     <div id="analyse" class="tabcontent">
-        <h3>Analyse</h3>
-        <p>Analyse Seite!</p> 
+        <?php include "analyse.php"; ?>
     </div>
 
     <div id="einstellungen" class="tabcontent">
-        <h3>Einstellungen</h3>
-        <p>Einstellungen Seite!</p>
+        <?php include "einstellungen.php"; ?>
     </div>
 
     <script src="../Backend/js/tabs.js"></script>
@@ -50,15 +47,3 @@ if (empty($_SESSION['user_id'])) {
 </html>
 
 
-<!-- Für Username-Anzeige -->
-<!--
-    <?php
-        if(isset($_SESSION["username"])){
-            $username=$_SESSION["username"];
-            $query=mysqli_query($conn, "SELECT user.* From `user` WHERE user.username='$username'");
-            while($row=mysqli_fetch_array($query)){
-                echo $row["username"];
-            }
-        }
-    ?>
--->
