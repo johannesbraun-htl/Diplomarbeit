@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once "../database/connect.php";
+require_once "../../Backend/database/connect.php";
 
 if (function_exists('mysqli_report')) {
     mysqli_report(MYSQLI_REPORT_OFF);
@@ -10,7 +10,7 @@ if (isset($conn) && $conn instanceof mysqli) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header("Location: ../index.php");
+    header("Location: ../../index.php");
     exit();
 }
 
@@ -26,7 +26,7 @@ $TBL_USER = "`h109556_presentai_v2`.`user`";
 function flash_redirect(string $type, string $message, string $form = 'signIn'): void {
     $_SESSION[$type] = $message;
     $_SESSION['form'] = $form;
-    header("Location: ../index.php");
+    header("Location: ../../index.php");
     exit();
 }
 
@@ -99,10 +99,10 @@ if ($doSignIn) {
     $_SESSION['user_id']  = (int)$row['user_id']; // <-- hier auf user_id
     $_SESSION['username'] = $row['username'];
 
-    header("Location: ../mainpage/homepage.php");
+    header("Location: ../homepage.php");
     exit();
 }
 
 // Fallback
-header("Location: ../index.php");
+header("Location: ../../index.php");
 exit();

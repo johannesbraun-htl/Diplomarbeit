@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once "../database/connect.php";
+require_once "../Backend/database/connect.php";
 
 // Zugriffsschutz
 if (empty($_SESSION['user_id'])) {
@@ -17,7 +17,7 @@ if (empty($_SESSION['user_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PresentAI - Hauptseite</title>
-    <link rel="stylesheet" href="../assets/css/style_homepage.css">
+    <link rel="stylesheet" href="css/style_homepage.css">
 </head>
 <body>
 
@@ -27,7 +27,7 @@ if (empty($_SESSION['user_id'])) {
         <button class="tablinks" onclick="tab(event, 'home')" id="defaultOpen">Home</button>
         <button class="tablinks" onclick="tab(event, 'analyse')">Analyse</button>
         <button class="tablinks" onclick="tab(event, 'einstellungen')">Einstellungen</button>
-        <button class="tablinks logout-btn" onclick="window.location.href='../login-system/logout.php'">Ausloggen</button>
+        <button class="tablinks logout-btn" onclick="window.location.href='login-system/logout.php'">Ausloggen</button>
     </div>
 
     <div id="home" class="tabcontent">
@@ -45,7 +45,7 @@ if (empty($_SESSION['user_id'])) {
         <p>Einstellungen Seite!</p>
     </div>
 
-    <script src="../assets/js/tabs.js"></script>
+    <script src="../Backend/js/tabs.js"></script>
 </body>
 </html>
 

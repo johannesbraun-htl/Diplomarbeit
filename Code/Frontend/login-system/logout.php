@@ -7,6 +7,6 @@ session_start();
 $_SESSION['success'] = 'Du wurdest erfolgreich abgemeldet.';
 $_SESSION['form']    = 'signIn';
 
-header("Location: ../index.php");
+header("Location: ../../index.php");
 exit();
 ?>

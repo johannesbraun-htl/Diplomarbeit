@@ -12,7 +12,7 @@ unset($_SESSION['error'], $_SESSION['success'], $_SESSION['form']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login & Registrierung</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="Frontend/css/style.css">
 </head>
 <body data-form="<?php echo htmlspecialchars($form, ENT_QUOTES, 'UTF-8'); ?>">
 
@@ -21,7 +21,7 @@ unset($_SESSION['error'], $_SESSION['success'], $_SESSION['form']);
     <!-- Registrierung -->
     <div class="container" id="signUp" style="display:none;">
         <h1 class="form-title">Registrieren</h1>
-        <form method="POST" action="login-system/register.php">
+        <form method="POST" action="Frontend/login-system/register_and_login.php">
             <div class="input-group">
                 <i class="fas fa-user"></i>
                 <input type="text" name="username" id="su_username" placeholder="Username" required>
@@ -48,7 +48,7 @@ unset($_SESSION['error'], $_SESSION['success'], $_SESSION['form']);
     <!-- Login -->
     <div class="container" id="signIn">
         <h1 class="form-title">Login</h1>
-        <form method="POST" action="login-system/register.php">
+        <form method="POST" action="Frontend/login-system/register_and_login.php">
             <div class="input-group">
                 <i class="fas fa-user"></i>
                 <input type="text" name="username" id="li_username" placeholder="Username" required>
@@ -77,6 +77,6 @@ unset($_SESSION['error'], $_SESSION['success'], $_SESSION['form']);
 
 </div>
 
-<script src="assets/js/script.js"></script>
+<script src="Backend/js/script.js"></script>
 </body>
 </html>
