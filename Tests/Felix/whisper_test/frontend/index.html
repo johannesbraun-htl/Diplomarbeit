@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PresentAI - Sprachanalyse Tool</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🎤 PresentAI</h1>
+            <p class="subtitle">Echtzeit-Sprachanalyse mit KI</p>
+        </header>
+
+        <div class="controls">
+            <button id="startBtn" class="btn btn-primary">
+                <span class="btn-icon">🎤</span>
+                Aufnahme starten
+            </button>
+            <button id="stopBtn" class="btn btn-secondary" disabled>
+                <span class="btn-icon">⏹️</span>
+                Stoppen
+            </button>
+        </div>
+
+        <div class="status" id="status">
+            <div class="status-content">
+                <span class="status-icon">⚡</span>
+                <span class="status-text">Bereit für die Aufnahme</span>
+            </div>
+        </div>
+
+        <!-- Live Analytics Dashboard -->
+        <div class="dashboard">
+            <!-- WPM Anzeige -->
+            <div class="analytics-card">
+                <div class="card-header">
+                    <h3>📊 Sprechtempo</h3>
+                </div>
+                <div class="wpm-display">
+                    <div class="wpm-value" id="wpmValue">-</div>
+                    <div class="wpm-label">Wörter pro Minute</div>
+                    <div class="wpm-feedback" id="wpmFeedback"></div>
+                    <div class="wpm-indicator">
+                        <div class="wpm-bar">
+                            <div class="wpm-progress" id="wpmProgress"></div>
+                        </div>
+                        <div class="wpm-labels">
+                            <span>0</span>
+                            <span class="ideal-range">120-150</span>
+                            <span>250</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Füllwort-Statistik -->
+            <div class="analytics-card">
+                <div class="card-header">
+                    <h3>🎯 Füllwörter</h3>
+                </div>
+                <div id="fillerStats" class="filler-stats">
+                    <div class="stats-placeholder">
+                        <div class="placeholder-icon">📈</div>
+                        <p>Starte die Aufnahme um Statistiken zu sehen</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live-Transkription -->
+        <div class="transcript-card">
+            <div class="card-header">
+                <h3>📝 Live-Transkription</h3>
+                <div class="confidence-badge" id="confidenceBadge">
+                    <span class="confidence-value">-</span>% sicher
+                </div>
+            </div>
+            <div id="transcript" class="transcript">
+                <div class="transcript-placeholder">
+                    <div class="placeholder-icon">🎙️</div>
+                    <p>Hier erscheint Ihre Sprache in Textform</p>
+                    <small>Füllwörter werden <mark class="filler-word-example">gelb markiert</mark></small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Bereich -->
+        <div class="info-card">
+            <div class="card-header">
+                <h3>ℹ️ Erkannte Füllwörter</h3>
+            </div>
+            <div class="filler-words-grid">
+                <span class="filler-tag critical">ähm</span>
+                <span class="filler-tag critical">äh</span>
+                <span class="filler-tag medium">also</span>
+                <span class="filler-tag medium">sozusagen</span>
+                <span class="filler-tag medium">quasi</span>
+                <span class="filler-tag low">eigentlich</span>
+                <span class="filler-tag low">halt</span>
+                <span class="filler-tag low">okay</span>
+                <span class="filler-tag low">genau</span>
+                <span class="filler-tag low">einfach</span>
+                <span class="filler-tag more">+7 weitere</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
