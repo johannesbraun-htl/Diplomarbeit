@@ -16,7 +16,6 @@ Diplomarbeit 2025/26 von **Johannes Braun** und **Felix Ilmer**
 **PresentAI** analysiert Vorträge und Präsentationen anhand von **Sprache** und **Körpersprache** und gibt dem Vortragenden objektives Feedback.
 
 ---
-d
 
 ## 🎯 Ziele
 - **Sprache**
