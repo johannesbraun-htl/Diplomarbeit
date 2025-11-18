@@ -1,27 +1,21 @@
-# 🎓 Diplomarbeit 2025/26
-# 🤖 PresentAI – KI-gestützte Analyse von Präsentationen
+# Diplomarbeit 2025/26
+# PresentAI – KI-gestützte Analyse von Präsentationen
 
 ![PresentAI Logo](./docs/logo.png)
-
 ![Status](https://img.shields.io/badge/status-in%20progress-yellow) 
 ![Made%20with-Python](https://img.shields.io/badge/Made%20with-Python-green) 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
----
-## Wichtig in php.ini "extension=pdo_mysql" aktivieren für lokale tests
----
-
-## 📌 Projektbeschreibung
+## Projektbeschreibung
 Diplomarbeit 2025/26 von **Johannes Braun** und **Felix Ilmer**  
 **PresentAI** analysiert Vorträge und Präsentationen anhand von **Sprache** und **Körpersprache** und gibt dem Vortragenden objektives Feedback.
 
 ---
 
-## 🎯 Ziele
+## Ziele
 - **Sprache**
   - Erkennung von Füllwörtern  
   - Analyse von Sprechtempo  
-  - Bewertung von Pausen und Lautstärke  
 
 - **Körpersprache**
   - Erkennung von Gestik und Haltung  
@@ -34,7 +28,7 @@ Diplomarbeit 2025/26 von **Johannes Braun** und **Felix Ilmer**
 
 ---
 
-## 🏗️ Systemübersicht
+## Systemübersicht
 **Input**  
 - Kamera  
 - Mikrofon  
@@ -48,15 +42,13 @@ Diplomarbeit 2025/26 von **Johannes Braun** und **Felix Ilmer**
 
 ---
 
-## 🛠️ Technologien
-- **Programmiersprachen:** Python, *[weitere falls benötigt]*  
-- **Frameworks / Libraries:** *[Platzhalter für Sprache, Bildverarbeitung, GUI]*  
-- **Projektmanagement:** GitHub Projects (Kanban), GitHub Repository, *[weitere Tools falls nötig]*  
-- **Diagramme & Dokumentation:** UML, ERM, Sequenzdiagramme  
+## Technologien
+- **Programmiersprachen:** ...
+- **Frameworks / Libraries:** ...
 
 ---
 
-## 👥 Projektorganisation
+## Projektorganisation
 - **Teammitglieder**  
   - Johannes Braun – Schwerpunkt Körpersprache  
   - Felix Ilmer – Schwerpunkt Sprache  
