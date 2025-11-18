@@ -1,81 +1,50 @@
+<?php
+require "../Backend/database/connect.php";
+
+$error = $_SESSION['error'] ?? null;
+unset($_SESSION['error']);
+?>
+
+<!-- Home Seite nach dem Login -->
+<!-- Erstellt von Johannes Braun -->
+
+<!-- Einbindung StyleSheet -->
+<link rel="stylesheet" href="css/style_home.css">
+
 <h1>Willkommen, <?php echo htmlspecialchars($_SESSION['username']); ?>!</h1>
-<h2>Vorhandene Präsentationen:</h2>
-<style>
-    table {
-        border-collapse: collapse;
-        width: 100%;
-    }
 
-    th, td {
-        padding: 12px 15px;
-        border: 1px solid #ddd;
-    }
+<!-- Fehlermeldung anzeigen, falls vorhanden -->
+<?php if ($error): ?>
+    <script>
+        const errorMessage = <?php echo json_encode($error); ?>;
+        window.addEventListener('DOMContentLoaded', function () {
+            alert(errorMessage);
+        });
+    </script>
+<?php endif; ?>
 
-    th {
-        background-color: #f4f4f4;
-    }
+<!-- Button zum Erstellen einer neuen Präsentation -->
+<button class="open-button" onclick="openForm()">Neue Präsentation erstellen</button>
 
-    tr:hover {
-        background-color: #f1f1f1;
-    }
+<div class="form-popup" id="myForm">
+    <form action="../Backend/php/upload_presentation.php" method="post" enctype="multipart/form-data" class="form-container">
+        <label for="title">Titel der Präsentation:</label>
+        <input type="text" id="title" name="title" required>
+        <br>
+        <label for="presentationFile">Präsentationsdatei hochladen:</label>
+        <input type="file" id="presentationFile" name="presentationFile" accept=".mp4">
 
-</style>
+        <input type="submit" value="Erstellen">
+        <button type="button" class="btn-cancel" onclick="closeForm()">Schließen</button>
+    </form>
+</div>
 
-<table>
+<h2>Vorhandene Präsentationen</h2>
+
+<!-- Einbindung des JavaScript-Codes -->
+<script src="../Backend/js/script_home.js"></script>
+<!-- Laden und Anzeigen der Präsentationen -->
+<?php require "../Backend/php/load_presentations.php"; ?>
+<table class="presentations-table">
     <?php loadPresentations($conn); ?>
 </table>
-
-
-<!-- Funktion zum laden der Präsentationen aus der Datenbank -->
-<?php
-function loadPresentations($conn) {
-    $username=$_SESSION["username"];
-    $sql = "SELECT 
-                p.titel,
-                p.created,
-                k.avarage_wpm,
-                k.filling_words_count,
-                k.score
-            FROM `h109556_presentai_v2`.`kpi` AS k
-            JOIN `h109556_presentai_v2`.`presentations` AS p
-                ON p.`presentations_id` = k.`fk_presentations_id`
-            JOIN `h109556_presentai_v2`.`user` AS u
-                ON u.`user_id` = p.`fk_user_id`
-            WHERE u.`username` = '$username'";
-
-    $stmt = $conn->prepare($sql);
-    if (!$stmt) {
-        echo "<tr><td>Fehler beim Laden der Präsentationen: " . htmlspecialchars($conn->error) . "</td></tr>";
-        return;
-    }
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows === 0) {
-        echo "<tr><td colspan='4'>Keine Präsentationen gefunden.</td></tr>";
-    } else {
-        while ($row = $result->fetch_assoc()) {
-            echo "<tr>";
-            echo "<th>Titel</th>";
-            echo "<th>Erstellt am</th>";
-            echo "<th>WPM</th>";
-            echo "<th>Füllwörter</th>";
-            echo "<th>Score</th>";
-            echo "<th>Aktionen</th>";
-            echo "</tr>";
-            echo "<td>" . htmlspecialchars($row['titel']) . "</td>";
-            echo "<td>" . htmlspecialchars($row['created']) . "</td>";
-            echo "<td>" . htmlspecialchars($row['avarage_wpm']) . "</td>";
-            echo "<td>" . htmlspecialchars($row['filling_words_count']) . "</td>";
-            echo "<td>" . htmlspecialchars($row['score']) . "</td>";
-            echo "<td>
-                    <a href='#'>Ansehen</a> 
-                    <a href='#'>Bearbeiten</a> 
-                    <a href='#'>Löschen</a>
-                </td>";
-            echo "</tr>";
-        }
-    }
-    $stmt->close();
-}
-?>

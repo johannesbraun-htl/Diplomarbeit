@@ -21,7 +21,7 @@ unset($_SESSION['error'], $_SESSION['success'], $_SESSION['form']);
     <!-- Registrierung -->
     <div class="container" id="signUp" style="display:none;">
         <h1 class="form-title">Registrieren</h1>
-        <form method="POST" action="Frontend/login-system/register_and_login.php">
+        <form method="POST" action="Backend/php/login-system/register_and_login.php">
             <div class="input-group">
                 <i class="fas fa-user"></i>
                 <input type="text" name="username" id="su_username" placeholder="Username" required>
@@ -48,7 +48,7 @@ unset($_SESSION['error'], $_SESSION['success'], $_SESSION['form']);
     <!-- Login -->
     <div class="container" id="signIn">
         <h1 class="form-title">Login</h1>
-        <form method="POST" action="Frontend/login-system/register_and_login.php">
+        <form method="POST" action="Backend/php/login-system/register_and_login.php">
             <div class="input-group">
                 <i class="fas fa-user"></i>
                 <input type="text" name="username" id="li_username" placeholder="Username" required>

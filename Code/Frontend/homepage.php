@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once "../Backend/database/connect.php";
+require "../Backend/database/connect.php";
 
 // Zugriffsschutz
 if (empty($_SESSION['user_id'])) {
@@ -27,7 +27,7 @@ if (empty($_SESSION['user_id'])) {
         <button class="tablinks" onclick="tab(event, 'home')" id="defaultOpen">Home</button>
         <button class="tablinks" onclick="tab(event, 'analyse')">Analyse</button>
         <button class="tablinks" onclick="tab(event, 'einstellungen')">Einstellungen</button>
-        <button class="tablinks logout-btn" onclick="window.location.href='login-system/logout.php'">Ausloggen</button>
+        <button class="tablinks logout-btn" onclick="window.location.href='../Backend/php/login-system/logout.php'">Ausloggen</button>
     </div>
 
     <div id="home" class="tabcontent">
@@ -45,5 +45,3 @@ if (empty($_SESSION['user_id'])) {
     <script src="../Backend/js/tabs.js"></script>
 </body>
 </html>
-
-
