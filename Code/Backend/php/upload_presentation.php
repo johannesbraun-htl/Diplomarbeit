@@ -9,7 +9,7 @@ $TBL_PRESENTATIONS = "`h109556_presentai_v2`.`presentations`";
 
 function redirect_with_error($message) {
     $_SESSION['error'] = $message;
-    header("Location: ../../Frontend/homepage.php");
+    header("Location: ../../Frontend/main.php");
     exit();
 }
 
@@ -62,6 +62,6 @@ if (!$stmt->execute()) {
 
 $stmt->close();
 
-header("Location: ../../Frontend/homepage.php");
+header("Location: ../../Frontend/main.php");
 exit();
 ?>

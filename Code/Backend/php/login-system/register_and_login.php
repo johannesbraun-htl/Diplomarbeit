@@ -99,7 +99,7 @@ if ($doSignIn) {
     $_SESSION['user_id']  = (int)$row['user_id']; // <-- hier auf user_id
     $_SESSION['username'] = $row['username'];
 
-    header("Location: ../../../Frontend/homepage.php");
+    header("Location: ../../../Frontend/main.php");
     exit();
 }
 
