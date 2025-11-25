@@ -1,6 +1,6 @@
 <?php
 session_start();
-require "../database/connect.php";
+require "../../database/connect.php";
 
 $title = $_POST['title'] ?? '';
 $fk_user_id = $_SESSION['user_id'] ?? null;
@@ -9,7 +9,7 @@ $TBL_PRESENTATIONS = "`h109556_presentai_v2`.`presentations`";
 
 function redirect_with_error($message) {
     $_SESSION['error'] = $message;
-    header("Location: ../../Frontend/main.php");
+    header("Location: ../../../Frontend/main.php");
     exit();
 }
 
@@ -62,6 +62,6 @@ if (!$stmt->execute()) {
 
 $stmt->close();
 
-header("Location: ../../Frontend/main.php");
+header("Location: ../../../Frontend/main.php");
 exit();
 ?>

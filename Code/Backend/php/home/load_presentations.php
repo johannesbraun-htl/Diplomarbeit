@@ -53,9 +53,9 @@ function loadPresentations($conn) {
             echo "<td>" . htmlspecialchars($row['filling_words_count']) . "</td>";
             echo "<td>" . htmlspecialchars($row['score']) . "</td>";
             echo "<td class='actions-cell'>
-                    <a href='#'>Ansehen</a> 
-                    <a href='#'>Bearbeiten</a> 
-                    <a href='#' class='danger'>Löschen</a>
+                    <a href='../Backend/php/home/view_presentation.php?titel=" . urlencode($row['titel']) . "'>Ansehen</a> 
+                    <a href='../Backend/php/home/edit_presentation.php?titel=" . urlencode($row['titel']) . "'>Bearbeiten</a> 
+                    <a href='../Backend/php/home/delete_presentation.php?titel=" . urlencode($row['titel']) . "' class='danger'>Löschen</a>
                   </td>";
             echo "</tr>";
         }

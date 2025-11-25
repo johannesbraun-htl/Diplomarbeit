@@ -27,7 +27,7 @@ unset($_SESSION['error']);
 <button class="open-button" onclick="openForm()">Neue Präsentation erstellen</button>
 
 <div class="form-popup" id="myForm">
-    <form action="../Backend/php/upload_presentation.php" method="post" enctype="multipart/form-data" class="form-container">
+    <form action="../Backend/php/home/upload_presentation.php" method="post" enctype="multipart/form-data" class="form-container">
         <label for="title">Titel der Präsentation:</label>
         <input type="text" id="title" name="title" required>
         <br>
@@ -44,7 +44,7 @@ unset($_SESSION['error']);
 <!-- Einbindung des JavaScript-Codes -->
 <script src="../Backend/js/script_home.js"></script>
 <!-- Laden und Anzeigen der Präsentationen -->
-<?php require "../Backend/php/load_presentations.php"; ?>
+<?php require "../Backend/php/home/load_presentations.php"; ?>
 <table class="presentations-table">
     <?php loadPresentations($conn); ?>
 </table>
