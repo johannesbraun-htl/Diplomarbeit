@@ -55,6 +55,12 @@ Diplomarbeit 2025/26 von **Johannes Braun** und **Felix Ilmer**
 - **Sprach-Analyse-Prototyp:** Eigenständiger Flask-Service (`Tests/Felix/whisper_test/backend/app.py`) mit Whisper-Transkription, Füllwort-Erkennung, WPM-Berechnung und Feedback.
 - **Datenbank-Anbindung:** Momentan über eine einfache `connect.php` (statisch konfigurierte Credentials); perspektivisch sollte dies auf `.env`/Environment-Variablen umgestellt werden.
 
+## Automatisierte Checks
+- Eine GitHub Action (`.github/workflows/daily-check.yml`) läuft täglich um 07:00 UTC und führt aktuell folgende Prüfungen aus:
+  - **PHP-Syntax-Check** für alle Dateien unter `Code/` via `php -l`.
+  - **Python-Bytecode-Kompilierung** für alle Skripte unter `Tests/` via `python -m compileall`.
+  - Die Action lässt sich zusätzlich manuell über *Workflow Dispatch* starten und kann bei Bedarf um weitere Tests erweitert werden.
+
 ---
 
 ## Projektorganisation
