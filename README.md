@@ -47,6 +47,7 @@ Diplomarbeit 2025/26 von **Johannes Braun** und **Felix Ilmer**
 - **Frameworks / Libraries:** ...
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 ## Automatisierte Checks
 - Eine GitHub Action (`.github/workflows/daily-check.yml`) läuft täglich um 07:00 UTC und führt aktuell folgende Prüfungen aus:
@@ -55,6 +56,8 @@ Diplomarbeit 2025/26 von **Johannes Braun** und **Felix Ilmer**
   - Die Action lässt sich zusätzlich manuell über *Workflow Dispatch* starten und kann bei Bedarf um weitere Tests erweitert werden.
 =======
 >>>>>>> parent of f6d3714 (Merge pull request #95 from johannesbraun-htl/codex/bewerte-den-aktuellen-stand-der-diplomarbeit)
+=======
+>>>>>>> parent of bbb92e3 (Ergänze README um Technologie- und Architekturstand)
 =======
 >>>>>>> parent of bbb92e3 (Ergänze README um Technologie- und Architekturstand)
 
