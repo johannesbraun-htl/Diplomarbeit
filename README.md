@@ -45,12 +45,15 @@ Diplomarbeit 2025/26 von **Johannes Braun** und **Felix Ilmer**
 ## Technologien
 - **Programmiersprachen:** ...
 - **Frameworks / Libraries:** ...
+<<<<<<< HEAD
 
 ## Automatisierte Checks
 - Eine GitHub Action (`.github/workflows/daily-check.yml`) läuft täglich um 07:00 UTC und führt aktuell folgende Prüfungen aus:
   - **PHP-Syntax-Check** für alle Dateien unter `Code/` via `php -l`.
   - **Python-Bytecode-Kompilierung** für alle Skripte unter `Tests/` via `python -m compileall`.
   - Die Action lässt sich zusätzlich manuell über *Workflow Dispatch* starten und kann bei Bedarf um weitere Tests erweitert werden.
+=======
+>>>>>>> parent of f6d3714 (Merge pull request #95 from johannesbraun-htl/codex/bewerte-den-aktuellen-stand-der-diplomarbeit)
 
 ---
 
