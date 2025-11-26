@@ -43,8 +43,17 @@ Diplomarbeit 2025/26 von **Johannes Braun** und **Felix Ilmer**
 ---
 
 ## Technologien
-- **Programmiersprachen:** ...
-- **Frameworks / Libraries:** ...
+- **Web-Stack:** PHP 8, MySQL (z. B. MariaDB), HTML/CSS/Vanilla JS
+- **Backend-Logik:** PHP-Session-Handling für Login/Registrierung, CRUD für Präsentationen über Prepared Statements
+- **Prototyp Sprach-Analyse:** Python 3 (Flask) + OpenAI Whisper, Librosa/SoundFile für Audiobearbeitung, einfache Wort- und Tempobewertung
+- **Frontend-Assets:** Plain CSS, Tabs und Formular-Logik über leichte JS-Skripte (keine Build-Tools)
+
+## Architektur / Funktionsumfang (aktueller Stand)
+- **Auth-Flow:** Startseite mit Login/Registrierung (`Code/index.php`) speichert Sessions und leitet nach erfolgreichem Login auf die Hauptseite weiter.
+- **Hauptseite:** Tab-basiertes UI (`Code/Frontend/main.php`) mit Bereichen *Home* (Präsentationen anlegen/auflisten), *Analyse* und *Einstellungen*.
+- **Präsentationsverwaltung:** Upload & Verwaltung via PHP-Handlern (`Code/Backend/php/home/*`), Datenspeicherung in MySQL, Ausgabe als Tabelle mit KPI-Platzhaltern.
+- **Sprach-Analyse-Prototyp:** Eigenständiger Flask-Service (`Tests/Felix/whisper_test/backend/app.py`) mit Whisper-Transkription, Füllwort-Erkennung, WPM-Berechnung und Feedback.
+- **Datenbank-Anbindung:** Momentan über eine einfache `connect.php` (statisch konfigurierte Credentials); perspektivisch sollte dies auf `.env`/Environment-Variablen umgestellt werden.
 
 ---
 
