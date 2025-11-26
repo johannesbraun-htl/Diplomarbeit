@@ -1,0 +1,47 @@
+name: Daily checks
+
+on:
+  schedule:
+    - cron: '0 7 * * *'
+  workflow_dispatch:
+
+jobs:
+  daily-check:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up git user
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: PHP Syntax Check
+        run: |
+          find Code -name '*.php' -print0 | xargs -0 -n1 php -l
+
+      - name: Python syntax compilation
+        run: |
+          python3 -m compileall Tests
+
+      - name: Update README timestamp
+        env:
+          TZ: UTC
+        run: |
+          timestamp="$(date -u '+%Y-%m-%d %H:%M UTC')"
+          sed -i "s/^Letzte automatische Aktualisierung: .*/Letzte automatische Aktualisierung: ${timestamp}/" README.md
+          if git status --porcelain | grep README.md; then
+            git add README.md
+            git commit -m "chore: auto-update README timestamp"
+            git push
+          else
+            echo "README already up to date"
+          fi
