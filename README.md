@@ -30,8 +30,7 @@ Diplomarbeit 2025/26 von **Johannes Braun** und **Felix Ilmer**
 
 ## Systemübersicht
 **Input**  
-- Kamera  
-- Mikrofon  
+- Viedo 
 
 **Verarbeitung**  
 - Modul Sprache  
