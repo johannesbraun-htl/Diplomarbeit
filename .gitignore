@@ -1,91 +1,10 @@
-########################################
-# OS / EDITOR SYSTEM FILES
-########################################
-.DS_Store
-Thumbs.db
-desktop.ini
+# Geheimnisse / Konfig
+Backend/php/home/service-account.json
+Backend/php/google/config.local.php
 
-# VS Code
-.vscode/
-.history/
-
-# JetBrains
-.idea/
-
-########################################
-# DEPENDENCIES / BUILD OUTPUT
-########################################
-node_modules/
+# (Optional – nützliche Standard-Sachen)
 vendor/
-dist/
-build/
-.cache/
-
-########################################
-# LOGS / CACHE / TEMP
-########################################
-*.log
-logs/
-storage/
-cache/
-tmp/
-sessions/
-debug/
-debugbar/
-
-########################################
-# ENVIRONMENT / SECRETS (GLOBAL)
-########################################
+node_modules/
 .env
-*.env
-.env.*
-
-# generische lokale Configs mit Zugangsdaten
-config.local.php
-*config.local.php
-*secret*.php
-
-########################################
-# GOOGLE / CLOUD CREDENTIALS
-########################################
-service-account.json
-*service-account*.json
-*.gserviceaccount.json
-google-credentials.json
-
-*token.json
-*tokens.json
-*credentials.json
-
-# deine Google-Config
-Code/Backend/php/google/config.local.php
-Code/Backend/php/google/*config.local.php
-
-########################################
-# DB-CONNECT (DEINE STRUKTUR)
-########################################
-Code/Backend/database/connect.local.php
-Code/Backend/database/*config.local.php
-
-########################################
-# UPLOAD / TEMP FOLDER
-########################################
-uploads/tmp/
-uploads/cache/
-uploads/debug/
-uploads/.DS_Store
-
-########################################
-# BACKUP / SWAP / MISC
-########################################
-*.bak
-*.tmp
-*.swp
-*.swo
-*.old
-*.orig
-
-########################################
-# XAMPP / LOKAL
-########################################
-xampp/
+.idea/
+.vscode/
