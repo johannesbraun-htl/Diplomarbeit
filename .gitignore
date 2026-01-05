@@ -1,28 +1,51 @@
-# =========================
-# OS / EDITOR FILES
-# =========================
+########################################
+# OS / EDITOR SYSTEM FILES
+########################################
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# VS Code
+# VS Code settings
 .vscode/
 .history/
 
-# =========================
-# DEPENDENCIES / BUILD
-# =========================
+# JetBrains IDE
+.idea/
+
+########################################
+# DEPENDENCIES / BUILD ARTIFACTS
+########################################
 node_modules/
 vendor/
+bower_components/
 
-# =========================
-# ENV / SECRETS
-# =========================
+# Build output
+dist/
+build/
+.cache/
+
+########################################
+# LOGS & CACHE
+########################################
+*.log
+logs/
+storage/logs/
+cache/
+tmp/
+sessions/
+debugbar/
+
+########################################
+# ENVIRONMENT / SECRETS
+########################################
 .env
 *.env
 .env.*
 
-# Google Service Account Keys (IMPORTANT)
+########################################
+# GOOGLE / CLOUD CREDENTIALS  (VERY IMPORTANT)
+########################################
+# Service account keys
 service-account.json
 *service-account*.json
 **/service-account.json
@@ -30,31 +53,48 @@ service-account.json
 google-credentials.json
 *.gserviceaccount.json
 
-# =========================
-# PHP APP FILES
-# =========================
-# (Cache, logs, temp uploads)
-tmp/
-cache/
-logs/
-sessions/
+# OAuth secrets
+Backend/php/google/config.local.php
+Backend/php/google/*config.local.php
+config.local.php
+
+########################################
+# APP-SPECIFIC UPLOADS
+########################################
 uploads/tmp/
 uploads/cache/
+uploads/debug/
+uploads/.DS_Store
 
-# =========================
-# SYSTEM / IDE JUNK
-# =========================
-*.log
+# Do NOT ignore actual uploaded presentation/video folders 
+# unless you really want them excluded from repo
+
+########################################
+# PHP FRAMEWORK JUNK
+########################################
+composer.phar
+composer.lock
+phpunit.xml
+coverage/
+
+########################################
+# SYSTEM / TEMP FILES
+########################################
 *.bak
 *.tmp
 *.swp
 *.swo
+*.pid
 
-# Composer lock if not needed
-# composer.lock
-
-# =========================
-# XAMPP / WINDOWS GENERATED
-# =========================
+########################################
+# XAMPP / LOCAL
+########################################
 xampp/
 htdocs/*/tmp/
+
+########################################
+# MISC
+########################################
+# Avoid committing backup editors
+*.orig
+*.old
