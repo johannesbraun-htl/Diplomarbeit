@@ -1,0 +1,147 @@
+/* CSS mit hilfe von ChatGPT */
+
+:root{
+  --header-h: clamp(48px, 7vh, 88px);
+  --tab-h: clamp(44px, 6.5vh, 72px);
+
+  --radius: 16px;
+  --gap: clamp(10px, 1.6vw, 20px);
+  --shadow: 0 0.6vw 1.5vw rgba(0,0,0,0.08);
+
+  --brand: rgb(125,125,235);
+  --brand-600: rgb(92,92,247);
+  --brand-300: rgb(183,183,243);
+
+  --text: #121212;
+  --border: #ccc;
+
+  --content-max: 1200px;
+}
+
+/* iOS Notch/Safe-Area berücksichtigen */
+@supports (padding: max(0px)) {
+  :root {
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
+  }
+}
+
+/* FIXER HEADER OBEN */
+.header-title{
+  position: fixed;
+  top: var(--safe-top);
+  left: 0;
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #fff;
+  color: var(--brand);
+  text-align: center;
+
+  font-size: clamp(18px, 2.2vw, 28px);
+  font-weight: 600;
+
+  padding: clamp(8px, 1.2vh, 14px) clamp(10px, 1.6vw, 20px);
+  margin: 0;
+  height: var(--header-h);
+
+  z-index: 1100;
+  letter-spacing: 0.03em;
+  border-bottom: 1px solid var(--border);
+  box-sizing: border-box;
+}
+
+/* FIXE TAB-LEISTE DIREKT DARUNTER */
+.tab{
+  position: fixed;
+  top: calc(var(--safe-top) + var(--header-h));
+  left: 0;
+  width: 100%;
+
+  background: var(--brand);
+  border-bottom: 1px solid var(--border);
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;          /* Tab-Buttons starten links */
+
+  padding-left: max(var(--gap), var(--safe-left));
+  padding-right: max(var(--gap), var(--safe-right));
+
+  gap: clamp(6px, 1vw, 12px);
+
+  z-index: 1000;
+  height: var(--tab-h);
+
+  box-sizing: border-box;
+}
+
+/* TAB-BUTTONS LINKS */
+.tab button{
+  border: 0;
+  background: none;
+  color: #fff;
+
+  padding: clamp(8px, 1.2vh, 12px) clamp(12px, 2vw, 18px);
+  font-size: clamp(13px, 1.2vw, 16px);
+  line-height: 1;
+  border-radius: 12px;
+
+  cursor: pointer;
+}
+
+.tab button:hover{
+  background: var(--brand-300);
+}
+.tab button.active{
+  background: var(--brand-600);
+  font-weight: 600;
+}
+
+/* LOGOUT – GANZ RECHTS IN DER LEISTE */
+.logout-form{
+  margin-left: auto;    /* schiebt das Formular ganz nach rechts */
+}
+
+.logout-btn{
+  border: 0;
+  background: none;
+  color: #fff;
+
+  padding: clamp(8px, 1.2vh, 12px) clamp(12px, 2vw, 18px);
+  font-size: clamp(13px, 1.2vw, 16px);
+  line-height: 1;
+  border-radius: 12px;
+
+  cursor: pointer;
+}
+
+.logout-btn:hover{
+  background: rgba(255,255,255,0.25);
+}
+
+/* INHALT UNTER HEADER + TABS */
+.tabcontent{
+  display: none;
+
+  margin-top: calc(var(--safe-top) + var(--header-h) + var(--tab-h) + var(--gap));
+  padding: clamp(14px, 2.2vw, 28px);
+
+  background: #fff;
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: var(--radius);
+
+  box-sizing: border-box;
+  width: min(100% - 2*var(--gap), var(--content-max));
+  margin-left: auto;
+  margin-right: auto;
+
+  min-height: calc(100dvh - (var(--header-h) + var(--tab-h)) - 3*var(--gap));
+  box-shadow: var(--shadow);
+  color: var(--text);
+}
