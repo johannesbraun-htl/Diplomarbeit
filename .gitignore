@@ -1,0 +1,60 @@
+# =========================
+# OS / EDITOR FILES
+# =========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# VS Code
+.vscode/
+.history/
+
+# =========================
+# DEPENDENCIES / BUILD
+# =========================
+node_modules/
+vendor/
+
+# =========================
+# ENV / SECRETS
+# =========================
+.env
+*.env
+.env.*
+
+# Google Service Account Keys (IMPORTANT)
+service-account.json
+*service-account*.json
+**/service-account.json
+**/*service-account*.json
+google-credentials.json
+*.gserviceaccount.json
+
+# =========================
+# PHP APP FILES
+# =========================
+# (Cache, logs, temp uploads)
+tmp/
+cache/
+logs/
+sessions/
+uploads/tmp/
+uploads/cache/
+
+# =========================
+# SYSTEM / IDE JUNK
+# =========================
+*.log
+*.bak
+*.tmp
+*.swp
+*.swo
+
+# Composer lock if not needed
+# composer.lock
+
+# =========================
+# XAMPP / WINDOWS GENERATED
+# =========================
+xampp/
+htdocs/*/tmp/
