@@ -14,7 +14,7 @@ Diplomarbeit 2025/26 von **Johannes Braun** und **Felix Ilmer**
 
 ## Ziele
 - **Sprache**
-  - Erkennung von Füllwörtern  
+  - Erkennung von Füllwörtern  test
   - Analyse von Sprechtempo  
 
 - **Körpersprache**
