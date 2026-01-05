@@ -1,0 +1,241 @@
+/* =========================================
+   Grundlayout
+   ========================================= */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #fafafa;
+    padding: 40px;
+    color: #333;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* =========================================
+   Überschriften
+   ========================================= */
+h1 {
+    margin-bottom: 10px;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+h2 {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+/* =========================================
+   Button: Neue Präsentation erstellen
+   ========================================= */
+.open-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.open-button:hover {
+    background-color: #45a049;
+}
+
+/* =========================================
+   Popup (oben, unter dem Button)
+   ========================================= */
+.form-popup {
+    display: none;
+    position: relative;     /* Popup bleibt oben */
+    margin-top: 10px;
+    z-index: 10;
+}
+
+/* =========================================
+   Formular-Container (Dein Standard-Stil)
+   ========================================= */
+.form-container {
+    max-width: 320px;
+    background: #ffffff;
+    padding: 20px 25px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
+
+/* =========================================
+   Labels
+   ========================================= */
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    color: #444;
+}
+
+/* =========================================
+   Input-Felder
+   ========================================= */
+input[type="text"],
+input[type="file"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    font-size: 14px;
+}
+
+input[type="text"]:hover,
+input[type="file"]:hover {
+    background-color: #f9f9f9;
+}
+
+input[type="text"]:focus,
+input[type="file"]:focus {
+    border-color: #4CAF50;
+    outline: none;
+}
+
+/* =========================================
+   Submit-Button
+   ========================================= */
+input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 22px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 15px;
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+/* =========================================
+   Cancel-Button im Popup
+   ========================================= */
+.btn-cancel {
+    background-color: #d9534f;
+    color: white;
+    padding: 10px 22px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.btn-cancel:hover {
+    background-color: #c9302c;
+}
+
+/* =========================================
+   Tabelle: Präsentationen
+   ========================================= */
+.presentations-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.presentations-table th,
+.presentations-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+}
+
+.presentations-table th {
+    background-color: #f5f5f5;
+    font-weight: 600;
+}
+
+.presentations-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* Aktionen-Spalte */
+.actions-cell a {
+    margin-right: 10px;
+    text-decoration: none;
+    color: #007bff;
+    font-size: 13px;
+}
+
+.actions-cell a:hover {
+    text-decoration: underline;
+}
+
+.actions-cell a.danger {
+    color: #d9534f;
+}
+
+/* =========================================
+   Responsiv
+   ========================================= */
+@media (max-width: 600px) {
+
+    body {
+        padding: 20px;
+    }
+
+    .form-container {
+        max-width: 260px;
+        padding: 15px 18px;
+    }
+
+    .open-button {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+    }
+}
+
+/* =========================================
+   Upload Progress
+   ========================================= */
+.upload-progress-wrap{
+    margin-top: 14px;
+}
+
+.upload-progress-meta{
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #444;
+    margin-bottom: 6px;
+}
+
+.upload-progress{
+    width: 100%;
+    height: 12px;
+    border-radius: 999px;
+    background: #eee;
+    overflow: hidden;
+    border: 1px solid #ddd;
+}
+
+.upload-progress-bar{
+    height: 100%;
+    width: 0%;
+    background: #4CAF50;
+    transition: width 120ms linear;
+}
+
+.upload-phase{
+    margin-top: 8px;
+    font-size: 13px;
+    color: #555;
+}
