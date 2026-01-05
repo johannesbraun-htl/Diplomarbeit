@@ -5,35 +5,31 @@
 Thumbs.db
 desktop.ini
 
-# VS Code settings
+# VS Code
 .vscode/
 .history/
 
-# JetBrains IDE
+# JetBrains
 .idea/
 
 ########################################
-# DEPENDENCIES / BUILD ARTIFACTS
+# DEPENDENCIES / BUILD OUTPUT
 ########################################
 node_modules/
 vendor/
-bower_components/
-
-# Build output
 dist/
 build/
 .cache/
 
 ########################################
-# LOGS & CACHE
+# LOGS / CACHE / TEMP
 ########################################
 *.log
 logs/
-storage/logs/
+storage/
 cache/
 tmp/
 sessions/
-debugbar/
 
 ########################################
 # ENVIRONMENT / SECRETS
@@ -43,9 +39,9 @@ debugbar/
 .env.*
 
 ########################################
-# GOOGLE / CLOUD CREDENTIALS  (VERY IMPORTANT)
+# GOOGLE CREDENTIALS  (VERY IMPORTANT)
 ########################################
-# Service account keys
+# Service Account JSON Keys
 service-account.json
 *service-account*.json
 **/service-account.json
@@ -53,48 +49,38 @@ service-account.json
 google-credentials.json
 *.gserviceaccount.json
 
-# OAuth secrets
-Backend/php/google/config.local.php
-Backend/php/google/*config.local.php
+########################################
+# OAUTH CONFIG (PRIVATE LOCAL FILE)
+########################################
+Code/Backend/php/google/config.local.php
+Code/Backend/php/google/*config.local.php
 config.local.php
 
 ########################################
-# APP-SPECIFIC UPLOADS
+# UPLOAD / TEMP FILES
 ########################################
 uploads/tmp/
 uploads/cache/
 uploads/debug/
-uploads/.DS_Store
-
-# Do NOT ignore actual uploaded presentation/video folders 
-# unless you really want them excluded from repo
 
 ########################################
-# PHP FRAMEWORK JUNK
+# PHP TOOLS / TEST
 ########################################
 composer.phar
-composer.lock
 phpunit.xml
 coverage/
 
 ########################################
-# SYSTEM / TEMP FILES
+# BACKUP / SWAP
 ########################################
 *.bak
 *.tmp
 *.swp
 *.swo
-*.pid
+*.old
+*.orig
 
 ########################################
 # XAMPP / LOCAL
 ########################################
 xampp/
-htdocs/*/tmp/
-
-########################################
-# MISC
-########################################
-# Avoid committing backup editors
-*.orig
-*.old
