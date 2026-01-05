@@ -1,6 +1,7 @@
 # Geheimnisse / Konfig
-Backend/php/home/service-account.json
-Backend/php/google/config.local.php
+Code/Backend/php/home/service-account.json
+Code/Backend/php/google/config.local.php
+Code/Backend/php/home/service-account.json
 
 # (Optional – nützliche Standard-Sachen)
 vendor/
