@@ -30,48 +30,55 @@ storage/
 cache/
 tmp/
 sessions/
+debug/
+debugbar/
 
 ########################################
-# ENVIRONMENT / SECRETS
+# ENVIRONMENT / SECRETS (GLOBAL)
 ########################################
 .env
 *.env
 .env.*
 
+# generische lokale Configs mit Zugangsdaten
+config.local.php
+*config.local.php
+*secret*.php
+
 ########################################
-# GOOGLE CREDENTIALS  (VERY IMPORTANT)
+# GOOGLE / CLOUD CREDENTIALS
 ########################################
 # Service Account JSON Keys
 service-account.json
 *service-account*.json
-**/service-account.json
-**/*service-account*.json
-google-credentials.json
 *.gserviceaccount.json
+google-credentials.json
 
-########################################
-# OAUTH CONFIG (PRIVATE LOCAL FILE)
-########################################
+# OAuth / Token / Credentials Files
+*token.json
+*tokens.json
+*credentials.json
+
+# Deine Google-spezifischen Pfade
 Code/Backend/php/google/config.local.php
 Code/Backend/php/google/*config.local.php
-config.local.php
 
 ########################################
-# UPLOAD / TEMP FILES
+# DB-CONNECT (DEINE STRUKTUR)
+########################################
+Code/Backend/database/connect.local.php
+Code/Backend/database/*config.local.php
+
+########################################
+# UPLOAD / TEMP FOLDER (falls verwendet)
 ########################################
 uploads/tmp/
 uploads/cache/
 uploads/debug/
+uploads/.DS_Store
 
 ########################################
-# PHP TOOLS / TEST
-########################################
-composer.phar
-phpunit.xml
-coverage/
-
-########################################
-# BACKUP / SWAP
+# BACKUP / SWAP / MISC
 ########################################
 *.bak
 *.tmp
@@ -81,6 +88,6 @@ coverage/
 *.orig
 
 ########################################
-# XAMPP / LOCAL
+# XAMPP / LOKAL
 ########################################
 xampp/
