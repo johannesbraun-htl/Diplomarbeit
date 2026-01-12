@@ -1,5 +1,8 @@
-/* CSS mit hilfe von ChatGPT */
+/* =========================================================
+   PresentAI – style_main.css (klassisch & sauber)
+   ========================================================= */
 
+/* Grundvariablen */
 :root{
   --header-h: clamp(48px, 7vh, 88px);
   --tab-h: clamp(44px, 6.5vh, 72px);
@@ -12,13 +15,16 @@
   --brand-600: rgb(92,92,247);
   --brand-300: rgb(183,183,243);
 
+  --bg: #ffffff;
   --text: #121212;
+  --muted: #6d6d78;
+
   --border: #ccc;
 
   --content-max: 1200px;
 }
 
-/* iOS Notch/Safe-Area berücksichtigen */
+/* iOS Safe-Area */
 @supports (padding: max(0px)) {
   :root {
     --safe-top: env(safe-area-inset-top, 0px);
@@ -27,7 +33,22 @@
   }
 }
 
-/* FIXER HEADER OBEN */
+*{
+  box-sizing: border-box;
+}
+
+body{
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont,
+               "Segoe UI", Roboto, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
 .header-title{
   position: fixed;
   top: var(--safe-top);
@@ -40,7 +61,6 @@
 
   background: #fff;
   color: var(--brand);
-  text-align: center;
 
   font-size: clamp(18px, 2.2vw, 28px);
   font-weight: 600;
@@ -50,71 +70,66 @@
   height: var(--header-h);
 
   z-index: 1100;
-  letter-spacing: 0.03em;
   border-bottom: 1px solid var(--border);
-  box-sizing: border-box;
 }
 
-/* FIXE TAB-LEISTE DIREKT DARUNTER */
+/* =========================================================
+   TAB-LEISTE
+   ========================================================= */
+
 .tab{
   position: fixed;
   top: calc(var(--safe-top) + var(--header-h));
   left: 0;
   width: 100%;
+  height: var(--tab-h);
 
   background: var(--brand);
   border-bottom: 1px solid var(--border);
 
   display: flex;
   align-items: center;
-  justify-content: flex-start;          /* Tab-Buttons starten links */
+  gap: clamp(6px, 1vw, 12px);
 
   padding-left: max(var(--gap), var(--safe-left));
   padding-right: max(var(--gap), var(--safe-right));
 
-  gap: clamp(6px, 1vw, 12px);
-
   z-index: 1000;
-  height: var(--tab-h);
-
-  box-sizing: border-box;
 }
 
-/* TAB-BUTTONS LINKS */
-.tab button{
-  border: 0;
+.tab button.tablinks{
+  border: none;
   background: none;
   color: #fff;
 
   padding: clamp(8px, 1.2vh, 12px) clamp(12px, 2vw, 18px);
   font-size: clamp(13px, 1.2vw, 16px);
-  line-height: 1;
   border-radius: 12px;
 
   cursor: pointer;
 }
 
-.tab button:hover{
+.tab button.tablinks:hover{
   background: var(--brand-300);
 }
-.tab button.active{
+
+.tab button.tablinks.active{
   background: var(--brand-600);
   font-weight: 600;
 }
 
-/* LOGOUT – GANZ RECHTS IN DER LEISTE */
+/* Logout rechts */
 .logout-form{
-  margin-left: auto;    /* schiebt das Formular ganz nach rechts */
+  margin-left: auto;
 }
 
 .logout-btn{
-  border: 0;
+  border: none;
   background: none;
   color: #fff;
 
   padding: clamp(8px, 1.2vh, 12px) clamp(12px, 2vw, 18px);
   font-size: clamp(13px, 1.2vw, 16px);
-  line-height: 1;
   border-radius: 12px;
 
   cursor: pointer;
@@ -124,7 +139,10 @@
   background: rgba(255,255,255,0.25);
 }
 
-/* INHALT UNTER HEADER + TABS */
+/* =========================================================
+   TAB-INHALT
+   ========================================================= */
+
 .tabcontent{
   display: none;
 
@@ -134,14 +152,139 @@
   background: #fff;
   border: 1px solid var(--border);
   border-top: none;
-  border-radius: var(--radius);
 
-  box-sizing: border-box;
   width: min(100% - 2*var(--gap), var(--content-max));
   margin-left: auto;
   margin-right: auto;
 
   min-height: calc(100dvh - (var(--header-h) + var(--tab-h)) - 3*var(--gap));
-  box-shadow: var(--shadow);
+}
+
+/* =========================================================
+   ALERTS
+   ========================================================= */
+
+.ev-alert{
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin: 12px 0;
+  font-size: 14px;
+}
+
+.ev-alert--error{
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.ev-alert--success{
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+/* =========================================================
+   TABELLE – KLASSISCH
+   ========================================================= */
+
+.presentations-table{
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+/* Header */
+.presentations-table thead th{
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  padding: 10px 12px;
+
+  background: #f2f2f2;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Zeilen */
+.presentations-table tbody tr{
+  border-bottom: 1px solid #e5e5e5;
+}
+
+/* Zellen */
+.presentations-table tbody td{
+  padding: 14px 12px;
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+/* Hover (klassisch) */
+.presentations-table tbody tr:hover{
+  background: #f8f8f8;
+}
+
+.presentations-table .cell-title{
+  font-weight: 600;
+}
+
+/* =========================================================
+   AKTIONEN – BUTTONS
+   ========================================================= */
+
+.presentations-table .col-actions{
+  width: 260px;
+}
+
+.presentations-table td.actions{
+  white-space: nowrap;
+}
+
+.action-group{
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.act-btn{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 8px 14px;
+  border-radius: 999px;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  text-decoration: none;
   color: var(--text);
+
+  background: #f3f4fb;
+  border: 1px solid var(--border);
+}
+
+.act-btn:hover{
+  background: #e9eafb;
+}
+
+.act-del{
+  color: #b91c1c;
+  background: #fee2e2;
+  border-color: #fecaca;
+}
+
+.act-del:hover{
+  background: #fecaca;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 720px){
+  .presentations-table .col-actions{
+    width: 140px;
+  }
+  .act-btn span{
+    display: none;
+  }
 }

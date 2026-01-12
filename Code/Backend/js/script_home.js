@@ -1,11 +1,22 @@
 function openForm() {
   const el = document.getElementById("myForm");
-  if (el) el.style.display = "block";
+  if (!el) return;
+
+  document.body.classList.add("modal-open");
+  el.style.display = "flex";
+  el.setAttribute("aria-hidden", "false");
+
+  const title = document.getElementById("title");
+  if (title) setTimeout(() => title.focus(), 0);
 }
 
 function closeForm() {
   const el = document.getElementById("myForm");
-  if (el) el.style.display = "none";
+  if (!el) return;
+
+  el.style.display = "none";
+  el.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("modal-open");
 }
 
 async function reloadPresentationsTable() {
@@ -47,6 +58,20 @@ async function reloadPresentationsTable() {
   const phaseText    = document.getElementById("uploadPhaseText");
   const submitBtn    = document.getElementById("uploadSubmitBtn");
 
+  const fileInput    = document.getElementById("presentationFile");
+  const fileNameText = document.getElementById("fileNameText");
+
+  if (fileInput && fileNameText) {
+    fileInput.addEventListener("change", () => {
+      const f = fileInput.files && fileInput.files[0];
+      fileNameText.textContent = f ? f.name : "Keine Datei ausgewählt";
+    });
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeForm();
+  });
+
   function formatTime(sec) {
     if (!isFinite(sec) || sec < 0) return "--:--";
     const s = Math.round(sec);
@@ -60,6 +85,8 @@ async function reloadPresentationsTable() {
 
     const title = form.querySelector('input[name="title"]');
     if (title) title.readOnly = isUploading;
+
+    if (fileInput) fileInput.disabled = isUploading;
   }
 
   function resetProgressUi() {
@@ -74,8 +101,6 @@ async function reloadPresentationsTable() {
     e.preventDefault();
 
     const titleInput = form.querySelector('input[name="title"]');
-    const fileInput  = form.querySelector('input[name="presentationFile"]');
-
     const titleVal = (titleInput?.value || "").trim();
     if (!titleVal) {
       alert("Titel fehlt.");
@@ -126,10 +151,6 @@ async function reloadPresentationsTable() {
       if (etaText) etaText.textContent = `ETA: ${formatTime(remaining)}`;
     };
 
-    xhr.upload.onload = function () {
-      if (phaseText) phaseText.textContent = "Upload abgeschlossen, Verarbeitung läuft…";
-    };
-
     xhr.onreadystatechange = async function () {
       if (xhr.readyState !== 4) return;
 
@@ -145,9 +166,10 @@ async function reloadPresentationsTable() {
         await reloadPresentationsTable();
 
         form.reset();
+        if (fileNameText) fileNameText.textContent = "Keine Datei ausgewählt";
+
         closeForm();
         resetProgressUi();
-
         setUiUploading(false);
         return;
       }

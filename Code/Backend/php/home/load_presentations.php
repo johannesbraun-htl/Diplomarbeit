@@ -3,7 +3,6 @@
 
 function loadPresentations(mysqli $conn): void
 {
-    // Session muss vom Aufrufer bereits gestartet sein
     if (empty($_SESSION['username'])) {
         echo "<p>Fehler: Kein Benutzer angemeldet.</p>";
         return;
@@ -11,7 +10,6 @@ function loadPresentations(mysqli $conn): void
 
     $username = $_SESSION['username'];
 
-    // Alle Präsentationen des aktuellen Users inkl. KPI laden
     $sql = "
         SELECT 
             p.presentations_id,
@@ -29,7 +27,8 @@ function loadPresentations(mysqli $conn): void
         ORDER BY p.created DESC
     ";
 
-    if (!$stmt = $conn->prepare($sql)) {
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
         echo "<p>Fehler beim Vorbereiten der Anfrage.</p>";
         return;
     }
@@ -38,7 +37,6 @@ function loadPresentations(mysqli $conn): void
     $stmt->execute();
     $result = $stmt->get_result();
 
-    // Keine Präsentationen gefunden
     if ($result->num_rows === 0) {
         echo '<table class="presentations-table">';
         echo '<tr><td>Keine Präsentationen gefunden.</td></tr>';
@@ -47,7 +45,6 @@ function loadPresentations(mysqli $conn): void
         return;
     }
 
-    // Tabelle mit Kopfzeile ausgeben
     echo '<table class="presentations-table">';
     echo '<thead>';
     echo '<tr>';
@@ -56,7 +53,7 @@ function loadPresentations(mysqli $conn): void
     echo '<th>WPM</th>';
     echo '<th>Füllwörter</th>';
     echo '<th>Score</th>';
-    echo '<th>Aktionen</th>';
+    echo '<th class="col-actions">Aktionen</th>';
     echo '</tr>';
     echo '</thead>';
     echo '<tbody>';
@@ -66,38 +63,30 @@ function loadPresentations(mysqli $conn): void
         $titel          = htmlspecialchars($row['titel'] ?? '', ENT_QUOTES, 'UTF-8');
         $created        = htmlspecialchars($row['created'] ?? '', ENT_QUOTES, 'UTF-8');
 
-        $wpm            = $row['avarage_wpm'] !== null
-            ? htmlspecialchars($row['avarage_wpm'], ENT_QUOTES, 'UTF-8')
-            : '-';
+        $wpm       = $row['avarage_wpm'] !== null ? htmlspecialchars($row['avarage_wpm'], ENT_QUOTES, 'UTF-8') : '-';
+        $fillWords = $row['filling_words_count'] !== null ? htmlspecialchars($row['filling_words_count'], ENT_QUOTES, 'UTF-8') : '-';
+        $score     = $row['score'] !== null ? htmlspecialchars($row['score'], ENT_QUOTES, 'UTF-8') : '-';
 
-        $fillWords      = $row['filling_words_count'] !== null
-            ? htmlspecialchars($row['filling_words_count'], ENT_QUOTES, 'UTF-8')
-            : '-';
-
-        $score          = $row['score'] !== null
-            ? htmlspecialchars($row['score'], ENT_QUOTES, 'UTF-8')
-            : '-';
-
-        // WICHTIG: Ansehen führt jetzt in den Analyse-Tab von main.php
-        // main.php liegt im Ordner Frontend/, aktuelle Seite ist auch Frontend/main.php
-        // → Link relativ dazu: ./main.php?tab=analyse&id=...
-        $viewUrl   = "main.php?tab=analyse&id=" . urlencode($presentationId);
-
-        // Bearbeiten und Löschen bleiben wie vorher (Edit/Platzhalter + sichere Delete-Logik)
-        $editUrl   = "../Backend/php/home/edit_presentation.php?id=" . urlencode($presentationId);
-        $deleteUrl = "../Backend/php/home/delete_presentation.php?id=" . urlencode($presentationId);
+        // Tabs öffnen (URL wird danach gecleant in main.php)
+        $viewUrl   = "main.php?open=analyse&id=" . urlencode((string)$presentationId);
+        $editUrl   = "main.php?open=bearbeiten&id=" . urlencode((string)$presentationId);
+        $deleteUrl = "../Backend/php/home/delete_presentation.php?id=" . urlencode((string)$presentationId);
 
         echo '<tr>';
-        echo '<td>' . $titel . '</td>';
+        echo '<td class="cell-title">' . $titel . '</td>';
         echo '<td>' . $created . '</td>';
         echo '<td>' . $wpm . '</td>';
         echo '<td>' . $fillWords . '</td>';
         echo '<td>' . $score . '</td>';
+
         echo '<td class="actions">';
-        echo '  <a href="' . $viewUrl . '">Ansehen</a> ';
-        echo '  <a href="' . $editUrl . '">Bearbeiten</a> ';
-        echo '  <a href="' . $deleteUrl . '" class="danger">Löschen</a>';
+        echo '  <div class="action-group">';
+        echo '    <a class="act-btn act-view" href="' . $viewUrl . '" title="Ansehen">👁️ <span>Ansehen</span></a>';
+        echo '    <a class="act-btn act-edit" href="' . $editUrl . '" title="Bearbeiten">✏️ <span>Bearbeiten</span></a>';
+        echo '    <a class="act-btn act-del" href="' . $deleteUrl . '" title="Löschen" onclick="return confirm(\'Wirklich löschen?\')">🗑️ <span>Löschen</span></a>';
+        echo '  </div>';
         echo '</td>';
+
         echo '</tr>';
     }
 
