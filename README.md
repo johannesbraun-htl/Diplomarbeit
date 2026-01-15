@@ -2,6 +2,7 @@
 # PresentAI – KI-gestützte Analyse von Präsentationen
 
 ![PresentAI Logo](./docs/logo.png)
+[![pages-build-deployment](https://github.com/johannesbraun-htl/Diplomarbeit/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/johannesbraun-htl/Diplomarbeit/actions/workflows/pages/pages-build-deployment)
 ![Status](https://img.shields.io/badge/status-in%20progress-yellow) 
 ![Made%20with-Python](https://img.shields.io/badge/Made%20with-Python-green) 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
