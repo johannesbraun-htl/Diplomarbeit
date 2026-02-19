@@ -20,7 +20,7 @@ app = FastAPI(title="Körpersprache Analyzer API")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -164,4 +164,5 @@ if __name__ == "__main__":
         reload=True
 
     )
+
 
