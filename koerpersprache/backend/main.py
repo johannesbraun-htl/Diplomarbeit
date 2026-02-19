@@ -19,7 +19,7 @@ app = FastAPI(title="Körpersprache Analyzer API")
 # CORS für XAMPP Frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost", "http://127.0.0.1"],
+    allow_origins=["http://localhost", "http://127.0.0.1", "https://v2.presentai.at"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -162,4 +162,5 @@ if __name__ == "__main__":
         host=settings.BACKEND_HOST,
         port=settings.BACKEND_PORT,
         reload=True
+
     )
